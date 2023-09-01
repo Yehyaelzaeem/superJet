@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "503238631367",
+    "project_id": "superjet-52b56",
+    "storage_bucket": "superjet-52b56.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503238631367:android:cefed7fea27a1d449983e2",
+        "android_client_info": {
+          "package_name": "com.example.superjet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "503238631367-7hem7nos51dkg68n6fc09j4rmgs4a3ga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.superjet",
+            "certificate_hash": "cb8787895d15900df4cbb4713d70dac58bb150ca"
+          }
+        },
+        {
+          "client_id": "503238631367-tfddu8ogv08ek9glqbsqirlldapvp2oj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdoMHElgZ_ZdtPFpw0ecVxl1HnDKLp0rw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503238631367-018vcbnudc8img6g6lr3cvvc5ae338ve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
