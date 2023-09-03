@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/shared_preference/shared_preference.dart';
 import '../../../../core/utils/enums.dart';
 import '../../data/models/trip_model.dart';
 import '../bloc/trips_bloc.dart';
@@ -11,8 +12,9 @@ import '../screens/booked_screen.dart';
 //trip Widget
 Widget customTripWidget(context, TripsModel tripsModel) =>
     GestureDetector(
-      onTap: (){
-        NavigatePages.persistentNavBarNavigator(BookedScreen(tripsModel: tripsModel,), context);
+      onTap: ()async{
+        var uId =await CacheHelper.getDate(key: 'uId');
+         NavigatePages.persistentNavBarNavigator(BookedScreen(tripsModel: tripsModel, userID:uId,), context);
       },
       child: Container(
         decoration: const BoxDecoration(
@@ -109,103 +111,108 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
         ),
       ),
     );
-
+Future<String> getUserId()async{
+  var uId =await CacheHelper.getDate(key: 'uId');
+  return uId;
+}
 //GridView Trips
-Widget gridViewTrips(context,bool isCustom,bool isFrom) =>
-    isCustom==true?
-    isFrom==true?
-    BlocBuilder<TripsBloc, TripsState>(
-      builder: (context, state) {
-        switch(state.tripsCustomFromState){
-          case RequestState.loading:
-            return const SizedBox(
-                height:100,child: Center(child: CircularProgressIndicator(),));
-          case RequestState.loaded:
-            return
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, right: 5),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 1 / 1.2,
-                  children: List.generate(state.customFromTripsModelList.length, (index) {
-                    return customTripWidget(
-                        context, state.customFromTripsModelList[index]);
-                  }),
-                ),
-              );
-          case RequestState.error:
-            return const SizedBox(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ));
-        }
-      },
-    ):
-    BlocBuilder<TripsBloc, TripsState>(
-      builder: (context, state) {
-        switch(state.tripsCustomToState){
-          case RequestState.loading:
-            return const SizedBox(
-                height:100,child: Center(child: CircularProgressIndicator(),));
-          case RequestState.loaded:
-            return
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, right: 5),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 1 / 1.2,
-                  children: List.generate(state.customToTripsModelList.length, (index) {
-                    return customTripWidget(
-                        context, state.customToTripsModelList[index]);
-                  }),
-                ),
-              );
-          case RequestState.error:
-            return const SizedBox(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ));
-        }
-      },
-    )
+Widget gridViewTrips(context,bool isCustom,bool isFrom){
+  return  isCustom==true?
+  isFrom==true?
+  BlocBuilder<TripsBloc, TripsState>(
+    builder: (context, state) {
+      switch(state.tripsCustomFromState){
+        case RequestState.loading:
+          return const SizedBox(
+              height:100,child: Center(child: CircularProgressIndicator(),));
+        case RequestState.loaded:
+          return
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0, right: 5),
+              child:
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1 / 1.2,
+                children: List.generate(state.customFromTripsModelList.length, (index) {
+                  return customTripWidget(
+                      context, state.customFromTripsModelList[index]);
+                }),
+              ),
+            );
+        case RequestState.error:
+          return const SizedBox(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ));
+      }
+    },
+  ):
+  BlocBuilder<TripsBloc, TripsState>(
+    builder: (context, state) {
+      switch(state.tripsCustomToState){
+        case RequestState.loading:
+          return const SizedBox(
+              height:100,child: Center(child: CircularProgressIndicator(),));
+        case RequestState.loaded:
+          return
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0, right: 5),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1 / 1.2,
+                children: List.generate(state.customToTripsModelList.length, (index) {
+                  return customTripWidget(
+                      context, state.customToTripsModelList[index]);
+                }),
+              ),
+            );
+        case RequestState.error:
+          return const SizedBox(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ));
+      }
+    },
+  )
 
-        : BlocBuilder<TripsBloc, TripsState>(
-      builder: (context, state) {
-        switch(state.tripsState){
-          case RequestState.loading:
-            return const SizedBox(
-                height:100,child: Center(child: CircularProgressIndicator(),));
-          case RequestState.loaded:
-            return
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0, right: 5),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 15,
-                  childAspectRatio: 1 / 1.2,
-                  children: List.generate(state.tripsModelList.length, (index) {
-                    return customTripWidget(
-                        context, state.tripsModelList[index]);
-                  }),
-                ),
-              );
-          case RequestState.error:
-            return const SizedBox(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ));
-        }
-      },
-    );
+      : BlocBuilder<TripsBloc, TripsState>(
+    builder: (context, state) {
+      switch(state.tripsState){
+        case RequestState.loading:
+          return const SizedBox(
+              height:100,child: Center(child: CircularProgressIndicator(),));
+        case RequestState.loaded:
+          return
+            Padding(
+              padding: const EdgeInsets.only(left: 5.0, right: 5),
+              child: GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 15,
+                childAspectRatio: 1 / 1.2,
+                children: List.generate(state.tripsModelList.length, (index) {
+                  return customTripWidget(
+                      context, state.tripsModelList[index]);
+                }),
+              ),
+            );
+        case RequestState.error:
+          return const SizedBox(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ));
+      }
+    },
+  );
+}
 

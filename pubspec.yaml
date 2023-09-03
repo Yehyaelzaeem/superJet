@@ -34,9 +34,12 @@ dependencies:
   flutter_facebook_auth: ^6.0.1
   get_it: ^7.6.0
   intl:
+  flutter_stripe:
   bloc:
+  dio:
   carousel_slider:
   google_sign_in:
+  badges:
   flutter_bloc:
   shared_preferences: ^2.1.1
   persistent_bottom_nav_bar:

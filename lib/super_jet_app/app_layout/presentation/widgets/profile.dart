@@ -5,6 +5,7 @@ import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.d
 import '../../../../core/services/routeing_page/reoute.dart';
 import '../../../../core/services/services_locator.dart';
 import '../../../auth/presentation/screens/login.dart';
+import '../screens/recent_trips.dart';
 import '../screens/edit_profile.dart';
 
 
@@ -75,8 +76,7 @@ Widget customProfileWidgets(TripsState state,context){
                     color: Colors.grey.shade400, width: 1)),
             child: IconButton(
               onPressed: () {
-                NavigatePages.pushReplacePage(
-                    const EditProfileScreen(), context);
+                NavigatePages.pushReplacePage(const EditProfileScreen(), context);
               },
               icon: const Icon(
                 Icons.edit,
@@ -98,9 +98,11 @@ Widget customProfileWidgets(TripsState state,context){
             border: Border.all(
                 color: Colors.grey.shade400, width: 1)),
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            NavigatePages.pushToPage(RecentTrips(tripIdLis: state.userModel!.tripIdList!), context);
+          },
           child: const Text(
-            'Last Trips',
+            'Recent Trips',
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 18),
           ),

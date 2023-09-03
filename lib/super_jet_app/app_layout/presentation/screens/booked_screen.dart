@@ -1,20 +1,15 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:superjet/core/services/routeing_page/reoute.dart';
 import 'package:superjet/core/widgets/widgets.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment_screen.dart';
 import '../../../../core/utils/constants.dart';
 import '../../data/models/trip_model.dart';
-import '../bloc/trips_bloc.dart';
 
 class BookedScreen extends StatelessWidget {
-  TripsModel tripsModel;
+  final TripsModel tripsModel;
+  final String userID;
 
-  BookedScreen({super.key, required this.tripsModel});
+  const BookedScreen({super.key, required this.tripsModel, required this.userID});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +19,6 @@ class BookedScreen extends StatelessWidget {
         .collection(tripsModel.categoryName.trim())
         .doc(tripsModel.tripID.trim())
         .collection('Chairs');
-    var state= context.read<TripsBloc>().state;
 
     return Scaffold(
         body: SafeArea(
@@ -237,26 +231,67 @@ class BookedScreen extends StatelessWidget {
                                 return InkWell(
                                   onTap: () {
                                     if (snapshot.data!.docs[index]['isAvailable'] == 'true') {
-                                      collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':state.userModel!.uId});
-                                      var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
-                                      d.update({
-                                        'trips':FieldValue.arrayUnion([
-                                          {
-                                            'chairID': snapshot.data!.docs[index]['chairID'],
-                                            'tripID': tripsModel.tripID,
-                                          }
-                                        ]),
-                                      });
 
-                                      NavigatePages.persistentNavBarNavigator(
-                                          PaymentScreen(
-                                            tripsModel: tripsModel,
-                                            chairID:
-                                                snapshot.data!.docs[index].id,
-                                            chairNumber: snapshot
-                                                .data!.docs[index]['chairID'],
-                                          ),
-                                          context);
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title:  Text('Booked Chair :  ${snapshot.data!.docs[index]['chairID'].toString()}'),
+                                            content:  Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text('Are You sure ? \nYou want to Book this chair ',),
+                                                const SizedBox(height: 2,),
+                                                Text('Trip name : ${tripsModel.name}',),
+                                                const SizedBox(height: 2,),
+                                                Text('From City : ${tripsModel.fromCity}',),
+                                                const SizedBox(height: 2,),
+                                                Text('To City      : ${tripsModel.toCity}',),
+                                                const SizedBox(height: 2,),
+                                                Text('Price         : ${tripsModel.price}',),
+                                                const SizedBox(height: 2,),
+                                                Text('Date          : ${tripsModel.date}',),
+                                                const SizedBox(height: 2,),
+                                                Text('Time         : ${tripsModel.time}',),
+                                              ],
+                                            ),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: Theme.of(context).textTheme.labelLarge,
+                                                ),
+                                                child: const Text('Cancel'),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                  textStyle: Theme.of(context).textTheme.labelLarge,
+                                                ),
+                                                child: const Text('OK'),
+                                                onPressed: () {
+                                                  collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
+                                                  var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(userID.trim());
+                                                  d.update({
+                                                    'trips':FieldValue.arrayUnion([
+                                                      {
+                                                        'chairID': snapshot.data!.docs[index]['chairID'],
+                                                        'tripID': tripsModel.tripID,
+                                                      }
+                                                    ]),
+                                                  });
+                                                  SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString());
+                                                  showToast('To Complete Booking Trip Go To Payment Page', ToastStates.warning, context);
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+
                                     } else {
                                       showToast(
                                           'This chair has already been reserved',
@@ -315,25 +350,66 @@ class BookedScreen extends StatelessWidget {
                                     return InkWell(
                                       onTap: () {
                                         if (snapshot.data!.docs[index + 52]['isAvailable'] == 'true') {
-                                         collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'false','passengerID':state.userModel!.uId});
-                                         var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
-                                         d.update({
-                                           'trips':FieldValue.arrayUnion([
-                                             {
-                                               'chairID': snapshot.data!.docs[index].id,
-                                               'tripID': tripsModel.tripID,
-                                             }
-                                           ]),
-                                         });
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title:  Text('Booked Chair :  ${snapshot.data!.docs[index+52]['chairID'].toString()}'),
+                                                content:  Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text('Are You sure ? \nYou want to Book this chair ',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('Trip name : ${tripsModel.name}',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('From City : ${tripsModel.fromCity}',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('To City      : ${tripsModel.toCity}',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('Price         : ${tripsModel.price}',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('Date          : ${tripsModel.date}',),
+                                                    const SizedBox(height: 2,),
+                                                    Text('Time         : ${tripsModel.time}',),
+                                                  ],
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      textStyle: Theme.of(context).textTheme.labelLarge,
+                                                    ),
+                                                    child: const Text('Cancel'),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    style: TextButton.styleFrom(
+                                                      textStyle: Theme.of(context).textTheme.labelLarge,
+                                                    ),
+                                                    child: const Text('OK'),
+                                                    onPressed: () {
+                                                      collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'false','passengerID':userID});
+                                                      var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(userID.trim());
+                                                      d.update({
+                                                        'trips':FieldValue.arrayUnion([
+                                                          {
+                                                            'chairID': snapshot.data!.docs[index+52]['chairID'],
+                                                            'tripID': tripsModel.tripID,
+                                                          }
+                                                        ]),
+                                                      });
+                                                      SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index+52]['chairID'].toString());
+                                                      showToast('To Complete Booking Trip Go To Payment Page To Pay Total', ToastStates.success, context);
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
 
-                                          // NavigetPages.persistentNavBarNavigator(PaymentScreen(
-                                          //           tripsModel: tripsModel,
-                                          //           chairID: snapshot.data!
-                                          //               .docs[index + 52].id,
-                                          //           chairNumber: snapshot.data!
-                                          //                   .docs[index + 52]
-                                          //               ['chairID'],
-                                          //         ), context);
 
                                         } else {
                                           showToast(

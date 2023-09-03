@@ -11,13 +11,14 @@ Widget customPageViewCurrentTrips(TripsState state){
         List<TripID> listTripID =state.userModel!.tripIdList!;
         listTripID=listTripID.reversed.toList();
         return Scaffold(
-          body: Stack(
+          body:
+          Stack(
             children: [
               SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    currentImageTrips(state.currentTripsModelList[index].image, state.userModel!.profileImage,context,state),
+                    currentImageTrips(state.currentTripsModelList[index].image, state.userModel!.profileImage,context,state,false),
 
                     const SizedBox(height: 20,),
 
@@ -135,7 +136,7 @@ Widget customPageViewCurrentTrips(TripsState state){
 }
 
 
-Widget currentImageTrips(String? coverImage,String? profileImage,context,TripsState tripsState){
+Widget currentImageTrips(String? coverImage,String? profileImage,context,TripsState tripsState,bool isCart){
   var state =tripsState.userModel!;
   return
     SizedBox(
@@ -382,7 +383,7 @@ Widget currentImageTrips(String? coverImage,String? profileImage,context,TripsSt
                       child: CircleAvatar(
                         radius:45,
                         backgroundImage:
-                        NetworkImage(profileImage!),
+                       isCart==false? NetworkImage(profileImage!): NetworkImage(state.profileImage!),
 
                       ),),
                   ),

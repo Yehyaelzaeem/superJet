@@ -1,7 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
-// import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
-// import '../../../app_layout/presentation/widgets/widget.dart';
+// import 'package:superjet/super_jet_app/auth/presentation/widgets/main_home_widget.dart';
+// import '../../../app_layout/presentation/widgets/main_home_widget.dart';
 //
 // class ManageAccount extends StatelessWidget {
 //   const ManageAccount({super.key});

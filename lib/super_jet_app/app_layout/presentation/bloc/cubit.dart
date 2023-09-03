@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import '../../domain/use_cases/trips_usecase.dart';
 
@@ -15,6 +16,32 @@ class SuperCubit extends Cubit<AppSuperStates> {
   TextEditingController controllerPhone= TextEditingController();
   static SuperCubit get(context) => BlocProvider.of(context);
   var categoriesIndex =0;
+  List<TripsModel> listCartTrips=[];
+  List chairsId=[];
+  double suTotal=0.0;
+  double total=0.0;
+  double tax= 5.0;
+  double discount=-10.0;
+
+
+   addCartTrips(TripsModel tripsModel,String chairId ){
+    listCartTrips.add(tripsModel);
+    chairsId.add(chairId);
+    suTotal +=double.parse(tripsModel.price);
+    total =suTotal+tax+discount;
+    emit(GetCartTrips());
+  }
+   deleteCartTrips(TripsModel tripsModel,String chairId ){
+     listCartTrips.remove(tripsModel);
+     chairsId.remove(chairId);
+     suTotal -=double.parse(tripsModel.price);
+     total =suTotal+tax+discount;
+     total<0?total=0:total=total;
+     emit(GetCartTrips());
+   }
+
+
+
   changeCategoriesIndex(int i){
     categoriesIndex =i;
     emit(ChangeCategoriesIndexState());

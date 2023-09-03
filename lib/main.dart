@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/widgets/widget.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/widgets/main_home_widget.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/auth/presentation/screens/chick_user.dart';
 import 'package:superjet/super_jet_app/auth/presentation/screens/login.dart';
@@ -15,7 +16,9 @@ import 'core/bloc_observer/bloc_observer.dart';
 import 'core/services/services_locator.dart';
 import 'core/shared_preference/shared_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'core/utils/constants.dart';
 void main() async{
+  Stripe.publishableKey=App.publishableKey;
   ServicesLocator().init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -63,9 +66,8 @@ class MyApp extends StatelessWidget {
            BlocProvider(create: (context) => AppOnBoardingCubit()),
            BlocProvider(create: (context)=>AuthCubit(sl()),),
            BlocProvider(create: (context)=>AuthCubit(sl())..getPermission(),),
-           BlocProvider(create: (context)=>TripsBloc(sl())..add(GetCategoriesTripsEvent())..add(GetTripsEvent('All',context))..add(GetProfileEvent(context))),
+           BlocProvider(create: (context)=>TripsBloc(sl())..add(GetProfileEvent(context))..add(GetCategoriesTripsEvent())..add(GetTripsEvent('All',context))),
            BlocProvider(create: (context)=>SuperCubit(sl()),),
-
           // BlocProvider(create: (context)=>AppCubit()..getHomeData(context),),
           // BlocProvider(create: (context)=>AppCubit()..getHomeData(context),),
           // BlocProvider(create: (context)=>AppCubit()..getHomeData(context)..getCategories(context)..getFavoritesData(context)..getProfileData(context),),
@@ -112,7 +114,6 @@ class CustomMain extends StatelessWidget {
       child: Scaffold(
         bottomNavigationBar:
         PersistentTabView(
-
           context,
           controller: controller,
           screens: AppHomeWidgets.screens,

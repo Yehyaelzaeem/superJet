@@ -1,8 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/categories_model.dart';
-
-import '../widgets/home_widgets.dart';
 import '../widgets/widgets.dart';
 
 class CategoriesDetailsScreen extends StatelessWidget {
@@ -74,8 +71,6 @@ class CategoriesDetailsScreen extends StatelessWidget {
               child: gridViewTrips(context,true,false),
             ),
             const SizedBox(height: 30,),
-
-
           ],
         ),
       ),

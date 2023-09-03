@@ -5,3 +5,4 @@ class  ChangeCategoriesIndexState extends AppSuperStates{}
 class  ChickChangeCategoriesIndexState extends AppSuperStates{}
 class  ChangeDropdownValue extends AppSuperStates{}
 class  ChangeDropdownValueTime extends AppSuperStates{}
+class  GetCartTrips extends AppSuperStates{}

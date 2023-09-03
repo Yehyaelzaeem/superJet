@@ -4,6 +4,7 @@ class AppImage{
   static const String onBoarding2='${baseOnBoarding}a4.jpg';
   static const String onBoarding4='${baseOnBoarding}a2.jpg';
   static const String onBoarding3='${baseOnBoarding}a3.jpg';
+  static const String paymentImage='${baseOnBoarding}pay2.png';
   static const String logImage='assets/image/log.jpg';
   static const String googleImage='assets/image/google.png';
   static const String baseProfileImage='https://as1.ftcdn.net/v2/jpg/03/28/74/64/1000_F_328746485_bQss7AXKG5Ilx3No8hR9R1FGR9wXyiJP.jpg';
