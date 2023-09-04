@@ -18,28 +18,39 @@ class SuperCubit extends Cubit<AppSuperStates> {
   var categoriesIndex =0;
   List<TripsModel> listCartTrips=[];
   List chairsId=[];
+  List chairsDoc=[];
   double suTotal=0.0;
   double total=0.0;
   double tax= 5.0;
   double discount=-10.0;
+  bool isPay=false;
 
 
-   addCartTrips(TripsModel tripsModel,String chairId ){
+   addCartTrips(TripsModel tripsModel,String chairId,String chairDoc ){
     listCartTrips.add(tripsModel);
     chairsId.add(chairId);
+    chairsDoc.add(chairDoc);
     suTotal +=double.parse(tripsModel.price);
     total =suTotal+tax+discount;
     emit(GetCartTrips());
   }
-   deleteCartTrips(TripsModel tripsModel,String chairId ){
+   deleteCartTrips(TripsModel tripsModel,String chairId,String chairDoc  ){
      listCartTrips.remove(tripsModel);
      chairsId.remove(chairId);
+     chairsDoc.remove(chairDoc);
      suTotal -=double.parse(tripsModel.price);
      total =suTotal+tax+discount;
      total<0?total=0:total=total;
-     emit(GetCartTrips());
+     emit(DeleteCartTrips());
    }
-
+  removeCart(){
+    listCartTrips.clear();
+    chairsDoc.clear();
+    chairsId.clear();
+    suTotal=0.0;
+    total=0.0;
+   emit(RemoveCartTrips());
+  }
 
 
   changeCategoriesIndex(int i){

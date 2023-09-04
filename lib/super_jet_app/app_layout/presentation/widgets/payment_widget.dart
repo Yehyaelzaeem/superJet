@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:superjet/core/image/image.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
@@ -180,7 +181,20 @@ Widget customPaymentDetails(List<TripsModel> listTrips,List chairsList,double to
                 SizedBox(height: m.height*0.012,),
                 customRowDate('Discount',colorTextBase,'$discount EGP',colorText),
                 SizedBox(height: m.height*0.012,),
-                const Divider(color: Colors.black12,thickness: 1,),
+                Row(
+                  children: [
+                    SizedBox(
+                        width:MediaQuery.of(context).size.width*0.2,
+                        child: const Divider(color: Colors.black12,thickness: 1,),
+                    ),
+                    const Spacer(),
+                    SizedBox(
+                        width:MediaQuery.of(context).size.width*0.2,
+                        child: const Divider(color: Colors.black12,thickness: 1,),
+                    ),
+
+                  ],
+                ),
                 SizedBox(height: m.height*0.012,),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -226,7 +240,7 @@ Widget customRowDate(String baseText,Color colorTextBase,String data,Color color
   ],
 );
 
-Widget customCartGridView(List<TripsModel> listTrips,List chairId,TripsState tripsState,context){
+Widget customCartGridView(List<TripsModel> listTrips,List chairId,List chairDoc ,TripsState tripsState,context){
   return GridView.count(
     shrinkWrap: true,
     physics: const NeverScrollableScrollPhysics(),
@@ -235,11 +249,11 @@ Widget customCartGridView(List<TripsModel> listTrips,List chairId,TripsState tri
     mainAxisSpacing: 15,
     childAspectRatio: 1 / 1.2,
     children: List.generate(listTrips.length, (index) {
-      return customCartTripWidget(tripsState,context,listTrips[index],chairId[index]);
+      return customCartTripWidget(tripsState,context,listTrips[index],chairId[index],chairDoc[index]);
     }),
   );
 }
-Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel,String chairId) =>
+Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel,String chairId,String chairDoc) =>
     GestureDetector(
       onTap: ()async{
          NavigatePages.persistentNavBarNavigator(DisplayCartTripsDetails(tripsState: tripsState, tripsModel: tripsModel, chairId: chairId), context);
@@ -384,7 +398,17 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
             child: IconButton(
             icon: const Icon(Icons.delete_forever_rounded,color: Colors.white,),
             onPressed: (){
-              SuperCubit.get(context).deleteCartTrips(tripsModel, chairId);
+              SuperCubit.get(context).deleteCartTrips(tripsModel, chairId,chairDoc);
+              var collectionReference = FirebaseFirestore.instance
+                  .collection('Trips')
+                  .doc(tripsModel.categoryID.trim())
+                  .collection(tripsModel.categoryName.trim())
+                  .doc(tripsModel.tripID.trim())
+                  .collection('Chairs');
+              collectionReference.doc(chairDoc).update({
+                'isAvailable':'true',
+                'passengerID':'null',
+              });
             },
            ),
           ),

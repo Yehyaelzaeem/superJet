@@ -38,8 +38,9 @@ class BookedScreen extends StatelessWidget {
                                     bottomLeft: Radius.circular(30))),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
+                                const SizedBox(width: 15,),
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Column(
@@ -137,15 +138,53 @@ class BookedScreen extends StatelessWidget {
                                 ),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    const SizedBox(height: 8,),
+                                    const Row(
+                                      children: [
+                                        Text('Available chair',
+                                        style: TextStyle(
+                                          fontSize: 10
+                                        ),
+                                        ),
+                                      SizedBox(width: 5,),
+                                      SizedBox(
+                                        width: 8,
+                                        height: 8,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.blue,
+                                          radius: 50,
+                                        ),
+                                      )
+                                      ],
+                                    ),
+                                    const Row(
+                                      children: [
+                                        Text('Unavailable chair',
+                                        style: TextStyle(
+                                          fontSize: 10
+                                        ),
+                                        ),
+                                      SizedBox(width: 5,),
+                                      SizedBox(
+                                        width: 8,
+                                        height: 8,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey,
+                                          radius: 50,
+                                        ),
+                                      )
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5,),
+
                                     Text(
                                       'Date of Trip ',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.grey.shade600),
                                     ),
-                                    const SizedBox(height: 7,),
+                                    const SizedBox(height: 1,),
                                     Text(tripsModel.date,
                                         style: const TextStyle(
                                             color: Colors.white,
@@ -176,16 +215,53 @@ class BookedScreen extends StatelessWidget {
                                       MediaQuery.of(context).size.width * 0.05,
                                 ),
                                 Column(
-                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    const SizedBox(height: 8,),
+                                    const Row(
+                                      children: [
+                                        Text('Waiting in Cart',
+                                          style: TextStyle(
+                                              fontSize: 10
+                                          ),
+                                        ),
+                                        SizedBox(width: 5,),
+                                        SizedBox(
+                                          width: 8,
+                                          height: 8,
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.red,
+                                            radius: 50,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    const Row(
+                                      children: [
+                                        Text('Damaged chair',
+                                          style: TextStyle(
+                                              fontSize: 10
+                                          ),
+                                        ),
+                                        SizedBox(width: 5,),
+                                        SizedBox(
+                                          width: 8,
+                                          height: 8,
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.black54,
+                                            radius: 50,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5,),
                                     Text(
                                       'Time of Trip',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.grey.shade600),
                                     ),
-                                    const SizedBox(height: 7,),
+                                    const SizedBox(height: 1,),
 
                                     Text(
                                       tripsModel.time,
@@ -230,8 +306,8 @@ class BookedScreen extends StatelessWidget {
                               children: List.generate(52, (index) {
                                 return InkWell(
                                   onTap: () {
-                                    if (snapshot.data!.docs[index]['isAvailable'] == 'true') {
 
+                                    if (snapshot.data!.docs[index]['isAvailable'] == 'true') {
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -273,18 +349,15 @@ class BookedScreen extends StatelessWidget {
                                                 child: const Text('OK'),
                                                 onPressed: () {
                                                   collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
-                                                  var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(userID.trim());
-                                                  d.update({
-                                                    'trips':FieldValue.arrayUnion([
-                                                      {
-                                                        'chairID': snapshot.data!.docs[index]['chairID'],
-                                                        'tripID': tripsModel.tripID,
-                                                      }
-                                                    ]),
-                                                  });
-                                                  SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString());
+                                                  SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString(),snapshot.data!.docs[index].id);
                                                   showToast('To Complete Booking Trip Go To Payment Page', ToastStates.warning, context);
                                                   Navigator.of(context).pop();
+                                                  Future.delayed(const Duration(minutes: 2)).then((value) {
+                                                    if(snapshot.data!.docs[index]['isPaid'] =='false'){
+                                                      collectionReference.doc(snapshot.data!.docs[index ].id).update({'isAvailable': 'true','passengerID':'null'});
+                                                    }
+
+                                                  });
                                                 },
                                               ),
                                             ],
@@ -292,10 +365,17 @@ class BookedScreen extends StatelessWidget {
                                         },
                                       );
 
-                                    } else {
+                                    } else if(snapshot.data!.docs[index]['isPaid'] == 'false') {
+                                      showToast(
+                                          'This chair is now reserved',
+                                          ToastStates.warning,
+                                          context);
+
+                                    }
+                                    else{
                                       showToast(
                                           'This chair has already been reserved',
-                                          ToastStates.warning,
+                                          ToastStates.error,
                                           context);
                                     }
                                   },
@@ -304,11 +384,10 @@ class BookedScreen extends StatelessWidget {
                                       Center(
                                           child: Icon(
                                         Icons.chair_rounded,
-                                        color: snapshot.data!.docs[index]
-                                                    ['isAvailable'] ==
-                                                'true'
-                                            ? App.availableChair
-                                            : App.unAvailableChair,
+                                        color:    snapshot.data!.docs[index]['isPaid'] == 'false' ?
+                                        (snapshot.data!.docs[index]['isAvailable'] == 'true' ?
+                                        App.availableChair:App.waitingCart
+                                        ) : App.unAvailableChair,
                                         size: 59,
                                       )),
                                       Positioned(
@@ -391,18 +470,15 @@ class BookedScreen extends StatelessWidget {
                                                     child: const Text('OK'),
                                                     onPressed: () {
                                                       collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'false','passengerID':userID});
-                                                      var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(userID.trim());
-                                                      d.update({
-                                                        'trips':FieldValue.arrayUnion([
-                                                          {
-                                                            'chairID': snapshot.data!.docs[index+52]['chairID'],
-                                                            'tripID': tripsModel.tripID,
-                                                          }
-                                                        ]),
-                                                      });
-                                                      SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index+52]['chairID'].toString());
+                                                      SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index+52]['chairID'].toString(),snapshot.data!.docs[index+52].id);
                                                       showToast('To Complete Booking Trip Go To Payment Page To Pay Total', ToastStates.success, context);
                                                       Navigator.of(context).pop();
+                                                      Future.delayed(const Duration(minutes: 2)).then((value) {
+                                                        if(snapshot.data!.docs[index + 52]['isPaid'] =='false'){
+                                                          collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'true','passengerID':'null'});
+                                                        }
+
+                                                      });
                                                     },
                                                   ),
                                                 ],
@@ -411,10 +487,16 @@ class BookedScreen extends StatelessWidget {
                                           );
 
 
-                                        } else {
+                                        } else if(snapshot.data!.docs[index+52]['isPaid'] == 'false') {
+                                          showToast(
+                                              'This chair is now reserved',
+                                              ToastStates.warning,
+                                              context);
+                                        }
+                                        else{
                                           showToast(
                                               'This chair has already been reserved',
-                                              ToastStates.warning,
+                                              ToastStates.error,
                                               context);
                                         }
                                       },
@@ -424,11 +506,10 @@ class BookedScreen extends StatelessWidget {
                                               child: Icon(
                                             Icons.chair_rounded,
                                             color:
-                                                snapshot.data!.docs[index + 52]
-                                                            ['isAvailable'] ==
-                                                        'true'
-                                                    ? App.availableChair
-                                                    : App.unAvailableChair,
+                                            snapshot.data!.docs[index+52]['isPaid'] == 'false' ?
+                                            (snapshot.data!.docs[index+52]['isAvailable'] == 'true' ?
+                                            App.availableChair:App.waitingCart
+                                            ) : App.unAvailableChair,
                                             size: 59,
                                           )),
                                           Positioned(

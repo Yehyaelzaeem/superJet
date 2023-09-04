@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/utils/enums.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import '../../../stripe_payment/payment_manager.dart';
@@ -40,7 +43,7 @@ class PaymentScreen extends StatelessWidget {
                     ):
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: customCartGridView(cubit.listCartTrips,cubit.chairsId,state,context),
+                      child: customCartGridView(cubit.listCartTrips,cubit.chairsId,cubit.chairsDoc,state,context),
                     ),
                     const SizedBox(height: 50,)
                   ],
@@ -60,7 +63,41 @@ class PaymentScreen extends StatelessWidget {
                       height: m.height*0.06,
                       child: MaterialButton(
                         onPressed: (){
-                          SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP");
+                          if(cubit.total==0 ||cubit.total<0){
+                            showToast("The total mustn't equal zero or less ", ToastStates.error, context);
+                          }else{
+
+                            SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
+                                  if(cubit.isPay==true){
+                                    for(var i =0;i<=cubit.listCartTrips.length-1;i++){
+                                      print(i);
+                                      TripsModel list =cubit.listCartTrips[i];
+                                      var chair=cubit.chairsId[i];
+                                      var chairId=cubit.chairsDoc[i];
+                                      var collectionReference = FirebaseFirestore.instance
+                                          .collection('Trips').doc(list.categoryID.trim())
+                                          .collection(list.categoryName.trim())
+                                          .doc(list.tripID.trim()).collection('Chairs');
+                                      collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':state.userModel!.uId});
+                                      var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
+                                      d.update({
+                                        'trips':FieldValue.arrayUnion([
+                                          {
+                                            'chairID': int.parse(chair),
+                                            'tripID': list.tripID,
+                                          }
+                                        ]),
+                                      });
+                                    }
+
+                                  }else{
+                                    print('fail *** //// ${cubit.isPay}');
+
+                                  }
+                                  cubit.removeCart();
+                            });
+
+                          }
                         },
                         color:Colors.grey.shade200,
                         shape:const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)) ),
