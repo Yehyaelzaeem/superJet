@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:superjet/core/widgets/widgets.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
+import '../../../../core/services/services_locator.dart';
 import '../../../../core/utils/constants.dart';
 import '../../data/models/trip_model.dart';
 
@@ -19,10 +20,11 @@ class BookedScreen extends StatelessWidget {
         .collection(tripsModel.categoryName.trim())
         .doc(tripsModel.tripID.trim())
         .collection('Chairs');
-
+        var cubit = SuperCubit.get(context);
     return Scaffold(
         body: SafeArea(
-            child: StreamBuilder(
+            child:
+            StreamBuilder(
                 stream: collectionReference.snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -349,12 +351,13 @@ class BookedScreen extends StatelessWidget {
                                                 child: const Text('OK'),
                                                 onPressed: () {
                                                   collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
-                                                  SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString(),snapshot.data!.docs[index].id);
-                                                  showToast('To Complete Booking Trip Go To Payment Page', ToastStates.warning, context);
+                                                  cubit.addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString(),snapshot.data!.docs[index].id);
+                                                  showToast('To Complete Booking Trip Go To Payment Page for 2 minutes', ToastStates.warning, context);
                                                   Navigator.of(context).pop();
                                                   Future.delayed(const Duration(minutes: 2)).then((value) {
                                                     if(snapshot.data!.docs[index]['isPaid'] =='false'){
                                                       collectionReference.doc(snapshot.data!.docs[index ].id).update({'isAvailable': 'true','passengerID':'null'});
+                                                      cubit.removeCart();
                                                     }
 
                                                   });

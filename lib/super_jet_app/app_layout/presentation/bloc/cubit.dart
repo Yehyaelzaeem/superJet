@@ -26,6 +26,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
   bool isPay=false;
 
 
+
    addCartTrips(TripsModel tripsModel,String chairId,String chairDoc ){
     listCartTrips.add(tripsModel);
     chairsId.add(chairId);

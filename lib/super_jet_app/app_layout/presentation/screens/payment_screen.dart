@@ -66,38 +66,36 @@ class PaymentScreen extends StatelessWidget {
                           if(cubit.total==0 ||cubit.total<0){
                             showToast("The total mustn't equal zero or less ", ToastStates.error, context);
                           }else{
-
-                            SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
-                                  if(cubit.isPay==true){
-                                    for(var i =0;i<=cubit.listCartTrips.length-1;i++){
-                                      print(i);
-                                      TripsModel list =cubit.listCartTrips[i];
-                                      var chair=cubit.chairsId[i];
-                                      var chairId=cubit.chairsDoc[i];
-                                      var collectionReference = FirebaseFirestore.instance
-                                          .collection('Trips').doc(list.categoryID.trim())
-                                          .collection(list.categoryName.trim())
-                                          .doc(list.tripID.trim()).collection('Chairs');
-                                      collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':state.userModel!.uId});
-                                      var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
-                                      d.update({
-                                        'trips':FieldValue.arrayUnion([
-                                          {
-                                            'chairID': int.parse(chair),
-                                            'tripID': list.tripID,
-                                          }
-                                        ]),
-                                      });
-                                    }
-
-                                  }else{
-                                    print('fail *** //// ${cubit.isPay}');
-
+                              SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
+                                if(cubit.isPay==true){
+                                  for(var i =0;i<=cubit.listCartTrips.length-1;i++){
+                                    TripsModel list =cubit.listCartTrips[i];
+                                    var chair=cubit.chairsId[i];
+                                    var chairId=cubit.chairsDoc[i];
+                                    var collectionReference = FirebaseFirestore.instance
+                                        .collection('Trips').doc(list.categoryID.trim())
+                                        .collection(list.categoryName.trim())
+                                        .doc(list.tripID.trim()).collection('Chairs');
+                                    collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':state.userModel!.uId});
+                                    var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
+                                    d.update({
+                                      'trips':FieldValue.arrayUnion([
+                                        {
+                                          'chairID': int.parse(chair),
+                                          'tripID': list.tripID,
+                                        }
+                                      ]),
+                                    });
                                   }
-                                  cubit.removeCart();
-                            });
 
-                          }
+                                }else{
+
+                                }
+                                cubit.removeCart();
+                              });
+
+                            }
+
                         },
                         color:Colors.grey.shade200,
                         shape:const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20)) ),
