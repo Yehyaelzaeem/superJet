@@ -47,7 +47,7 @@ Widget customAuthDesignBackGround(Widget designScreen, context,) =>
                 ),
                 Center(
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 50, top: 20),
+                    margin: const EdgeInsets.only(bottom: 50, top: 0),
                     height: 190,
                     child: Image.asset(
                       AppImage.logImage,

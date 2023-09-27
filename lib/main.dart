@@ -8,6 +8,7 @@ import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/widgets/main_home_widget.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
+import 'package:superjet/super_jet_app/auth/presentation/bloc/states.dart';
 import 'package:superjet/super_jet_app/auth/presentation/screens/chick_user.dart';
 import 'package:superjet/super_jet_app/auth/presentation/screens/login.dart';
 import 'package:superjet/super_jet_app/onBoarding/presentation/bloc/cubit.dart';
@@ -28,7 +29,7 @@ void main() async{
   var onBoarding = await CacheHelper.getDate(key: 'onBoarding');
   var  type = await CacheHelper.getDate(key: 'type');
    var isLog = await CacheHelper.getDate(key: 'isLog');
-   var uId =await CacheHelper.getDate(key: 'uId');
+   var uId = await CacheHelper.getDate(key: 'uId');
 
   print(type);
   print(isLog);
@@ -37,9 +38,9 @@ void main() async{
   {
     if(type !=null){
       if(isLog !=null){
-        widget =const CustomMain();
+        widget = const CustomMain();
       }else{
-        widget =const LoginScreen();
+        widget = LoginScreen(type: type,);
       }
     }
     else{
@@ -105,44 +106,53 @@ class MyApp extends StatelessWidget {
   }
 }
 class CustomMain extends StatelessWidget {
+
   const CustomMain({super.key});
   @override
   Widget build(BuildContext context) {
+
     PersistentTabController controller = PersistentTabController(initialIndex: 0);
 
     return  SafeArea(
-      child: Scaffold(
-        bottomNavigationBar:
-        PersistentTabView(
-          context,
-          controller: controller,
-          screens: AppHomeWidgets.screens,
-          items: AppHomeWidgets.navBarsItems(context),
-          confineInSafeArea: true,
-          backgroundColor: Colors.white, // Default is Colors.white.
-          handleAndroidBackButtonPress: true, // Default is true.
-          resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          stateManagement: false, // Default is true.
-          hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            colorBehindNavBar: Colors.white,
-          ),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
+      child:
+     BlocConsumer<AuthCubit,AppAuthStates>(
+       builder: (context,state){
+         var cubit =AuthCubit.get(context);
+         return  Scaffold(
+           bottomNavigationBar:
+           PersistentTabView(
+             context,
+             controller: controller,
+             screens: cubit.isKnowType =="user"?AppHomeWidgets.userScreens:AppHomeWidgets.adminScreens,
+             items: cubit.isKnowType =="user"?AppHomeWidgets.userNavBarsItems(context):AppHomeWidgets.adminNavBarsItems(context),
+             confineInSafeArea: true,
+             backgroundColor: Colors.white, // Default is Colors.white.
+             handleAndroidBackButtonPress: true, // Default is true.
+             resizeToAvoidBottomInset: true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+             stateManagement: false, // Default is true.
+             hideNavigationBarWhenKeyboardShows: true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+             decoration: NavBarDecoration(
+               borderRadius: BorderRadius.circular(10.0),
+               colorBehindNavBar: Colors.white,
+             ),
+             popAllScreensOnTapOfSelectedTab: true,
+             popActionScreens: PopActionScreensType.all,
+             itemAnimationProperties: const ItemAnimationProperties( // Navigation Bar's items animation properties.
+               duration: Duration(milliseconds: 200),
+               curve: Curves.ease,
+             ),
+             screenTransitionAnimation: const ScreenTransitionAnimation( // Screen transition animation on change of selected tab.
+               animateTabTransition: true,
+               curve: Curves.ease,
+               duration: Duration(milliseconds: 200),
+             ),
 
-          navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
-        ),
-      ),
+             navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
+           ),
+         );
+       },
+       listener: (context,state){},
+     )
     );
   }
 }

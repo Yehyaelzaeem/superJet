@@ -82,7 +82,10 @@ class AuthCubit extends Cubit<AppAuthStates>{
     isNotLoading2 =true;
     emit(RegisterWaitingStates());
   }
-
+  var type='';
+  getType()async{
+    type =await CacheHelper.getDate(key: 'type');
+  }
   //Chick this person is user or admin
    Future chickUsers(String type)async{
      await CacheHelper.saveDate(key: 'type', value: type);
@@ -143,7 +146,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
     emit(LoginGoogleStates());
   }
 
-
+var isKnowType = '';
   // Follow Login with GoogleAccount
   Future<UserCredential> signInWithGoogle(context) async {
     // Trigger the authentication flow

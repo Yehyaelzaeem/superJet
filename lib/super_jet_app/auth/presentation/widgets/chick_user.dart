@@ -15,10 +15,112 @@ Widget customCheckUserButton(String type ,context)=>
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
         color: Theme.of(context).primaryColor,
         onPressed: (){
-          AuthCubit.get(context).chickUsers(type).then((value) =>
-          {
-            NavigatePages.pushReplacePage(const LoginScreen(), context)
-          });
+          if(type =='user'){
+            AuthCubit.get(context).isKnowType='user';
+            AuthCubit.get(context).chickUsers(type).then((value) =>
+            {
+               NavigatePages.pushToPage(const LoginScreen(type: 'user',), context)
+            });
+          }
+          else{
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  icon:  const Icon(Icons.manage_accounts_rounded,size: 50,color: Colors.white,),
+                  backgroundColor: Theme.of(context).primaryColor.withOpacity(0.95),
+                  title:   const Text('Administrator',
+                  style: TextStyle(color: Colors.white,
+                  fontSize: 25
+                  ),
+                  ),
+                  content:   Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: InkWell(
+                          onTap: (){
+                            AuthCubit.get(context).isKnowType='admin';
+                          AuthCubit.get(context).chickUsers('admin').then((value) =>
+                            {
+                              NavigatePages.pushToPage(const LoginScreen(type: 'admin',), context)
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 70,vertical: 15),
+                              decoration:  BoxDecoration(
+                                color: Colors.grey.shade200,
+                                boxShadow: const [BoxShadow(color: Colors.white,blurRadius: 10)],
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child:   Text('Admin',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.blue.shade600,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              )),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: InkWell(
+                          onTap: (){
+                            AuthCubit.get(context).isKnowType='branch';
+                            AuthCubit.get(context).chickUsers('branch').then((value) =>
+                            {
+                              NavigatePages.pushToPage(const LoginScreen(type: 'branch',), context)
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 70,vertical: 15),
+                              decoration:  BoxDecoration(
+                                color: Colors.grey.shade200,
+                                boxShadow: const [BoxShadow(color: Colors.white,blurRadius: 10)],
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child:   Text('Branch',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.blue.shade600,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              )),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 70,vertical: 15),
+                              decoration:  BoxDecoration(
+                                color: Colors.grey.shade200,
+                                boxShadow: const [BoxShadow(color: Colors.white,blurRadius: 10)],
+                                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child:   Text('Cancel',
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.blue.shade600,
+                                    fontWeight: FontWeight.bold
+                                ),
+                              )),
+                        ),
+                      ),
+
+
+                    ],
+                  ),
+                );
+              },
+            );
+          }
+
         },
         child:  Text(type,
           style: const TextStyle(

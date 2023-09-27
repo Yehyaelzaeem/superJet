@@ -8,3 +8,6 @@ class  ChangeDropdownValueTime extends AppSuperStates{}
 class  GetCartTrips extends AppSuperStates{}
 class  DeleteCartTrips extends AppSuperStates{}
 class  RemoveCartTrips extends AppSuperStates{}
+class  InitGetTable extends AppSuperStates{}
+class  GetUsersDataTable extends AppSuperStates{}
+class  GetAllTripsDataTable extends AppSuperStates{}

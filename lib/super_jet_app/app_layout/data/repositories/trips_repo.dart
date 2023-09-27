@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../domain/repositories/base_trips_repo.dart';
@@ -50,4 +52,13 @@ class TripsRepo extends BaseTripsRepo{
     baseSuperJetDataSource.uploadImage(image, isProfile, context);
   }
 
+  @override
+  Future<List<UsersTableModel>> getUsers()async {
+    return await baseSuperJetDataSource.getUsers();
+  }
+
+  @override
+  Future<List<TripsModelDataTable>> getAllTrips() async{
+  return await baseSuperJetDataSource.getAllTrips();
+  }
 }

@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import '../../../../core/services/routeing_page/reoute.dart';
 import '../../../../core/services/services_locator.dart';
@@ -141,7 +142,7 @@ Widget customProfileWidgets(TripsState state,context){
           onPressed: () {
             TripsBloc c =TripsBloc(sl());
              c.add(SignOutEvent(context));
-            NavigatePages.persistentNavBarNavigator(const LoginScreen(),context);
+            NavigatePages.persistentNavBarNavigator(LoginScreen(type: SuperCubit.get(context).type,),context);
           },
           child: const Text(
             'Sign Out',

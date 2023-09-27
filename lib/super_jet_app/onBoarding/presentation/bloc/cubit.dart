@@ -36,7 +36,7 @@ class AppOnBoardingCubit extends Cubit<AppOnBoardingStates>{
     else
     {
       pageController.nextPage(
-          duration: const Duration(milliseconds: 1000), curve: Curves.easeInBack);
+          duration: const Duration(milliseconds: 800), curve: Curves.easeInBack);
     }
     emit(AppChangingPageView());
   }

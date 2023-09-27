@@ -5,6 +5,7 @@ import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
+import '../../../../core/services/services_locator.dart';
 import '../../../stripe_payment/payment_manager.dart';
 import '../bloc/state.dart';
 import '../widgets/payment_widget.dart';
@@ -13,12 +14,13 @@ class PaymentScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var m =MediaQuery.of(context).size;
+    SuperCubit.get(context).getID();
     return Scaffold(
       backgroundColor: Colors.white,
       body:
       BlocConsumer<SuperCubit,AppSuperStates>(
         builder: (context, state) {
-         var state= context.read<TripsBloc>().state;
+          var state= context.read<TripsBloc>().state;
           var cubit=SuperCubit.get(context);
           return  Stack(
             children: [
@@ -34,10 +36,10 @@ class PaymentScreen extends StatelessWidget {
                       children: [
                         SizedBox(height: m.height*0.15,),
                         const Center(child: Text('There are no trips currently',
-                        style: TextStyle(
-                          color: Colors.black54,
-                          fontSize: 18
-                        ),
+                          style: TextStyle(
+                              color: Colors.black54,
+                              fontSize: 18
+                          ),
                         ),),
                       ],
                     ):
@@ -66,35 +68,36 @@ class PaymentScreen extends StatelessWidget {
                           if(cubit.total==0 ||cubit.total<0){
                             showToast("The total mustn't equal zero or less ", ToastStates.error, context);
                           }else{
-                              SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
-                                if(cubit.isPay==true){
-                                  for(var i =0;i<=cubit.listCartTrips.length-1;i++){
-                                    TripsModel list =cubit.listCartTrips[i];
-                                    var chair=cubit.chairsId[i];
-                                    var chairId=cubit.chairsDoc[i];
-                                    var collectionReference = FirebaseFirestore.instance
-                                        .collection('Trips').doc(list.categoryID.trim())
-                                        .collection(list.categoryName.trim())
-                                        .doc(list.tripID.trim()).collection('Chairs');
-                                    collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':state.userModel!.uId});
-                                    var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(state.userModel!.uId.trim());
-                                    d.update({
-                                      'trips':FieldValue.arrayUnion([
-                                        {
-                                          'chairID': int.parse(chair),
-                                          'tripID': list.tripID,
-                                        }
-                                      ]),
-                                    });
-                                  }
 
-                                }else{
-
+                            SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
+                              if(cubit.isPay==true){
+                                for(var i =0;i<=cubit.listCartTrips.length-1;i++){
+                                  TripsModel list =cubit.listCartTrips[i];
+                                  var chair=cubit.chairsId[i];
+                                  var chairId=cubit.chairsDoc[i];
+                                  var collectionReference = FirebaseFirestore.instance
+                                      .collection('Trips').doc(list.categoryID.trim())
+                                      .collection(list.categoryName.trim())
+                                      .doc(list.tripID.trim()).collection('Chairs');
+                                  collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':cubit.uId});
+                                  var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(cubit.uId.trim());
+                                  d.update({
+                                    'trips':FieldValue.arrayUnion([
+                                      {
+                                        'chairID': int.parse(chair),
+                                        'tripID': list.tripID,
+                                      }
+                                    ]),
+                                  });
                                 }
-                                cubit.removeCart();
-                              });
 
-                            }
+                              }else{
+
+                              }
+                              cubit.removeCart();
+                            });
+
+                          }
 
                         },
                         color:Colors.grey.shade200,
@@ -115,7 +118,7 @@ class PaymentScreen extends StatelessWidget {
         },
         listener: (context,state){},
 
-      )
+      ),
     );
   }
 }

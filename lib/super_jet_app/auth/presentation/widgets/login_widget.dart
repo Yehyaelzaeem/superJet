@@ -40,7 +40,7 @@ Future<String?> customDialogPopScope(context)=>
       content: const Text("Want to close the app"),
     ));
 
-Widget customLoginDesign(context){
+Widget customLoginDesign(var type ,context){
   var h= MediaQuery.of(context).size.height;
   var w= MediaQuery.of(context).size.width;
   return SingleChildScrollView(
@@ -50,9 +50,9 @@ Widget customLoginDesign(context){
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(height: h*.2,),
-        customWidgetsLogin(context),
+        customWidgetsLogin(type,context),
         SizedBox(height: h*.04,),
-        Padding(
+        type=='user'? Padding(
           padding: const EdgeInsets.only(left: 28.0,right: 28),
           child: Row(
             children: [
@@ -64,16 +64,16 @@ Widget customLoginDesign(context){
               const Expanded(child: Divider(thickness: 2,)),
             ],
           ),
-        ),
+        ):const SizedBox(),
         SizedBox(height: w*.01,),
-        customAccountsIcons(context),
+        type=='user'? customAccountsIcons(context):const SizedBox(),
       ],
     ),
   );
 
 }
 
-Widget customWidgetsLogin(context){
+Widget customWidgetsLogin(var type,context){
   var m =MediaQuery.of(context).size;
   return Container(
     decoration: const BoxDecoration(
@@ -92,7 +92,7 @@ Widget customWidgetsLogin(context){
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: m.height*.04,),
+            type=='user'? SizedBox(height:m.height*.04,):SizedBox(height:m.height*.07,),
             customTitleScreen('SIGN IN',Colors.black),
             SizedBox(height:m.height*.06,),
             Container(
@@ -116,48 +116,53 @@ Widget customWidgetsLogin(context){
                   iconData:  Icons.person,
                   obscureText: false,
                 ),),
-            SizedBox(height:m.height*.03,),
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  borderRadius: const BorderRadius.all(Radius.circular(20))
-              ),
-              child:
-              customTextField(
-                isPassword: true,
-                context: context,
-                keyboardType:TextInputType.text,
-                textInputAction: TextInputAction.done,
-                validator: (value){
-                  if(value!.isEmpty){
-                  }
-                  return null;
-                },
-                controller: AuthCubit.get(context).passwordLog,
-                hintText: 'Password',
-                iconData: Icons.lock,
-                obscureText: !AuthCubit.get(context).isEye,
-                suffixIcon:
-                  IconButton(onPressed: (){AuthCubit.get(context).changeEyePassword();}, icon:
-                  Icon(AuthCubit.get(context).isEye==false ?
-                  Icons.visibility_off: Icons.visibility,
-                      color: AuthCubit.get(context).isEye==false ?
-                      Colors.white:Colors.grey.shade300) ,),
-                onFieldSubmitted:
-                (value){
-                      if(AuthCubit.get(context).formKey.currentState!.validate() ){
-                        AuthCubit.get(context).login(AuthCubit.get(context).emailLog.text, AuthCubit.get(context).passwordLog.text,context);
-                      }}
-                   ),
-      ),
-            Container(
+            type=='user'? SizedBox(height:m.height*.03,):SizedBox(height:m.height*.04,),
+            BlocConsumer<AuthCubit,AppAuthStates>(
+              builder: (context,state){
+                return   Container(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(20))
+                  ),
+                  child:
+                  customTextField(
+                      isPassword: true,
+                      context: context,
+                      keyboardType:TextInputType.text,
+                      textInputAction: TextInputAction.done,
+                      validator: (value){
+                        if(value!.isEmpty){
+                        }
+                        return null;
+                      },
+                      controller: AuthCubit.get(context).passwordLog,
+                      hintText: 'Password',
+                      iconData: Icons.lock,
+                      obscureText: !AuthCubit.get(context).isEye,
+                      suffixIcon:
+                      IconButton(onPressed: (){AuthCubit.get(context).changeEyePassword();}, icon:
+                      Icon(AuthCubit.get(context).isEye==false ?
+                      Icons.visibility_off: Icons.visibility,
+                          color: AuthCubit.get(context).isEye==false ?
+                          Colors.white:Colors.grey.shade300) ,),
+                      onFieldSubmitted:
+                          (value){
+                        if(AuthCubit.get(context).formKey.currentState!.validate() ){
+                          AuthCubit.get(context).login(AuthCubit.get(context).emailLog.text, AuthCubit.get(context).passwordLog.text,context);
+                        }}
+                  ),
+                );
+              },
+              listener: (context,state){},
+            ),
+            type=='user'? Container(
                 alignment: Alignment.topRight,
                 child: TextButton(onPressed: (){
                  NavigatePages.pushToPage(const ResetPassword(), context);
                 }, child:  Text("Forget Password?",
                   style: TextStyle(color: Colors.grey.shade600,fontWeight: FontWeight.w800),
-                ))),
-            SizedBox(height: m.height*.04,),
+                ))):const SizedBox(),
+            type=='user'?SizedBox(height: m.height*.04,):SizedBox(height: m.height*.09,),
             BlocConsumer<AuthCubit,AppAuthStates>(
                 builder: (context,state)=>
                     ConditionalBuilder(
@@ -175,7 +180,7 @@ Widget customWidgetsLogin(context){
                       fallback: (context)=> Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),),
                     ), listener: (context,state){}),
             const Spacer(),
-            FittedBox(
+            type=='user'? FittedBox(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -189,7 +194,7 @@ Widget customWidgetsLogin(context){
                   ))
                 ],
               ),
-            ),
+            ):const SizedBox(),
             SizedBox(height:m.height*.01,),
 
           ],

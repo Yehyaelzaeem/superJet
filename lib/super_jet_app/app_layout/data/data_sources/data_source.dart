@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:superjet/core/widgets/widgets.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/update_user_date_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
@@ -13,8 +15,10 @@ import '../models/chairs_model.dart';
 abstract class BaseSuperJetDataSource {
   Future<List<CategoriesModel>> getCategories();
   Future<List<TripsModel>> getTrips(String city,context);
+  Future<List<TripsModelDataTable>> getAllTrips();
   Future<List<TripsModel>> getCustomTrips(String name,context);
   Future<UserModel?> getProfile();
+  Future<List<UsersTableModel>> getUsers();
   void uploadImage(File image, bool isProfile,context);
   Future<List<ChairsModel>> getChairs(String categoriesID ,String tripsID);
   Future<UpdateUserDataModel?>  upDateProfile(UpdateUserDataModel updateUserDataModel,context);
@@ -145,6 +149,40 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
         }
       });
     });
+  }
+
+  @override
+  Future<List<UsersTableModel>> getUsers() async{
+    List<UsersTableModel> list=[];
+    var res = await FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').get();
+    for (var e in res.docs) {
+      list.add(UsersTableModel.fromJson(e.data()));
+    }
+    return list;
+  }
+
+  @override
+  Future<List<TripsModelDataTable>> getAllTrips() async{
+    List<TripsModelDataTable> list = [];
+    List<TripsModelDataTable> trips = [];
+    var res = await FirebaseFirestore.instance.collection('Trips').get();
+    for (var s in res.docs) {
+      QuerySnapshot querySnapshot = await tripsCollection.doc(s.id)
+          .collection(s.data()["categoryName"])
+          .get();
+      trips = querySnapshot.docs.map((e) => TripsModelDataTable.fromJson(e)).toList();
+      for (var a in trips) {
+        list.add(a);
+      }
+      QuerySnapshot querySnapshot2 = await tripsCollection.doc(s.id)
+          .collection(s.data()["categorySecondName"])
+          .get();
+      trips = querySnapshot2.docs.map((e) => TripsModelDataTable.fromJson(e)).toList();
+      for (var a in trips) {
+        list.add(a);
+      }
+    }
+    return list;
   }
 
 }

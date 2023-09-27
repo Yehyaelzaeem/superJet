@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:503238631367:android:cefed7fea27a1d449983e2",
+        "mobilesdk_app_id": "1:503238631367:android:d64585cbd98f7f3d9983e2",
         "android_client_info": {
-          "package_name": "com.example.superjet"
+          "package_name": "com.superjet.eg"
         }
       },
       "oauth_client": [
         {
-          "client_id": "503238631367-7hem7nos51dkg68n6fc09j4rmgs4a3ga.apps.googleusercontent.com",
+          "client_id": "503238631367-7of584t0ctndfqinc2qd7i9dgfv2ropf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.superjet",
+            "package_name": "com.superjet.eg",
             "certificate_hash": "cb8787895d15900df4cbb4713d70dac58bb150ca"
           }
         },

@@ -3,8 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
+import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
+import '../../../../core/shared_preference/shared_preference.dart';
 import '../../domain/use_cases/trips_usecase.dart';
 
 class SuperCubit extends Cubit<AppSuperStates> {
@@ -21,11 +25,17 @@ class SuperCubit extends Cubit<AppSuperStates> {
   List chairsDoc=[];
   double suTotal=0.0;
   double total=0.0;
-  double tax= 5.0;
+  double tax= 0.0;
   double discount=-10.0;
   bool isPay=false;
-
-
+  var uId='';
+   getID()async{
+     uId =await CacheHelper.getDate(key: 'uId');
+  }
+  var type='';
+   getType()async{
+     type =await CacheHelper.getDate(key: 'type');
+  }
 
    addCartTrips(TripsModel tripsModel,String chairId,String chairDoc ){
     listCartTrips.add(tripsModel);
@@ -44,7 +54,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
      total<0?total=0:total=total;
      emit(DeleteCartTrips());
    }
-  removeCart(){
+   removeCart(){
     listCartTrips.clear();
     chairsDoc.clear();
     chairsId.clear();
@@ -72,7 +82,36 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
 
 
-
+// Admin
+  rowPerPage(int v){
+    rowPer=v;
+    emit(InitGetTable());
+  }
+  sortingUserDataTable(){
+    isSortAsc = !isSortAsc;
+    emit(InitGetTable());
+  }
+  sortingTripsDataTable(){
+    isSortAscTrips = !isSortAscTrips;
+    emit(InitGetTable());
+  }
+  int rowPer=PaginatedDataTable.defaultRowsPerPage;
+  int currentSortColumn = 0;
+  int currentSortColumnTrips = 0;
+  bool isSortAsc = true;
+  bool isSortAscTrips = true;
+  List<UsersTableModel> usersList=[];
+  List<TripsModelDataTable> tripsList=[];
+  getUsers()async{
+    var res = await tripsUseCase.getUsers();
+    usersList= res;
+    emit(GetUsersDataTable());
+  }
+  getTrips(context)async{
+    var res = await tripsUseCase.getAllTrips();
+    tripsList= res;
+    emit(GetAllTripsDataTable());
+  }
 
 
 
