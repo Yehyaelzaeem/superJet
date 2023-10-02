@@ -25,7 +25,7 @@ class UserEntities{
     required this.type,
      this.profileImage,
      this.coverImage,
-    required this.tripIdList,
+     this.tripIdList,
 });
 
 }

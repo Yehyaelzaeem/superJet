@@ -6,6 +6,7 @@ import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import '../../../../core/services/services_locator.dart';
+import '../../../../core/shared_preference/shared_preference.dart';
 import '../../../stripe_payment/payment_manager.dart';
 import '../bloc/state.dart';
 import '../widgets/payment_widget.dart';
@@ -13,6 +14,8 @@ class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    print('build PaymentScreen=======================================');
+
     var m =MediaQuery.of(context).size;
     SuperCubit.get(context).getID();
     return Scaffold(
@@ -65,6 +68,7 @@ class PaymentScreen extends StatelessWidget {
                       height: m.height*0.06,
                       child: MaterialButton(
                         onPressed: (){
+                          cubit.getType();
                           if(cubit.total==0 ||cubit.total<0){
                             showToast("The total mustn't equal zero or less ", ToastStates.error, context);
                           }else{
@@ -80,7 +84,7 @@ class PaymentScreen extends StatelessWidget {
                                       .collection(list.categoryName.trim())
                                       .doc(list.tripID.trim()).collection('Chairs');
                                   collectionReference.doc(chairId).update({'isPaid': 'true','isAvailable':'false','passengerID':cubit.uId});
-                                  var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection('user').doc(cubit.uId.trim());
+                                  var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection(cubit.type).doc(cubit.uId!.trim());
                                   d.update({
                                     'trips':FieldValue.arrayUnion([
                                       {

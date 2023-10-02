@@ -1,5 +1,5 @@
-class TripEntities {
-   final String name ;
+class AddTripModel {
+  final String name ;
   final String price ;
   final String time ;
   final String date ;
@@ -8,12 +8,10 @@ class TripEntities {
   final String image ;
   final String isVip ;
   final String toCity ;
-  final String tripID;
-  final String categoryID;
   final String categoryName;
-  final String state;
+   String state='waiting';
 
-  TripEntities({
+  AddTripModel({
     required this.name,
     required this.price,
     required this.time,
@@ -23,9 +21,7 @@ class TripEntities {
     required this.image,
     required this.isVip,
     required this.toCity,
-    required this.tripID,
-    required this.categoryID,
     required this.categoryName,
     required this.state
-});
+  });
 }

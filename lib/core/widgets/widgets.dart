@@ -23,7 +23,7 @@ Color chooseColor(ToastStates state,context){
   Color color;
   switch(state){
     case ToastStates.success:
-      color =Theme.of(context).primaryColor;
+      color =Colors.greenAccent;
       break;
     case ToastStates.error:
       color=Colors.red;

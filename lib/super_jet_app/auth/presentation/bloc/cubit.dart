@@ -64,6 +64,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
     return permission;
   }
 
+
   //Login
   Future login(String email,String password,context)async{
     isNotLoading =false;
@@ -83,8 +84,11 @@ class AuthCubit extends Cubit<AppAuthStates>{
     emit(RegisterWaitingStates());
   }
   var type='';
+  var city='';
   getType()async{
     type =await CacheHelper.getDate(key: 'type');
+    city =await CacheHelper.getDate(key: 'branchCity')??'';
+    isKnowType =type;
   }
   //Chick this person is user or admin
    Future chickUsers(String type)async{

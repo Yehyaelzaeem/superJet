@@ -11,6 +11,8 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build Profile=======================================');
+
     SuperCubit.get(context).getType();
     return Scaffold(body:
     SafeArea(child:

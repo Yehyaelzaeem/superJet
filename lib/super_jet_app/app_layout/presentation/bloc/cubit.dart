@@ -1,118 +1,623 @@
 import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/categories_model.dart';
+import 'package:superjet/super_jet_app/app_layout/data/models/message_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
+import '../../../../core/image/image.dart';
 import '../../../../core/shared_preference/shared_preference.dart';
+import '../../../../core/utils/enums.dart';
+import '../../../auth/presentation/widgets/widget.dart';
+import '../../data/models/add_trip_model.dart';
 import '../../domain/use_cases/trips_usecase.dart';
+import '../widgets/admin.dart';
 
 class SuperCubit extends Cubit<AppSuperStates> {
   final TripsUseCase tripsUseCase;
+
   SuperCubit(this.tripsUseCase) : super(AppSuperInitialStates());
+  static SuperCubit get(context) => BlocProvider.of(context);
 
   final ScrollController scrollController = ScrollController();
-  TextEditingController controllerName= TextEditingController();
-  TextEditingController controllerPhone= TextEditingController();
-  static SuperCubit get(context) => BlocProvider.of(context);
-  var categoriesIndex =0;
-  List<TripsModel> listCartTrips=[];
-  List chairsId=[];
-  List chairsDoc=[];
-  double suTotal=0.0;
-  double total=0.0;
-  double tax= 0.0;
-  double discount=-10.0;
-  bool isPay=false;
-  var uId='';
-   getID()async{
-     uId =await CacheHelper.getDate(key: 'uId');
-  }
-  var type='';
-   getType()async{
-     type =await CacheHelper.getDate(key: 'type');
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerPhone = TextEditingController();
+  final searchTripsController = TextEditingController();
+  final searchUsersController = TextEditingController();
+  final searchBranchController = TextEditingController();
+  final addFromCity = TextEditingController();
+  final addToCity = TextEditingController();
+  final addDate = TextEditingController();
+  final addTime = TextEditingController();
+  final addPrice = TextEditingController();
+  final addAvgTime = TextEditingController();
+  final userName = TextEditingController();
+  final userEmail = TextEditingController();
+  final userPassword = TextEditingController();
+  final userPhone = TextEditingController();
+  final userCity = TextEditingController();
+  final categoryFromControl = TextEditingController();
+  final categoryToControl = TextEditingController();
+  final chatController = TextEditingController();
+  var categoriesIndex = 0;
+  List<TripsModel> listCartTrips = [];
+  List chairsId = [];
+  List chairsDoc = [];
+  double suTotal = 0.0;
+  double total = 0.0;
+  double tax = 0.0;
+  double discount = -10.0;
+  bool isPay = false;
+  String? uId ;
+  var type = '';
+  File? profileImageFile;
+  File? coverImageFile;
+  String profileImageFilepath = '';
+  String coverImageFilepath = '';
+
+
+  getID() async {
+    uId = await CacheHelper.getDate(key: 'uId');
   }
 
-   addCartTrips(TripsModel tripsModel,String chairId,String chairDoc ){
+  getType() async {
+    type = await CacheHelper.getDate(key: 'type');
+  }
+ // Cart ****************************************************************
+  addCartTrips(TripsModel tripsModel, String chairId, String chairDoc) {
     listCartTrips.add(tripsModel);
     chairsId.add(chairId);
     chairsDoc.add(chairDoc);
-    suTotal +=double.parse(tripsModel.price);
-    total =suTotal+tax+discount;
+    suTotal += double.parse(tripsModel.price);
+    total = suTotal + tax + discount;
     emit(GetCartTrips());
   }
-   deleteCartTrips(TripsModel tripsModel,String chairId,String chairDoc  ){
-     listCartTrips.remove(tripsModel);
-     chairsId.remove(chairId);
-     chairsDoc.remove(chairDoc);
-     suTotal -=double.parse(tripsModel.price);
-     total =suTotal+tax+discount;
-     total<0?total=0:total=total;
-     emit(DeleteCartTrips());
-   }
-   removeCart(){
+
+  deleteCartTrips(TripsModel tripsModel, String chairId, String chairDoc) {
+    listCartTrips.remove(tripsModel);
+    chairsId.remove(chairId);
+    chairsDoc.remove(chairDoc);
+    suTotal -= double.parse(tripsModel.price);
+    total = suTotal + tax + discount;
+    total < 0 ? total = 0 : total = total;
+    emit(DeleteCartTrips());
+  }
+
+  removeCart() {
     listCartTrips.clear();
     chairsDoc.clear();
     chairsId.clear();
-    suTotal=0.0;
-    total=0.0;
-   emit(RemoveCartTrips());
+    suTotal = 0.0;
+    total = 0.0;
+    emit(RemoveCartTrips());
   }
 
 
-  changeCategoriesIndex(int i){
-    categoriesIndex =i;
-    emit(ChangeCategoriesIndexState());
-  }
-  bool x=false;
-  chickIndex(bool y){
-    x=y;
-    emit(ChickChangeCategoriesIndexState());
-  }
-
-  File? profileImageFile;
-  File? coverImageFile;
-  String profileImageFilepath ='';
-  String coverImageFilepath='';
 
 
-
-
-// Admin
-  rowPerPage(int v){
-    rowPer=v;
-    emit(InitGetTable());
-  }
-  sortingUserDataTable(){
-    isSortAsc = !isSortAsc;
-    emit(InitGetTable());
-  }
-  sortingTripsDataTable(){
-    isSortAscTrips = !isSortAscTrips;
-    emit(InitGetTable());
-  }
-  int rowPer=PaginatedDataTable.defaultRowsPerPage;
+// Admin  ****************************************************
+  // Control Data Table
+  String? btn2SelectedVal;
+  bool isSelectedCategory= false;
+  String? btn2SelectedVal2;
+  int selectedOptionType = 0;
+  int selectedOptionState = 2;
+  int rowPer = PaginatedDataTable.defaultRowsPerPage;
   int currentSortColumn = 0;
   int currentSortColumnTrips = 0;
   bool isSortAsc = true;
   bool isSortAscTrips = true;
-  List<UsersTableModel> usersList=[];
-  List<TripsModelDataTable> tripsList=[];
-  getUsers()async{
+  List<UsersTableModel> usersList = [];
+  List<UsersTableModel> adminList = [];
+  List<UsersTableModel> branchesList = [];
+  List<TripsModelDataTable> tripsList = [];
+  rowPerPage(int v) {
+    rowPer = v;
+    emit(InitGetTable());
+  }
+  sortingUserDataTable() {
+    isSortAsc = !isSortAsc;
+    emit(InitGetTable());
+  }
+  sortingTripsDataTable() {
+    isSortAscTrips = !isSortAscTrips;
+    emit(InitGetTable());
+  }
+
+ // Get Data to Date Table
+  getUsers() async {
     var res = await tripsUseCase.getUsers();
-    usersList= res;
+    usersList = res;
+    filteredDataUsers = res;
     emit(GetUsersDataTable());
   }
-  getTrips(context)async{
+  getTrips(context) async {
     var res = await tripsUseCase.getAllTrips();
-    tripsList= res;
+    tripsList = res;
+    filteredDataTrips = res;
     emit(GetAllTripsDataTable());
   }
 
+ // Add Data to Date Table
+  addTrips(context) async {
+    if(isSelectedCategory ==true && addDate.text.isNotEmpty &&addTime.text.isNotEmpty
+        &&addPrice.text.isNotEmpty &&addAvgTime.text.isNotEmpty &&addPrice.text.isNotEmpty)
+    {
+      try{
+        AddTripModel addTripModel = AddTripModel(
+          name: '${addFromCity.text} -> ${addToCity.text} ',
+          price: addPrice.text,
+          time: addTime.text,
+          date: addDate.text,
+          avgTime: addAvgTime.text,
+          fromCity: addFromCity.text,
+          image:
+          'https://firebasestorage.googleapis.com/v0/b/superjet-52b56.appspot.com/o/a4.jpg?alt=media&token=5e56f739-94f9-4430-90f1-16da294f0696',
+          isVip: selectedOptionType == 0 ? 'false' : 'true',
+          toCity: addToCity.text,
+          categoryName: "${addFromCity.text.trim()}To${addToCity.text.trim()}",
+          state: 'waiting',
+        );
+        await tripsUseCase.addTrips(addTripModel, context);
+        tripsList.clear();
+        Navigator.pop(context);
+        Future.delayed(const Duration(milliseconds: 100)).then((value) {
+          getTrips(context);
+          addFromCity.clear();
+          addToCity.clear();
+          addDate.clear();
+          addTime.clear();
+          addPrice.clear();
+          addAvgTime.clear();
+          selectedOptionType = 0;
+        });
+      }catch (e){
+        showToast('${e.toString()} , please sure you choose Category Name !!! ', ToastStates.error, context);
+
+      }
+    }
+    else{
+       showToast('Please Complete data', ToastStates.error, context);
+    }
+
+    emit(AddTrips());
+  }
+  addUser(context) async {
+    bool x =true;
+    if(userName.text.isNotEmpty &&userEmail.text.isNotEmpty
+        &&userPassword.text.isNotEmpty &&userPhone.text.isNotEmpty &&userCity.text.isNotEmpty)
+    {
+      try{
+        UsersTableModel usersTableModel =UsersTableModel(
+            name: userName.text.trim(),
+            email: userEmail.text.trim(),
+            password:userPassword.text.trim(),
+            phone:userPhone.text.trim(),
+            uId: 'uId',
+          city: userCity.text.trim(),
+          tripIdList: [],
+          profileImage: AppImage.baseProfileImage,
+          long: 'null',
+          lat: 'null',
+          type: 'user'
+          );
+        await tripsUseCase.addUser(usersTableModel, context);
+        usersList.clear();
+        Navigator.pop(context);
+        Future.delayed(const Duration(milliseconds: 100)).then((value) {
+          getUsers();
+          userName.clear();
+          userEmail.clear();
+          userPassword.clear();
+          userPhone.clear();
+          userCity.clear();
+        });
+      }catch (e){
+        showToast('${e.toString()} ', ToastStates.error, context);
+
+      }
+    }else{
+      showToast(' Please complete data ', ToastStates.warning, context);
+
+    }
+    emit(AddUsers());
+  }
+
+  // Delete Data from Date Table
+  deleteTrip(context) async {
+    bool isFoundDelete =false;
+    for (var a in filteredDataTrips) {
+      if (a.selected == true) {
+        await tripsUseCase.deleteTrips(a, context);
+        isFoundDelete=true;
+      }
+    }
+   if(isFoundDelete==false){
+     showToast('Select your item for delete', ToastStates.warning, context);
+   }else{
+     tripsList.clear();
+     getTrips(context);
+   }
+
+    isFoundDelete =false;
+
+    emit(DeleteTrips());
+  }
+  deleteUser(context) async {
+    bool isFoundDelete =false;
+    for (var a in filteredDataUsers) {
+      if (a.selected == true) {
+        await tripsUseCase.deleteUser(a, context);
+        isFoundDelete=true;
+      }
+    }
+   if(isFoundDelete==false){
+     showToast('Select your item for delete', ToastStates.warning, context);
+   }else{
+     usersList.clear();
+     getUsers();
+   }
+
+    isFoundDelete =false;
+
+    emit(DeleteUsers());
+  }
+  //Update Data to Date Table
+  updateTrip(context) async {
+
+    bool isFoundUpdate =false;
+    for (var a in filteredDataTrips) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        customBottomSheetCustomTrips(title: "Update", isUpdate: true, actionText: 'Update',
+        onTap: ()async {
+          await tripsUseCase.updateTrips(
+              TripsModelDataTable(
+                name: a.name,
+                price: addPrice.text,
+                time: addTime.text,
+                date: addDate.text,
+                avgTime: addAvgTime.text,
+                fromCity: a.fromCity,
+                image: a.image,
+                isVip: selectedOptionType == 0 ? 'false' : 'true',
+                toCity: a.toCity,
+                tripID: a.tripID,
+                categoryID: a.categoryID,
+                categoryName: a.categoryName,
+                state: selectedOptionState == 2 ? 'waiting' : 'finished',
+              )
+              , context);
+          tripsList.clear();
+          Navigator.pop(context);
+          getTrips(context);
+        },context: context,tripsModelDataTable: a);
+        break;
+      }
+    }
+
+   if(isFoundUpdate==false){
+     showToast('Select your item for Update', ToastStates.warning, context);
+   }
+    isFoundUpdate =false;
+    emit(UpdateTrips());
+  }
+  updateUser(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataUsers) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        customBottomSheetCustomUsers(title: "Update", isUpdate: true, actionText: 'Update',
+        onTap: ()async {
+          await tripsUseCase.updateUser(
+            UsersTableModel(
+                name: userName.text.trim(),
+                email:a.email,
+                phone: userPhone.text.trim(),
+                uId: a.uId,
+                city: userCity.text.trim(),
+                tripIdList: a.tripIdList,
+                profileImage: a.profileImage,
+                password: a.password,
+                long:a.long,
+                lat: a.lat,
+              type: a.type
+            )
+
+              , context);
+          usersList.clear();
+          Navigator.pop(context);
+          getUsers();
+        },context: context,usersTableModel: a, isBranch: false);
+        break;
+      }
+    }
+
+   if(isFoundUpdate==false){
+     showToast('Select your item for Update', ToastStates.warning, context);
+   }
+    isFoundUpdate =false;
+    emit(UpdateTrips());
+  }
+  //Branches
+  getBranches(context) async {
+    var res = await tripsUseCase.getBranches(context);
+    branchesList = res;
+    filteredDataBranches = res;
+    emit(GetBranchesDataTable());
+  }
+  addBranch(context) async {
+
+    if(userName.text.isNotEmpty &&userEmail.text.isNotEmpty
+        &&userPassword.text.isNotEmpty &&userPhone.text.isNotEmpty &&userCity.text.isNotEmpty)
+    {
+      try{
+        UsersTableModel usersTableModel =UsersTableModel(
+          name: userName.text.trim(),
+          email: userEmail.text.trim(),
+          password:userPassword.text.trim(),
+          phone:userPhone.text.trim(),
+          uId: 'uId',
+          city: userCity.text.trim(),
+          tripIdList: [],
+          profileImage: AppImage.baseProfileImage,
+          long: 'null',
+          lat: 'null',
+          type: 'branch'
+        );
+        await tripsUseCase.addBranch(usersTableModel, context);
+        branchesList.clear();
+        Navigator.pop(context);
+        Future.delayed(const Duration(milliseconds: 100)).then((value) {
+          getBranches(context);
+          userName.clear();
+          userEmail.clear();
+          userPassword.clear();
+          userPhone.clear();
+          userCity.clear();
+        });
+      }catch (e){
+        showToast('${e.toString()} ', ToastStates.error, context);
+      }
+    }else{
+      showToast(' Please complete data ', ToastStates.warning, context);
+
+    }
+    emit(AddBranchesDataTable());
+  }
+
+  deleteBranch(context) async {
+    bool isFoundDelete =false;
+    for (var a in filteredDataBranches) {
+      if (a.selected == true) {
+        await tripsUseCase.deleteBranch(a, context);
+        isFoundDelete=true;
+      }
+    }
+    if(isFoundDelete==false){
+      showToast('Select your item for delete', ToastStates.warning, context);
+    }else{
+      branchesList.clear();
+      getBranches(context);
+    }
+
+    isFoundDelete =false;
+
+    emit(DeleteBranchesDataTable());
+  }
+  updateBranch(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataBranches) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        customBottomSheetCustomUsers(title: "Update", isUpdate: true, actionText: 'Update',
+            onTap: ()async {
+              await tripsUseCase.updateBranch(
+                  UsersTableModel(
+                    name: userName.text.trim(),
+                    email:userEmail.text.trim(),
+                    phone: userPhone.text.trim(),
+                    uId: a.uId,
+                    city: userCity.text.trim(),
+                    tripIdList: a.tripIdList,
+                    profileImage: a.profileImage,
+                    password:userPassword.text.trim(),
+                    long:a.long,
+                    lat: a.lat,
+                    type: a.type,
+                  )
+                  , context);
+              branchesList.clear();
+              Navigator.pop(context);
+              getBranches(context);
+            },context: context,usersTableModel: a, isBranch: true);
+        break;
+      }
+    }
+
+    if(isFoundUpdate==false){
+      showToast('Select your item for Update', ToastStates.warning, context);
+    }
+    isFoundUpdate =false;
+    emit(UpdateBranchesDataTable());
+  }
+
+//Chat
+  sendMessage({required UserModel userModelSender ,required UsersTableModel userModelReceiver}) async {
+    try{
+      await tripsUseCase.sendMessages(userModelSender,userModelReceiver,chatController.text).then((value) {
+        chatController.text='';
+
+      });
+    }catch (e){
+      print(e.toString());
+    }
+    emit(SendMessage());
+  }
+  List<MessageModel> chatDetailsList=[];
+  getMessages({required UserModel userModelSender ,required UsersTableModel userModelReceiver})async{
+    try{
+      chatDetailsList=[];
+      var res = await tripsUseCase.getMessages(userModelSender,userModelReceiver);
+      chatDetailsList=res;
+    }catch (e){
+      print(e.toString());
+    }
+    emit(GetMessage());
+  }
+
+  //GetAdmin
+  getAdminDate(context)async{
+    var res = await tripsUseCase.getAdmin(context);
+    adminList = res;
+    emit(GetUsersDataTable());
+  }
+  List<UserModel> userModelCubit=[];
+  getUser(context)async{
+    var res = await tripsUseCase.getUser(context);
+    userModelCubit =res;
+    emit(GetUsersDataTable());
+  }
+
+
+
+  //Search in Date Table
+  bool isSearching=false;
+  bool isSearchingUser=false;
+  bool isSearchingBranches=false;
+  changeSearch(){
+    isSearching =!isSearching;
+    searchTripsController.text='';
+    emit(SearchTrips());
+  }
+  changeSearchBranches(){
+    isSearchingBranches =!isSearchingBranches;
+    searchBranchController.text='';
+    emit(SearchTrips());
+  }
+  changeSearchUser(){
+    isSearchingUser =!isSearchingUser;
+    searchUsersController.text='';
+    emit(SearchTrips());
+  }
+  List<TripsModelDataTable> filteredDataTrips = [];
+  List<UsersTableModel> filteredDataBranches = [];
+  List<UsersTableModel> filteredDataUsers = [];
+  void onSearchTripsTextChanged(String text) {
+    filteredDataTrips = text.isEmpty
+        ? tripsList
+        : tripsList
+            .where((item) =>
+                item.name.toLowerCase().contains(text.toLowerCase()) ||
+                item.name.toLowerCase().contains(text.toLowerCase()))
+            .toList();
+    emit(GetAllTripsDataTable());
+  }
+  void onSearchUsersTextChanged(String text) {
+    filteredDataUsers = text.isEmpty
+        ? usersList
+        : usersList
+            .where((item) =>
+                item.name.toLowerCase().contains(text.toLowerCase()) ||
+                item.name.toLowerCase().contains(text.toLowerCase()))
+            .toList();
+    emit(GetUsersDataTable());
+  }
+  void onSearchBranchesTextChanged(String text) {
+    filteredDataBranches = text.isEmpty
+        ? branchesList
+        : branchesList
+            .where((item) =>
+                item.name.toLowerCase().contains(text.toLowerCase()) ||
+                item.name.toLowerCase().contains(text.toLowerCase()))
+            .toList();
+    emit(GetUsersDataTable());
+  }
+
+//Admin Category control
+  //Get Category Name and DropdownMenuItem
+  getAdminCategoryName()async{
+    var s =await tripsUseCase.getCategories();
+    categoriesNameList=s;
+    categoriesNameList2=s;
+    emit(AddTrips());
+  }
+  List<CategoriesModel> categoriesNameList=[];
+  List<CategoriesModel> categoriesNameList2=[];
+  List<DropdownMenuItem<String>> get dropdownItems  {
+    List<DropdownMenuItem<String>> menuItems = [];
+    for (var x = 0; x <= categoriesNameList.length - 1; x++) {
+
+      menuItems.add(
+        DropdownMenuItem(
+            value: '$x',
+            child: Text(
+              categoriesNameList[x].categoryName,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+            )),
+      );
+
+    }
+    return menuItems;
+  }
+  List<DropdownMenuItem<String>> get dropdownItems2  {
+    List<DropdownMenuItem<String>> menuItems = [];
+    for (var x = 0; x <= categoriesNameList2.length - 1; x++) {
+      menuItems.add(
+        DropdownMenuItem(
+            value: '$x',
+            child: Text(
+              categoriesNameList2[x].categorySecondName,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+            )),
+      );
+
+    }
+    return menuItems;
+  }
+
+  //Add Category
+  addCategory(context) async {
+    if(categoryFromControl.text.isNotEmpty && categoryToControl.text.isNotEmpty){
+      try{
+        CategoriesModel categoriesModel =CategoriesModel(
+          categoryID: "categoryID",
+          image: "https://firebasestorage.googleapis.com/v0/b/superjet-52b56.appspot.com/o/a4.jpg?alt=media&token=5e56f739-94f9-4430-90f1-16da294f0696",
+          name: "${categoryFromControl.text.trim()} -> ${categoryToControl.text.trim()}",
+          masterCity:categoryFromControl.text.trim(),
+          city: categoryToControl.text.trim(),
+          categoryName: "${categoryFromControl.text.trim()}To${categoryToControl.text.trim()}",
+          categorySecondName:"${categoryToControl.text.trim()}To${categoryFromControl.text.trim()}",
+          numberOfTrips: "0",
+        );
+        await tripsUseCase.addCategory(categoriesModel, context).then((value) {
+          getAdminCategoryName();
+          Navigator.pop(context);
+          categoryFromControl.clear();
+          categoryToControl.clear();
+        });
+      }catch (e){
+        showToast('${e.toString()} , please sure you choose Category Name !!! ', ToastStates.error, context);
+      }
+
+    }
+    else{
+      showToast('Please Complete data', ToastStates.warning, context);
+    }
+    emit(AddCategory());
+  }
 
 
 
@@ -120,182 +625,187 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// Change Index in App
+  changeCategoriesIndex(int i) {
+    categoriesIndex = i;
+    emit(ChangeCategoriesIndexState());
+  }
+  bool x = false;
+  chickIndex(bool y) {
+    x = y;
+    emit(ChickChangeCategoriesIndexState());
+  }
+
+
+
+
+
+//Dictionary
+//   String selectedValue = "Today";
+//
+//   changeDropdownValue(String value) {
+//     selectedValue = value;
+//     emit(ChickChangeCategoriesIndexState());
+//   }
+//
+//   String time = DateFormat("KK:mm a").format(DateTime.now());
+//   String timef =
+//       DateFormat("KK:mm a").format(DateTime.now().add(Duration(hours: 2)));
+//
+//   List<String> res = [];
+//
+//   Future getAllTimeOfTrip(String fromCity, String toCity, context) async {
+//     res = ['9:00 am'];
+//     emit(ChangeDropdownValueTime());
+//     List<TripsModel> list = await tripsUseCase.getTrips(fromCity, context);
+//     for (var n in list) {
+//       if (n.toCity == toCity) {
+//         menuItemsTime.add(
+//           DropdownMenuItem(
+//               value: n.time,
+//               child: Text(
+//                 n.time.toString(),
+//                 style: const TextStyle(
+//                     color: Colors.white,
+//                     fontSize: 14,
+//                     fontWeight: FontWeight.bold,
+//                     shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//               )),
+//         );
+//         res.add(n.time);
+//       }
+//     }
+//     print(res.length);
+//     print(res.toString());
+//     emit(ChangeDropdownValueTime());
+//   }
+//
+//   List<DropdownMenuItem<String>> menuItemsTime = [];
+
+  // List<DropdownMenuItem<String>> chick(){
   //
-  // String today = DateFormat("dd/MM/yyyy").format(DateTime.now());
-  // String tomorrow = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 1)));
-  // String nextTomorrow = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 2)));
-  // String day1 = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 3)));
-  // String day2 = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 4)));
-  // String day3 = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 5)));
-  // String day4 = DateFormat("dd/MM/yyyy").format(DateTime.now().add(const Duration(days: 6)));
-  //
-  // List<DropdownMenuItem<String>> get dropdownItems{
-  //   List<DropdownMenuItem<String>> menuItems = [
-  //     DropdownMenuItem(value: "Today", child: Text(today.toString(),
-  //       style: const TextStyle(
-  //           color: Colors.white,
-  //           fontSize: 14,
-  //           fontWeight: FontWeight.bold,
-  //           shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //       ),
-  //     )),
-  //     DropdownMenuItem(value: "Tomorrow", child: Text(tomorrow.toString(),  style: const TextStyle(
-  //         color: Colors.white,
-  //         fontSize: 14,
-  //         fontWeight: FontWeight.bold,
-  //         shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //     ),)),
-  //     DropdownMenuItem(value: "Next Tomorrow", child: Text(nextTomorrow.toString(),   style: const TextStyle(
-  //         color: Colors.white,
-  //         fontSize: 14,
-  //         fontWeight: FontWeight.bold,
-  //         shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //     ),)),
-  //     DropdownMenuItem(value: "Future day1", child: Text(day1.toString(),  style: const TextStyle(
-  //         color: Colors.white,
-  //         fontSize: 14,
-  //         fontWeight: FontWeight.bold,
-  //         shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //     ),)),
-  //     DropdownMenuItem(value: "Future day2", child: Text(day2.toString(),  style: const TextStyle(
-  //         color: Colors.white,
-  //         fontSize: 14,
-  //         fontWeight: FontWeight.bold,
-  //         shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //     ),)),
-  //     DropdownMenuItem(value: "Future day3", child: Text(day3.toString(),   style: const TextStyle(
-  //   color: Colors.white,
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.bold,
-  //   shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //   ),)),
-  //     DropdownMenuItem(value: "Future day4", child: Text(day4.toString(),  style: const TextStyle(
-  //   color: Colors.white,
-  //   fontSize: 14,
-  //   fontWeight: FontWeight.bold,
-  //   shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
-  //   ),)),
-  //   ];
-  //   return menuItems;
+  //   for(var x in res){
+  //     menuItemsTime.add(
+  //       DropdownMenuItem(value: "TimeNow", child: Text(
+  //         x.toString(),
+  //         style: const TextStyle(
+  //             color: Colors.white,
+  //             fontSize: 14,
+  //             fontWeight: FontWeight.bold,
+  //             shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
+  //         ),
+  //       )),);
+  //   }
+  //  return menuItemsTime;
   // }
-  // String selectedValue = "Today";
-  // changeDropdownValue(String value){
-  //   selectedValue=value;
-  //   emit(ChickChangeCategoriesIndexState());
-  // }
-  // String time = DateFormat("KK:mm a").format(DateTime.now());
-  // String timef = DateFormat("KK:mm a").format(DateTime.now().add(Duration(hours: 2)));
- //
- //  List<String> res=[];
- // Future getAllTimeOfTrip(String fromCity,String toCity,context)async {
- //   res=['9:00 am'];
- //   emit(ChangeDropdownValueTime());
- //   List<TripsModel> list = await tripsUseCase.getTrips(fromCity, context);
- //    for(var n in list){
- //      if(n.toCity==toCity){
- //        menuItemsTime.add(
- //            DropdownMenuItem(value: n.time, child: Text(n.time.toString(),
- //                    style: const TextStyle(
- //                        color: Colors.white,
- //                        fontSize: 14,
- //                        fontWeight: FontWeight.bold,
- //                        shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //                    ),
- //                  )),
- //        );
- //        res.add(n.time);
- //      }
- //    }
- //    print(res.length);
- //    print(res.toString());
- //   emit(ChangeDropdownValueTime());
- // }
- //  List<DropdownMenuItem<String>> menuItemsTime =[];
- //
- //  // List<DropdownMenuItem<String>> chick(){
- //  //
- //  //   for(var x in res){
- //  //     menuItemsTime.add(
- //  //       DropdownMenuItem(value: "TimeNow", child: Text(
- //  //         x.toString(),
- //  //         style: const TextStyle(
- //  //             color: Colors.white,
- //  //             fontSize: 14,
- //  //             fontWeight: FontWeight.bold,
- //  //             shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //  //         ),
- //  //       )),);
- //  //   }
- //  //  return menuItemsTime;
- //  // }
- //
- //  List<DropdownMenuItem<String>> get dropdownItemsTime{
- //    // List<DropdownMenuItem<String>> menuItemsTime = [
- //    //   DropdownMenuItem(value: "TimeNow", child: Text(time.toString(),
- //    //     style: const TextStyle(
- //    //         color: Colors.white,
- //    //         fontSize: 14,
- //    //         fontWeight: FontWeight.bold,
- //    //         shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //     ),
- //    //   )),
- //    //   DropdownMenuItem(value: "Tomorrow", child: Text(time.toString(),  style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    //   DropdownMenuItem(value: "Next Tomorrow", child: Text(time.toString(),  style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    //   DropdownMenuItem(value: "Future day1", child: Text(time.toString(),   style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    //   DropdownMenuItem(value: "Future day2", child: Text(time.toString(),  style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    //   DropdownMenuItem(value: "Future day3", child: Text(time.toString(),   style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    //   DropdownMenuItem(value: "Future day4", child: Text(timef.toString(),  style: const TextStyle(
- //    //       color: Colors.white,
- //    //       fontSize: 14,
- //    //       fontWeight: FontWeight.bold,
- //    //       shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //    //   ),)),
- //    // ];
- //
- //    for(var x in res){
- //      menuItemsTime.add(
- //          DropdownMenuItem(value: '9:00 am', child: Text(
- //            x.toString(),
- //              style: const TextStyle(
- //                  color: Colors.white,
- //                  fontSize: 14,
- //                  fontWeight: FontWeight.bold,
- //                  shadows: [BoxShadow(color: Colors.white54,blurRadius: 1)]
- //              ),
- //            )),);
- //    }
- //    return menuItemsTime;
- //  }
- //
- //
- //   String selectedValueTime = '9:00 am';
- //  changeDropdownValueTime(String value){
- //    selectedValueTime=value;
- //    emit(ChangeDropdownValueTime());
- //  }
+
+//   List<DropdownMenuItem<String>> get dropdownItemsTime {
+//     List<DropdownMenuItem<String>> menuItemsTime = [
+//       DropdownMenuItem(
+//           value: "TimeNow",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Tomorrow",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Next Tomorrow",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Future day1",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Future day2",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Future day3",
+//           child: Text(
+//             time.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//       DropdownMenuItem(
+//           value: "Future day4",
+//           child: Text(
+//             timef.toString(),
+//             style: const TextStyle(
+//                 color: Colors.white,
+//                 fontSize: 14,
+//                 fontWeight: FontWeight.bold,
+//                 shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//           )),
+//     ];
+//
+//     for (var x in res) {
+//       menuItemsTime.add(
+//         DropdownMenuItem(
+//             value: '9:00 am',
+//             child: Text(
+//               x.toString(),
+//               style: const TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.bold,
+//                   shadows: [BoxShadow(color: Colors.white54, blurRadius: 1)]),
+//             )),
+//       );
+//     }
+//     return menuItemsTime;
+//   }
+//
+//   String selectedValueTime = '9:00 am';
+//
+//   changeDropdownValueTime(String value) {
+//     selectedValueTime = value;
+//     emit(ChangeDropdownValueTime());
+//   }
 }

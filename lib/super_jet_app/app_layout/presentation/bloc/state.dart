@@ -11,3 +11,18 @@ class  RemoveCartTrips extends AppSuperStates{}
 class  InitGetTable extends AppSuperStates{}
 class  GetUsersDataTable extends AppSuperStates{}
 class  GetAllTripsDataTable extends AppSuperStates{}
+class  SearchTrips extends AppSuperStates{}
+class  AddTrips extends AppSuperStates{}
+class  DeleteTrips extends AppSuperStates{}
+class  UpdateTrips extends AppSuperStates{}
+class  AddUsers extends AppSuperStates{}
+class  DeleteUsers extends AppSuperStates{}
+class  UpdateUsers extends AppSuperStates{}
+class  AddCategory extends AppSuperStates{}
+class  GetBranchesDataTable extends AppSuperStates{}
+class  AddBranchesDataTable extends AppSuperStates{}
+class  DeleteBranchesDataTable extends AppSuperStates{}
+class  UpdateBranchesDataTable extends AppSuperStates{}
+class  SendMessage extends AppSuperStates{}
+class  GetMessage extends AppSuperStates{}
+

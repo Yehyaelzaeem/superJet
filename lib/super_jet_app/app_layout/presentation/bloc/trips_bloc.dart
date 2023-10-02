@@ -32,8 +32,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //Trips
     on<GetTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getTrips(event.city,event.context);
-       emit(
-           state.copyWith(tripsState: RequestState.loaded ,tripsModelList: res));
+       print(res.toString());
+       emit(state.copyWith(tripsState: RequestState.loaded ,tripsModelList: res));
     });
 
 
@@ -60,6 +60,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //GetCustomFromTrips
     on<GetCustomFromTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getCustomTrips(event.name,event.context);
+       print('first text ${res.length}');
+       print('2 text ${res.toString()}');
       emit(state.copyWith(
           tripsCustomFromState: RequestState.loaded ,
           customFromTripsModelList:res,
@@ -70,6 +72,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //GetCustomToTrips
     on<GetCustomToTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getCustomTrips(event.name,event.context);
+       print('first GetCustomToTripsEvent text ${res.length}');
+       print('2 text GetCustomToTripsEvent  ${res.toString()}');
       emit(state.copyWith(
           tripsCustomToState: RequestState.loaded,
           customToTripsModelList:res,

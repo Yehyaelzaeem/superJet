@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   equatable: ^2.0.5
+  flutter_chat_bubble:
   image_picker: ^1.0.1
   firebase_storage: ^11.2.5
   flutter_facebook_auth: ^6.0.1
@@ -40,6 +41,7 @@ dependencies:
   dio:
   carousel_slider:
   google_sign_in:
+  flutter_speed_dial: ^7.0.0
   badges:
   flutter_bloc:
   shared_preferences: ^2.1.1

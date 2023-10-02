@@ -25,7 +25,49 @@ class AuthDataSource implements BaseAuthDataSource{
     var type =await CacheHelper.getDate(key: 'type');
     print(type);
     try{
-      if(type !='user'){
+      if(type =='user'){
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: loginModel.email,
+            password: loginModel.password).then((value) async{
+          var r = await FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type).get();
+          for(var n in r.docs){
+            if(loginModel.email == n.data()['email']){
+              CacheHelper.saveDate(key: "uId", value: n.id);
+
+            }
+          }
+        });
+        NavigatePages.pushReplacePage( const CustomMain(), context);
+        CacheHelper.saveDate(key: 'isLog', value: true);
+        showToast('Login successful', ToastStates.success, context);
+        AuthCubit.get(context).emailLog.clear();
+        AuthCubit.get(context).passwordLog.clear();
+
+      } else if(type =='branch'){
+        var x =  FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type);
+        var r= await x.get();
+        for(var n in r.docs){
+          if( loginModel.email == n.data()['email']){
+            if( loginModel.password ==n.data()['password']){
+              CacheHelper.saveDate(key: "uId", value: n.id);
+              NavigatePages.pushReplacePage( const CustomMain(), context);
+              CacheHelper.saveDate(key: 'isLog', value: true);
+              x.doc(n.id).get().then((value) {
+                CacheHelper.saveDate(key: 'branchCity', value:value.data()!['city']);
+              });
+              showToast('Login successful by "$type"', ToastStates.success, context);
+              AuthCubit.get(context).emailLog.clear();
+              AuthCubit.get(context).passwordLog.clear();
+              break;
+            }
+            else{
+              showToast('the password is wrong', ToastStates.error, context);
+            }
+
+          }
+        }
+      }
+      else if(type =='admin'){
         var r = await FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type).get();
         for(var n in r.docs){
           if( loginModel.email == n.data()['email']){
@@ -45,29 +87,6 @@ class AuthDataSource implements BaseAuthDataSource{
           }
         }
       }
-      else{
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: loginModel.email,
-            password: loginModel.password).then((value) async{
-          var r = await FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type).get();
-          for(var n in r.docs){
-            if( loginModel.email == n.data()['email']){
-              CacheHelper.saveDate(key: "uId", value: n.id);
-
-            }
-          }
-        });
-
-        NavigatePages.pushReplacePage( const CustomMain(), context);
-        CacheHelper.saveDate(key: 'isLog', value: true);
-        showToast('Login successful', ToastStates.success, context);
-        AuthCubit.get(context).emailLog.clear();
-        AuthCubit.get(context).passwordLog.clear();
-
-
-      }
-
-
     }
    on FirebaseAuthException catch(e){
      if (e.code == 'user-not-found') {

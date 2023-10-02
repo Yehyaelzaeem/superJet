@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
-import '../../domain/entities/trip_entities.dart';
 import '../../domain/entities/trips_table_data_entities.dart';
 
 class TripsModelDataTable extends TripEntitiesDataTable {
@@ -25,5 +23,22 @@ class TripsModelDataTable extends TripEntitiesDataTable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "name": name,
+      "price":  price,
+      "time":  time,
+      "date": date,
+      "avgTime":  avgTime,
+      "fromCity":  fromCity,
+      "image": image,
+      "isVip": isVip,
+      "toCity":  toCity,
+      "tripID":  tripID,
+      "categoryID": categoryID,
+      "categoryName":  categoryName,
+      "state":  state,
 
+    };
+  }
 }

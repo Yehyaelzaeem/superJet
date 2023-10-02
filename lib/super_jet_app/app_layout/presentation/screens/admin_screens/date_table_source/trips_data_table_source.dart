@@ -37,11 +37,8 @@ class TripsRowDataSource extends DataTableSource{
           DataCell(Text(tripsModelDataTable.categoryName)),
           DataCell(Text(tripsModelDataTable.categoryID)),
           DataCell(Text(tripsModelDataTable.state)),
-          DataCell(
-              CircleAvatar(
-                backgroundImage: NetworkImage(tripsModelDataTable.image.toString()),
-              )
-          ),
+          DataCell(CircleAvatar(backgroundImage: NetworkImage(tripsModelDataTable.image.toString()),)),
+
         ]
     );
   }

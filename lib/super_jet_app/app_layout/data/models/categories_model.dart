@@ -18,6 +18,44 @@ class CategoriesModel extends CategoriesEntities{
         city: data['city'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "categoryID": categoryID,
+      "image":  image,
+      "name":  name,
+      "categoryName": categoryName,
+      "categorySecondName":  categorySecondName,
+      "numberOfTrips":  numberOfTrips,
+      "masterCity": masterCity,
+      "city":  city,
+    };
+  }
 }
+class CityModel{
+  final String fromCity;
+  final String toCity;
+
+  CityModel({
+    required this.fromCity,required this.toCity
+});
+
+  factory CityModel.fromJson(Map<String, dynamic> json) {
+    return CityModel(
+      fromCity: json["fromCity"],
+      toCity: json["toCity"],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "fromCity": fromCity,
+      "toCity": toCity,
+    };
+  }
+
+//
+}
+
 
 

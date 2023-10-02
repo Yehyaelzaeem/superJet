@@ -137,22 +137,29 @@ Widget customTextField(
         TextEditingController? controller,
         String? hintText,
         IconData? iconData,
+        Color? colorIcon =Colors.white,
+        Color? hintTextColor =Colors.white,
+        Color? textColor =Colors.white,
         bool? obscureText,
         Widget? suffixIcon,
+       void Function()? onTap,
+
         void Function(String)? onFieldSubmitted}) =>
 
     TextFormField(
+      onTap: onTap,
+      textAlignVertical: TextAlignVertical.center,
       textInputAction: textInputAction,
       validator: validator,
       keyboardType: keyboardType,
       controller: controller,
-      style: const TextStyle(color: Colors.white, fontSize: 16),
+      style:  TextStyle(color:textColor, fontSize: 16,),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: const TextStyle(fontSize: 15, color: Colors.white),
+        hintStyle:  TextStyle(fontSize: 15, color: hintTextColor),
         prefixIcon: Icon(
           iconData,
-          color: Colors.white,
+          color: colorIcon,
         ),
         errorBorder: InputBorder.none,
         border: InputBorder.none,

@@ -155,9 +155,11 @@ Widget gridViewTrips(context,bool isCustom,bool isFrom){
     builder: (context, state) {
       switch(state.tripsCustomToState){
         case RequestState.loading:
+          print('no data=====================');
           return const SizedBox(
               height:100,child: Center(child: CircularProgressIndicator(),));
         case RequestState.loaded:
+          print('get data=====================');
           return
             Padding(
               padding: const EdgeInsets.only(left: 5.0, right: 5),

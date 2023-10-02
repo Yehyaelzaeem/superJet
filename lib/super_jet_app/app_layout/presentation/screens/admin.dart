@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:superjet/core/services/routeing_page/reoute.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_branches.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_chat.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_notification.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_trips_screen.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/widgets/admin.dart';
+import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
+import 'admin_screens/branches_table_screen.dart';
+import 'admin_screens/trips_table_screen.dart';
 import 'admin_screens/user_table_screen.dart';
 
 class AdminScreen extends StatelessWidget {
@@ -20,7 +20,7 @@ class AdminScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: m.height*0.07,),
-            Text('Administrator',
+            Text('Manger',
           style: TextStyle(
             fontSize: 40,
             color: Theme.of(context).primaryColor,
@@ -34,19 +34,22 @@ class AdminScreen extends StatelessWidget {
             },context),
             SizedBox(height: m.height*0.04,),
             customAdminItems(Icons.format_align_justify_rounded, "Trips", (){
+              SuperCubit.get(context).tripsList.clear();
+              SuperCubit.get(context).getAdminCategoryName();
               SuperCubit.get(context).getTrips(context);
-              NavigatePages.persistentNavBarNavigator(const AdminTripsScreen(), context);
+              NavigatePages.persistentNavBarNavigator(const TripsDateTableScreen(), context);
 
             },context),
             SizedBox(height: m.height*0.04,),
             customAdminItems(Icons.margin_sharp, "Branches", (){
-              NavigatePages.persistentNavBarNavigator(const AdminBranchesScreen(), context);
-
+              SuperCubit.get(context).getBranches(context);
+              NavigatePages.persistentNavBarNavigator(const BranchesDateTableScreen(), context);
             },context),
             SizedBox(height: m.height*0.04,),
 
             customAdminItems(Icons.chat, "Chat", (){
-              NavigatePages.persistentNavBarNavigator(const AdminChat(), context);
+              // NavigatePages.persistentNavBarNavigator(const AdminTripsScreen2(), context);
+
 
             }, context),
             SizedBox(height: m.height*0.04,),

@@ -15,10 +15,10 @@ List listOfCity = [
   'All',
   'Cairo',
   'Alex',
-  'Port Saied',
-  'mansoura',
-  'الوجة البحري',
-  'الوجة القبلي'
+  'PortSaid',
+  'Aswaan',
+  'Luxer',
+  'Elswees'
 ];
 
 //CarouselSlider
@@ -71,7 +71,7 @@ Widget listOfCityWidget() => SizedBox(
               onTap: () {
                 SuperCubit.get(context).chickIndex(true);
                 SuperCubit.get(context).changeCategoriesIndex(i);
-                 context.read<TripsBloc>().add(GetTripsEvent(listOfCity[i],context));
+                context.read<TripsBloc>().add(GetTripsEvent(listOfCity[i],context));
                 Future.delayed(const Duration(seconds: 1)).then((value) =>{
                 SuperCubit.get(context).chickIndex(false),
                 });
@@ -215,10 +215,12 @@ Widget rowTitleHome(String title) => Row(
         ),
         Text(
           title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black54),
         ),
         const Spacer(),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios))
+        IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios,
+            color: Colors.black54
+        ))
       ],
     );
 

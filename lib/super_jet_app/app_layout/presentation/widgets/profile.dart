@@ -6,6 +6,7 @@ import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.d
 import '../../../../core/services/routeing_page/reoute.dart';
 import '../../../../core/services/services_locator.dart';
 import '../../../auth/presentation/screens/login.dart';
+import '../screens/chats.dart';
 import '../screens/recent_trips.dart';
 import '../screens/edit_profile.dart';
 
@@ -120,9 +121,44 @@ Widget customProfileWidgets(TripsState state,context){
             border: Border.all(
                 color: Colors.grey.shade400, width: 1)),
         child: TextButton(
-          onPressed: () {},
+          onPressed: () {
+            // if(state.userModel!.type=='user'){
+            //   print('user============================================');
+            //
+            //   SuperCubit.get(context).chatList.clear();
+            //   SuperCubit.get(context).getAdminDate(context);
+            //   SuperCubit.get(context).getBranches(context);
+            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
+            // }
+            // else if(state.userModel!.type=='branch'){
+            //   print('branch============================================');
+            //
+            //   SuperCubit.get(context).chatList.clear();
+            //   SuperCubit.get(context).getAdminDate(context);
+            //   SuperCubit.get(context).getUsers();
+            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
+            //
+            // }
+            // else if(state.userModel!.type=='admin'){
+            //   print('admin============================================');
+            //   SuperCubit.get(context).chatList.clear();
+            //   SuperCubit.get(context).getAdminDate(context);
+            //   SuperCubit.get(context).getBranches(context);
+            //   SuperCubit.get(context).getUsers();
+            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
+            //
+            // }else{
+            //   print('Erorrrrrr============================================');
+            //
+            // }
+              SuperCubit.get(context).getAdminDate(context);
+              SuperCubit.get(context).getBranches(context);
+              SuperCubit.get(context).getUsers();
+            NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
+
+          },
           child: const Text(
-            'Payment',
+            'Chats',
             style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 18),
           ),

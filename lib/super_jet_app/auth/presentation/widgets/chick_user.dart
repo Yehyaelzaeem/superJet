@@ -17,10 +17,8 @@ Widget customCheckUserButton(String type ,context)=>
         onPressed: (){
           if(type =='user'){
             AuthCubit.get(context).isKnowType='user';
-            AuthCubit.get(context).chickUsers(type).then((value) =>
-            {
-               NavigatePages.pushToPage(const LoginScreen(type: 'user',), context)
-            });
+            NavigatePages.pushToPage(const LoginScreen(type: 'user',), context);
+            AuthCubit.get(context).chickUsers(type);
           }
           else{
             showDialog(
@@ -43,10 +41,8 @@ Widget customCheckUserButton(String type ,context)=>
                         child: InkWell(
                           onTap: (){
                             AuthCubit.get(context).isKnowType='admin';
-                          AuthCubit.get(context).chickUsers('admin').then((value) =>
-                            {
-                              NavigatePages.pushToPage(const LoginScreen(type: 'admin',), context)
-                            });
+                            NavigatePages.pushToPage(const LoginScreen(type: 'admin',), context);
+                            AuthCubit.get(context).chickUsers('admin');
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 70,vertical: 15),
@@ -69,10 +65,8 @@ Widget customCheckUserButton(String type ,context)=>
                         child: InkWell(
                           onTap: (){
                             AuthCubit.get(context).isKnowType='branch';
-                            AuthCubit.get(context).chickUsers('branch').then((value) =>
-                            {
-                              NavigatePages.pushToPage(const LoginScreen(type: 'branch',), context)
-                            });
+                            NavigatePages.pushToPage(const LoginScreen(type: 'branch',), context);
+                            AuthCubit.get(context).chickUsers('branch');
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 70,vertical: 15),

@@ -80,13 +80,15 @@ Widget customRowCategoriesDetails(String constText,String data)=> Row(children: 
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
   ),
-  Text(
-    data,
-    style: const TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 10,
+  Expanded(
+    child: Text(
+      data,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 10,
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     ),
-    maxLines: 1,
-    overflow: TextOverflow.ellipsis,
   ),
 ],);
