@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import '../../../../core/services/services_locator.dart';
-import '../../../../core/utils/enums.dart';
-import '../../../auth/domain/entities/user_entities.dart';
-import '../widgets/current_trips.dart';
+import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
+import '../../../../../core/services/services_locator.dart';
+import '../../../../../core/utils/enums.dart';
+import '../../../../auth/domain/entities/user_entities.dart';
+import '../../widgets/current_trips.dart';
 
 class RecentTrips extends StatelessWidget {
  final List<TripID> tripIdLis;
   const RecentTrips({super.key,required this.tripIdLis});
-
   @override
+
   Widget build(BuildContext context) {
     return
         BlocProvider(create: (context)=> TripsBloc(sl())..add(GetProfileEvent(context))

@@ -3,31 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../../../../core/services/services_locator.dart';
 import '../../../auth/presentation/screens/login.dart';
-import '../screens/chats.dart';
-import '../screens/recent_trips.dart';
-import '../screens/edit_profile.dart';
+import '../bloc/state.dart';
+import '../screens/chat/chats.dart';
+import '../screens/profile/recent_trips.dart';
+import '../screens/profile/edit_profile.dart';
 
+import 'package:badges/badges.dart' as badges;
 
 Widget customProfileDesign(TripsState state,context){
   return SingleChildScrollView(
     child: Column(
       children: [
-        profileImageWidget(state.userModel!.coverImage, state.userModel!.profileImage),
+        profileImageWidget(state.userModel[0].coverImage, state.userModel[0].profileImage),
         Center(
-            child: Text(state.userModel!.name,
+            child: Text(state.userModel[0].name,
               style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
             )),
         Center(
-            child: Text(state.userModel!.email, style: const TextStyle(
+            child: Text(state.userModel[0].email, style: const TextStyle(
                   color: Colors.grey,
                   fontWeight: FontWeight.w500,
                   fontSize: 11),
             )),
         Center(
-            child: Text(state.userModel!.phone != 'null' ? state.userModel!.phone : '',
+            child: Text(state.userModel[0].phone != 'null' ? state.userModel[0].phone : '',
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 10),
             )),
         const SizedBox(height: 10,),
@@ -78,7 +80,7 @@ Widget customProfileWidgets(TripsState state,context){
                     color: Colors.grey.shade400, width: 1)),
             child: IconButton(
               onPressed: () {
-                NavigatePages.pushReplacePage(const EditProfileScreen(), context);
+                NavigatePages.pushReplacePage( EditProfileScreen(userModel: state.userModel[0],), context);
               },
               icon: const Icon(
                 Icons.edit,
@@ -101,7 +103,7 @@ Widget customProfileWidgets(TripsState state,context){
                 color: Colors.grey.shade400, width: 1)),
         child: TextButton(
           onPressed: () {
-            NavigatePages.pushToPage(RecentTrips(tripIdLis: state.userModel!.tripIdList!), context);
+            NavigatePages.pushToPage(RecentTrips(tripIdLis: state.userModel[0].tripIdList!), context);
           },
           child: const Text(
             'Recent Trips',
@@ -154,14 +156,32 @@ Widget customProfileWidgets(TripsState state,context){
               SuperCubit.get(context).getAdminDate(context);
               SuperCubit.get(context).getBranches(context);
               SuperCubit.get(context).getUsers();
-            NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
+            NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel[0],), context);
 
           },
-          child: const Text(
-            'Chats',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 18),
-          ),
+          child:
+          BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+            return
+              SuperCubit.get(context).listOfChat.isNotEmpty?
+              badges.Badge(
+                badgeContent: Text(SuperCubit.get(context).listOfChat.length.toString(),style: const TextStyle(color: Colors.white),),
+                badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 10.0),
+                  child: Text(
+                    'Chats',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+
+              ): const Text(
+                'Chats',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 18),
+              );
+          },
+            listener: (context, state){},),
         ),
       ),
       const SizedBox(
@@ -289,7 +309,7 @@ Widget customEditeProfileDesign(TripsState state){
                     child:
                     state.coverImageFile !=null?
                     Image.file(state.coverImageFile!,fit: BoxFit.cover,):
-                    Image.network(state.userModel!.coverImage!,
+                    Image.network(state.userModel[0].coverImage!,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -330,7 +350,7 @@ Widget customEditeProfileDesign(TripsState state){
                   child: CircleAvatar(
                       radius:70,
                       backgroundImage:
-                      NetworkImage(state.userModel!.profileImage!)
+                      NetworkImage(state.userModel[0].profileImage!)
                   ),),
                 Positioned(
                   bottom: 13,

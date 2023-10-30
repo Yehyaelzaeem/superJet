@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/chairs_model.dart';
@@ -25,7 +24,7 @@ abstract class BaseTripsRepo {
   Future updateBranch(UsersTableModel usersTableModel, context);
   Future<List<TripsModelDataTable>> getAllTrips();
   Future<List<TripsModel>> getCustomTrips(String name,context);
-  Future<UserModel?> getProfile();
+  Future<List<UserModel>> getProfile();
   Future<List<UsersTableModel>> getUsers();
   Future<List<UsersTableModel>> getBranches(context);
   Future<UpdateUserDataModel?>  upDateProfile(UpdateUserDataModel updateUserDataModel,context);
@@ -34,6 +33,5 @@ abstract class BaseTripsRepo {
   Future<List<MessageModel>> getMessages(UserModel userModelSender ,UsersTableModel userModelReceiver,);
   Future<MessageModel> sendMessages(UserModel userModelSender ,UsersTableModel userModelReceiver,String messageText);
   Future<List<UsersTableModel>> getAdmin(context);
-  Future<List<UserModel>> getUser(context);
 
 }

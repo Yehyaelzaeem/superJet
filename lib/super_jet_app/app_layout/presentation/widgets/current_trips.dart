@@ -5,10 +5,10 @@ import '../bloc/trips_bloc.dart';
 
 Widget customPageViewCurrentTrips(TripsState state){
   return   PageView.builder(
-      itemCount: state.userModel!.tripIdList!.length,
+      itemCount: state.userModel[0].tripIdList!.length,
       itemBuilder: (context,index){
         var x =state.currentTripsModelList[index];
-        List<TripID> listTripID =state.userModel!.tripIdList!;
+        List<TripID> listTripID =state.userModel[0].tripIdList!;
         listTripID=listTripID.reversed.toList();
         return Scaffold(
           body:
@@ -18,7 +18,7 @@ Widget customPageViewCurrentTrips(TripsState state){
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    currentImageTrips(state.currentTripsModelList[index].image, state.userModel!.profileImage,context,state,false),
+                    currentImageTrips(state.currentTripsModelList[index].image, state.userModel[0].profileImage,context,state,false),
 
                     const SizedBox(height: 20,),
 
@@ -86,7 +86,7 @@ Widget customPageViewCurrentTrips(TripsState state){
                         ),
                         child:
                         TextButton(onPressed: () {
-                          context.read<TripsBloc>().add(GetCurrentTripsEvent(state.userModel!.tripIdList!, context));
+                          context.read<TripsBloc>().add(GetCurrentTripsEvent(state.userModel[0].tripIdList!, context));
 
                         }, child: const Text('Cancel',
                           style: TextStyle(
@@ -137,7 +137,7 @@ Widget customPageViewCurrentTrips(TripsState state){
 
 
 Widget currentImageTrips(String? coverImage,String? profileImage,context,TripsState tripsState,bool isCart){
-  var state =tripsState.userModel!;
+  var state =tripsState.userModel[0];
   return
     SizedBox(
       width: double.infinity,

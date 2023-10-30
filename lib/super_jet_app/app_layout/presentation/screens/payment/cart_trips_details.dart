@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/services/services_locator.dart';
-import '../../data/models/trip_model.dart';
-import '../bloc/trips_bloc.dart';
-import '../widgets/current_trips.dart';
+import '../../../../../core/services/services_locator.dart';
+import '../../../data/models/trip_model.dart';
+import '../../bloc/trips_bloc.dart';
+import '../../widgets/current_trips.dart';
 
 class DisplayCartTripsDetails extends StatelessWidget {
   const DisplayCartTripsDetails({super.key, required this.tripsState, required this.tripsModel, required this.chairId});

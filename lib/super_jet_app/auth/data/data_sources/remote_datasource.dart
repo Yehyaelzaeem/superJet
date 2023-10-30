@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:superjet/core/services/routeing_page/reoute.dart';
+import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/core/shared_preference/shared_preference.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../../../core/image/image.dart';

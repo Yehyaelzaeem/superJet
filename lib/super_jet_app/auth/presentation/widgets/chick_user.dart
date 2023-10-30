@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../bloc/cubit.dart';
 import '../screens/login.dart';
 

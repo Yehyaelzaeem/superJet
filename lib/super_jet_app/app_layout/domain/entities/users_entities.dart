@@ -10,6 +10,7 @@ class UsersEntities{
   final String lat;
   final String city;
   final String type;
+  final String token;
   List<TripID>? tripIdList;
   final String profileImage;
   bool selected =false;
@@ -26,5 +27,6 @@ class UsersEntities{
     required this.long,
     required this.lat,
     required this.type,
+    required this.token,
   });
 }

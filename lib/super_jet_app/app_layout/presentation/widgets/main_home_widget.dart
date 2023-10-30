@@ -4,26 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
-import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
-import '../screens/admin.dart';
-import '../screens/branch_sheeft.dart';
-import '../screens/categories.dart';
-import '../screens/home.dart';
-import '../screens/payment_screen.dart';
-import '../screens/profile.dart';
+import '../screens/admin_screens/admin_screen.dart';
+import '../screens/categories/categories.dart';
+import '../screens/home/home.dart';
+import '../screens/payment/payment_screen.dart';
+import '../screens/profile/profile.dart';
 import 'package:badges/badges.dart' as badges;
 
+import '../screens/setting/setting.dart';
+
 class AppHomeWidgets {
-  // static var type='user';
-  // static getType(context){
-  //   type =AuthCubit.get(context).isKnowType;
-  // }
-  //User Screens ***********************
+
   static List<Widget> userScreens = [
     const Home(city: 'All',),
     const Categories(),
     const PaymentScreen(),
-    const Profile(),
+    const Setting(),
 
   ];
   static List<Widget> adminScreens = [
@@ -31,13 +27,13 @@ class AppHomeWidgets {
     const Categories(),
     const PaymentScreen(),
     const AdminScreen(),
-    const Profile(),
+    const Setting(),
   ];
   static List<Widget> branchScreens = [
     const Home(city: 'Alex',),
     const Categories(),
     const PaymentScreen(),
-    const Profile(),
+    const Setting(),
   ];
 
   //PersistentBottom ****************
@@ -56,7 +52,8 @@ class AppHomeWidgets {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+        icon:
+        BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
           return
           SuperCubit.get(context).listCartTrips.isNotEmpty?
            badges.Badge(
@@ -71,8 +68,18 @@ class AppHomeWidgets {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.person),
-        title: ("Profile"),
+        icon:
+        BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+          return
+            SuperCubit.get(context).listOfChats.isNotEmpty?
+            badges.Badge(
+              badgeContent: Text(SuperCubit.get(context).listOfChats.length.toString(),style: const TextStyle(color: Colors.white),),
+              badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
+              child: const Icon(Icons.settings),
+            ): const Icon(Icons.settings);
+        },
+          listener: (context, state){},),
+        title: ("Setting"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -94,7 +101,8 @@ class AppHomeWidgets {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+        icon:
+        BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
           return
           SuperCubit.get(context).listCartTrips.isNotEmpty?
            badges.Badge(
@@ -113,12 +121,24 @@ class AppHomeWidgets {
         title: ("Admin"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-      ),  PersistentBottomNavBarItem(
-        icon: const Icon(Icons.person),
-        title: ("Profile"),
+      ),
+      PersistentBottomNavBarItem(
+        icon:
+        BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+          return
+            SuperCubit.get(context).listOfChatSetting.isNotEmpty?
+            badges.Badge(
+              badgeContent: Text(SuperCubit.get(context).listOfChatSetting.length.toString(),style: const TextStyle(color: Colors.white),),
+              badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
+              child: const Icon(Icons.settings),
+            ): const Icon(Icons.settings);
+        },
+          listener: (context, state){},),
+        title: ("Setting"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
+
 
     ];
   }
@@ -137,7 +157,8 @@ class AppHomeWidgets {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+        icon:
+        BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
           return
           SuperCubit.get(context).listCartTrips.isNotEmpty?
            badges.Badge(

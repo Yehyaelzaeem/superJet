@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../../../../core/shared_preference/shared_preference.dart';
 import '../../../../core/utils/enums.dart';
 import '../../data/models/trip_model.dart';
 import '../bloc/trips_bloc.dart';
-import '../screens/booked_screen.dart';
+import '../screens/booked/booked_screen.dart';
 
 
 
@@ -123,7 +123,7 @@ Widget gridViewTrips(context,bool isCustom,bool isFrom){
     builder: (context, state) {
       switch(state.tripsCustomFromState){
         case RequestState.loading:
-          return const SizedBox(
+          return  const SizedBox(
               height:100,child: Center(child: CircularProgressIndicator(),));
         case RequestState.loaded:
           return
@@ -155,11 +155,9 @@ Widget gridViewTrips(context,bool isCustom,bool isFrom){
     builder: (context, state) {
       switch(state.tripsCustomToState){
         case RequestState.loading:
-          print('no data=====================');
           return const SizedBox(
               height:100,child: Center(child: CircularProgressIndicator(),));
         case RequestState.loaded:
-          print('get data=====================');
           return
             Padding(
               padding: const EdgeInsets.only(left: 5.0, right: 5),

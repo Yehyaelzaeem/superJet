@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:superjet/super_jet_app/auth/domain/entities/user_entities.dart';
 
 class UserModel extends UserEntities{
@@ -37,7 +39,7 @@ class UserModel extends UserEntities{
       'type':type,
       'profileImage':profileImage,
       'coverImage':coverImage,
-      'trips':tripIdList,
+      'trips':List<Map<String, dynamic>>.from(tripIdList!.map((x) => x.toJson())),
     };
   }
 }

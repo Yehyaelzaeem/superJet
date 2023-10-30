@@ -141,6 +141,7 @@ Widget customTextField(
         Color? hintTextColor =Colors.white,
         Color? textColor =Colors.white,
         bool? obscureText,
+        int? maxLines = 1,
         Widget? suffixIcon,
        void Function()? onTap,
 
@@ -148,6 +149,7 @@ Widget customTextField(
 
     TextFormField(
       onTap: onTap,
+      maxLines:maxLines,
       textAlignVertical: TextAlignVertical.center,
       textInputAction: textInputAction,
       validator: validator,

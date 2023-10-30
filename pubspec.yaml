@@ -33,7 +33,9 @@ dependencies:
   image_picker: ^1.0.1
   firebase_storage: ^11.2.5
   flutter_facebook_auth: ^6.0.1
+  http:
   get_it: ^7.6.0
+  firebase_messaging:
   intl:
   flutter_stripe:
   change_app_package_name: ^1.1.0

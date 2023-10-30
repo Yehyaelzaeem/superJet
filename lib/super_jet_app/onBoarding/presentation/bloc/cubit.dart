@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/onBoarding/presentation/bloc/states.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../../../../core/shared_preference/shared_preference.dart';
 import '../../../auth/presentation/screens/chick_user.dart';
 import '../../data/data_sources/local_database.dart';

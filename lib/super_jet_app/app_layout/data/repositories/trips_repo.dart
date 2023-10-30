@@ -28,7 +28,7 @@ class TripsRepo extends BaseTripsRepo{
   }
 
   @override
-  Future<UserModel?> getProfile()async {
+  Future<List<UserModel>> getProfile()async {
     return await baseSuperJetDataSource.getProfile();
 
   }
@@ -137,9 +137,5 @@ class TripsRepo extends BaseTripsRepo{
     return await baseSuperJetDataSource.getAdmin(context);
   }
 
-  @override
-  Future<List<UserModel>> getUser(context)async {
-    return await baseSuperJetDataSource.getUser(context);
 
-  }
 }

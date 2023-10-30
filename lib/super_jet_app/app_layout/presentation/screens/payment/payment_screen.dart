@@ -5,17 +5,13 @@ import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import '../../../../core/services/services_locator.dart';
-import '../../../../core/shared_preference/shared_preference.dart';
-import '../../../stripe_payment/payment_manager.dart';
-import '../bloc/state.dart';
-import '../widgets/payment_widget.dart';
+import '../../../../stripe_payment/payment_manager.dart';
+import '../../bloc/state.dart';
+import '../../widgets/payment_widget.dart';
 class PaymentScreen extends StatelessWidget {
   const PaymentScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    print('build PaymentScreen=======================================');
-
     var m =MediaQuery.of(context).size;
     SuperCubit.get(context).getID();
     return Scaffold(
@@ -35,7 +31,8 @@ class PaymentScreen extends StatelessWidget {
                   children: [
                     customPaymentDetails(cubit.listCartTrips,cubit.chairsId,cubit.total,cubit.suTotal,cubit.tax,cubit.discount,context),
                     const SizedBox(height: 20,),
-                    cubit.listCartTrips.isEmpty?Column(
+                    cubit.listCartTrips.isEmpty?
+                    Column(
                       children: [
                         SizedBox(height: m.height*0.15,),
                         const Center(child: Text('There are no trips currently',
@@ -46,17 +43,15 @@ class PaymentScreen extends StatelessWidget {
                         ),),
                       ],
                     ):
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: customCartGridView(cubit.listCartTrips,cubit.chairsId,cubit.chairsDoc,state,context),
-                    ),
+                    customCartGridView(cubit.listCartTrips,cubit.chairsId,cubit.chairsDoc,state,context),
                     const SizedBox(height: 50,)
                   ],
                 ),
               ),
               Align(
                 alignment: AlignmentDirectional.bottomCenter,
-                child: SizedBox(
+                child:
+                SizedBox(
                   height:  m.height*0.12,
                   child: Center(
                     child: Container(
@@ -94,7 +89,6 @@ class PaymentScreen extends StatelessWidget {
                                     ]),
                                   });
                                 }
-
                               }else{
 
                               }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/categories_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import '../../../../core/services/services_locator.dart';
-import '../widgets/widgets.dart';
+import '../../widgets/widgets.dart';
 
 class CategoriesDetailsScreen extends StatelessWidget {
   final CategoriesModel categoriesModel;
@@ -15,8 +14,7 @@ class CategoriesDetailsScreen extends StatelessWidget {
       backgroundColor: Theme.of(context).primaryColor,
     body: SafeArea(
       child:
-          BlocProvider(create: (context)=>TripsBloc(sl())..add(GetTestTripsEvent())..add(GetCustomFromTripsEvent(categoriesModel.categoryName,context))..add(GetCustomToTripsEvent(categoriesModel.categorySecondName,context)),
-          child: BlocBuilder<TripsBloc,TripsState>(
+           BlocBuilder<TripsBloc,TripsState>(
             builder: (context,state){
               return SingleChildScrollView(
                 child: Column(
@@ -84,8 +82,7 @@ class CategoriesDetailsScreen extends StatelessWidget {
 
             },
           ),
-          )
-    )
+     ),
     );
   }
 }

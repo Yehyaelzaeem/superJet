@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -32,7 +31,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //Trips
     on<GetTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getTrips(event.city,event.context);
-       print(res.toString());
        emit(state.copyWith(tripsState: RequestState.loaded ,tripsModelList: res));
     });
 
@@ -44,7 +42,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         final res = await tripsUseCase.getTrips('All',event.context);
         for(var x in event.tripId){
           for(var n in res){
-            if(n.tripID.trim()==x.tripID.trim()){
+            if(n.tripID.trim()==x.tripID!.trim()){
               list.add(n);
             }
           }
@@ -60,8 +58,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //GetCustomFromTrips
     on<GetCustomFromTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getCustomTrips(event.name,event.context);
-       print('first text ${res.length}');
-       print('2 text ${res.toString()}');
       emit(state.copyWith(
           tripsCustomFromState: RequestState.loaded ,
           customFromTripsModelList:res,
@@ -72,8 +68,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     //GetCustomToTrips
     on<GetCustomToTripsEvent>((event, emit) async{
        final res = await tripsUseCase.getCustomTrips(event.name,event.context);
-       print('first GetCustomToTripsEvent text ${res.length}');
-       print('2 text GetCustomToTripsEvent  ${res.toString()}');
       emit(state.copyWith(
           tripsCustomToState: RequestState.loaded,
           customToTripsModelList:res,

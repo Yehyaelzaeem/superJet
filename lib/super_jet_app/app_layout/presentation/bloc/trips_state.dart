@@ -16,7 +16,7 @@ class TripsState  {
   final RequestState tripsCustomFromState;
   final RequestState tripsCustomToState;
   final RequestState categoriesState;
-  final UserModel? userModel ;
+  final List<UserModel> userModel ;
   final UpdateUserDataModel? updateUserDataModel ;
   final RequestState userModelState;
   final RequestState updateUserDataModelState;
@@ -44,7 +44,7 @@ class TripsState  {
     this.userModelState=RequestState.loading,
     this.updateUserDataModelState=RequestState.loading,
     this.updateUserDataModel,
-    this.userModel,
+    this.userModel=const[],
     this.profileImageFile,
     this.coverImageFile,
     this.chairsModel=const[],
@@ -67,7 +67,7 @@ class TripsState  {
     RequestState? categoriesState,
     final RequestState? userModelState,
     final RequestState? updateUserDataModelState,
-    final UserModel? userModel,
+    List<UserModel>? userModel,
     final UpdateUserDataModel? updateUserDataModel,
     final List<ChairsModel>? chairsModel,
     final RequestState? chairsModelState,

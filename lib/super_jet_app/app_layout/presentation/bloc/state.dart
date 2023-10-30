@@ -25,4 +25,7 @@ class  DeleteBranchesDataTable extends AppSuperStates{}
 class  UpdateBranchesDataTable extends AppSuperStates{}
 class  SendMessage extends AppSuperStates{}
 class  GetMessage extends AppSuperStates{}
+class  RemoveNotificationNumber extends AppSuperStates{}
+class  ChangeLanguage extends AppSuperStates{}
+class  SendNotification extends AppSuperStates{}
 

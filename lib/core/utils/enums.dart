@@ -36,3 +36,4 @@ Color chooseColor(ToastStates state, context) {
   }
   return color;
 }
+

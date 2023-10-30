@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:superjet/core/image/image.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/cart_trips_details.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment/cart_trips_details.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../../data/models/trip_model.dart';
 
 Widget customPaymentDetails(List<TripsModel> listTrips,List chairsList,double total,double subTotal,double tax,double discount,context)
@@ -241,16 +241,19 @@ Widget customRowDate(String baseText,Color colorTextBase,String data,Color color
 );
 
 Widget customCartGridView(List<TripsModel> listTrips,List chairId,List chairDoc ,TripsState tripsState,context){
-  return GridView.count(
-    shrinkWrap: true,
-    physics: const NeverScrollableScrollPhysics(),
-    crossAxisCount: 2,
-    crossAxisSpacing: 10,
-    mainAxisSpacing: 15,
-    childAspectRatio: 1 / 1.2,
-    children: List.generate(listTrips.length, (index) {
-      return customCartTripWidget(tripsState,context,listTrips[index],chairId[index],chairDoc[index]);
-    }),
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 2,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 15,
+      childAspectRatio: 1 / 1.2,
+      children: List.generate(listTrips.length, (index) {
+        return customCartTripWidget(tripsState,context,listTrips[index],chairId[index],chairDoc[index]);
+      }),
+    ),
   );
 }
 Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel,String chairId,String chairDoc) =>

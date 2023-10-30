@@ -1,21 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
+import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_trips_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/categories_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/message_model.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_notification.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/chat/chat_details.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../../../core/image/image.dart';
 import '../../../../core/shared_preference/shared_preference.dart';
+import '../../../../core/utils/constants.dart';
 import '../../../../core/utils/enums.dart';
-import '../../../auth/presentation/widgets/widget.dart';
 import '../../data/models/add_trip_model.dart';
 import '../../domain/use_cases/trips_usecase.dart';
 import '../widgets/admin.dart';
+import 'package:http/http.dart' as http;
 
 class SuperCubit extends Cubit<AppSuperStates> {
   final TripsUseCase tripsUseCase;
@@ -25,6 +29,8 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
   final ScrollController scrollController = ScrollController();
   TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerTitleNotification = TextEditingController();
+  TextEditingController controllerBodyNotification = TextEditingController();
   TextEditingController controllerPhone = TextEditingController();
   final searchTripsController = TextEditingController();
   final searchUsersController = TextEditingController();
@@ -45,28 +51,95 @@ class SuperCubit extends Cubit<AppSuperStates> {
   final chatController = TextEditingController();
   var categoriesIndex = 0;
   List<TripsModel> listCartTrips = [];
+  List<int> listOfChats = [];
+  List<int> listOfChat = [];
+  List<int> listOfChatSetting = [];
+  List<String> listOfNameChats = [];
   List chairsId = [];
   List chairsDoc = [];
   double suTotal = 0.0;
   double total = 0.0;
   double tax = 0.0;
-  double discount = -10.0;
+  double discount = -0.0;
   bool isPay = false;
   String? uId ;
+  bool lightEn = true;
+  bool lightAr = false;
+
   var type = '';
   File? profileImageFile;
   File? coverImageFile;
   String profileImageFilepath = '';
   String coverImageFilepath = '';
-
-
   getID() async {
     uId = await CacheHelper.getDate(key: 'uId');
   }
-
   getType() async {
     type = await CacheHelper.getDate(key: 'type');
   }
+
+//Send Notification
+  sendNotification(String title, String body,String type, String token) async {
+    print('start sending');
+    await http.post(
+      Uri.parse(
+        'https://fcm.googleapis.com/fcm/send',
+      ),
+      headers: <String, String>{
+        'Accept':'*/*',
+        'Content-Type': 'application/json',
+        'Authorization': 'key=${App.notificationServerKey}',
+      },
+      body: jsonEncode(
+        <String, dynamic>{
+          'notification': <String, dynamic>{
+            'title': title,
+            'body': body,
+
+          },
+          "data": {
+            'type': type.trim(),
+          },
+          "android": {
+            "priority": "high"
+          },
+          'to': token
+        },
+      ),
+    );
+    controllerTitleNotification.text='';
+    controllerBodyNotification.text='';
+  }
+//setting change Language
+  changeLanguage(bool value){
+     lightEn = value;
+     lightAr=!value;
+    emit(ChangeLanguage());
+  }
+  changeLanguageAr(bool value){
+    lightAr=value;
+    lightEn = !value;
+    emit(ChangeLanguage());
+  }
+//remove notification on profile
+  removeNotificationListOfChats(){
+    listOfChats.clear();
+    emit(RemoveNotificationNumber());
+  }
+  removeNotificationListOfChat(){
+    listOfChat.clear();
+    emit(RemoveNotificationNumber());
+  }
+  removeNotificationListOfNameChats(){
+    listOfNameChats.clear();
+    emit(RemoveNotificationNumber());
+  }
+  removeNotificationListOfChatSetting(){
+    listOfChatSetting.clear();
+    emit(RemoveNotificationNumber());
+  }
+
+
  // Cart ****************************************************************
   addCartTrips(TripsModel tripsModel, String chairId, String chairDoc) {
     listCartTrips.add(tripsModel);
@@ -76,7 +149,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
     total = suTotal + tax + discount;
     emit(GetCartTrips());
   }
-
   deleteCartTrips(TripsModel tripsModel, String chairId, String chairDoc) {
     listCartTrips.remove(tripsModel);
     chairsId.remove(chairId);
@@ -86,7 +158,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
     total < 0 ? total = 0 : total = total;
     emit(DeleteCartTrips());
   }
-
   removeCart() {
     listCartTrips.clear();
     chairsDoc.clear();
@@ -128,6 +199,9 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(InitGetTable());
   }
 
+
+
+
  // Get Data to Date Table
   getUsers() async {
     var res = await tripsUseCase.getUsers();
@@ -141,6 +215,11 @@ class SuperCubit extends Cubit<AppSuperStates> {
     filteredDataTrips = res;
     emit(GetAllTripsDataTable());
   }
+
+
+
+
+
 
  // Add Data to Date Table
   addTrips(context) async {
@@ -187,7 +266,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(AddTrips());
   }
   addUser(context) async {
-    bool x =true;
     if(userName.text.isNotEmpty &&userEmail.text.isNotEmpty
         &&userPassword.text.isNotEmpty &&userPhone.text.isNotEmpty &&userCity.text.isNotEmpty)
     {
@@ -198,12 +276,13 @@ class SuperCubit extends Cubit<AppSuperStates> {
             password:userPassword.text.trim(),
             phone:userPhone.text.trim(),
             uId: 'uId',
-          city: userCity.text.trim(),
-          tripIdList: [],
-          profileImage: AppImage.baseProfileImage,
-          long: 'null',
-          lat: 'null',
-          type: 'user'
+            city: userCity.text.trim(),
+            tripIdList: [],
+            profileImage: AppImage.baseProfileImage,
+            long: 'null',
+            lat: 'null',
+            type: 'user',
+            token: ''
           );
         await tripsUseCase.addUser(usersTableModel, context);
         usersList.clear();
@@ -226,6 +305,11 @@ class SuperCubit extends Cubit<AppSuperStates> {
     }
     emit(AddUsers());
   }
+
+
+
+
+
 
   // Delete Data from Date Table
   deleteTrip(context) async {
@@ -261,11 +345,16 @@ class SuperCubit extends Cubit<AppSuperStates> {
      usersList.clear();
      getUsers();
    }
-
+    getUsers();
     isFoundDelete =false;
-
     emit(DeleteUsers());
   }
+
+
+
+
+
+
   //Update Data to Date Table
   updateTrip(context) async {
 
@@ -315,17 +404,18 @@ class SuperCubit extends Cubit<AppSuperStates> {
         onTap: ()async {
           await tripsUseCase.updateUser(
             UsersTableModel(
-                name: userName.text.trim(),
-                email:a.email,
+                name: userName.text,
+                email:a.email.trim(),
                 phone: userPhone.text.trim(),
-                uId: a.uId,
-                city: userCity.text.trim(),
+                uId: a.uId.trim(),
+                city: userCity.text,
                 tripIdList: a.tripIdList,
-                profileImage: a.profileImage,
-                password: a.password,
-                long:a.long,
-                lat: a.lat,
-              type: a.type
+                profileImage: a.profileImage.trim(),
+                password: a.password.trim(),
+                long:a.long.trim(),
+                lat: a.lat.trim(),
+                type: a.type.trim(),
+                token: a.token,
             )
 
               , context);
@@ -343,6 +433,46 @@ class SuperCubit extends Cubit<AppSuperStates> {
     isFoundUpdate =false;
     emit(UpdateTrips());
   }
+
+  sendNotificationToUsersScreen(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataUsers) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        NavigatePages.pushToPage(
+            AdminNotification(text: 'Send Notification to This User :- \n'
+                ' name :${a.name} \n username : ${a.email} \n phone : ${a.phone}', token: a.token.trim()), context);
+        break;
+      }
+    }
+
+    if(isFoundUpdate==false){
+      showToast('Select your item for Update', ToastStates.warning, context);
+    }
+    isFoundUpdate =false;
+    emit(SendNotification());
+  }
+
+  chatToUsers(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataUsers) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        NavigatePages.pushToPage(
+        ChatDetails(
+            userModelReceiver: a,
+        ), context);
+        break;
+      }
+    }
+
+    if(isFoundUpdate==false){
+      showToast('Select your item for Update', ToastStates.warning, context);
+    }
+    isFoundUpdate =false;
+    emit(SendNotification());
+  }
+
   //Branches
   getBranches(context) async {
     var res = await tripsUseCase.getBranches(context);
@@ -367,7 +497,8 @@ class SuperCubit extends Cubit<AppSuperStates> {
           profileImage: AppImage.baseProfileImage,
           long: 'null',
           lat: 'null',
-          type: 'branch'
+          type: 'branch',
+          token: ''
         );
         await tripsUseCase.addBranch(usersTableModel, context);
         branchesList.clear();
@@ -389,7 +520,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
     }
     emit(AddBranchesDataTable());
   }
-
   deleteBranch(context) async {
     bool isFoundDelete =false;
     for (var a in filteredDataBranches) {
@@ -429,6 +559,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
                     long:a.long,
                     lat: a.lat,
                     type: a.type,
+                    token: a.token,
                   )
                   , context);
               branchesList.clear();
@@ -446,12 +577,16 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(UpdateBranchesDataTable());
   }
 
+
+
+
+
 //Chat
   sendMessage({required UserModel userModelSender ,required UsersTableModel userModelReceiver}) async {
     try{
+       sendNotification(userModelSender.name, chatController.text,'chat',userModelReceiver.token,);
       await tripsUseCase.sendMessages(userModelSender,userModelReceiver,chatController.text).then((value) {
         chatController.text='';
-
       });
     }catch (e){
       print(e.toString());
@@ -470,18 +605,17 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(GetMessage());
   }
 
+
+
+
+
   //GetAdmin
   getAdminDate(context)async{
     var res = await tripsUseCase.getAdmin(context);
     adminList = res;
     emit(GetUsersDataTable());
   }
-  List<UserModel> userModelCubit=[];
-  getUser(context)async{
-    var res = await tripsUseCase.getUser(context);
-    userModelCubit =res;
-    emit(GetUsersDataTable());
-  }
+
 
 
 
@@ -537,6 +671,10 @@ class SuperCubit extends Cubit<AppSuperStates> {
             .toList();
     emit(GetUsersDataTable());
   }
+
+
+
+
 
 //Admin Category control
   //Get Category Name and DropdownMenuItem

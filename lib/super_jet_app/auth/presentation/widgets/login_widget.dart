@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
 import '../../../../core/image/image.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
+import '../../../../core/services/routeing_page/routing.dart';
 import '../../../../core/utils/enums.dart';
 import '../bloc/cubit.dart';
 import '../bloc/states.dart';

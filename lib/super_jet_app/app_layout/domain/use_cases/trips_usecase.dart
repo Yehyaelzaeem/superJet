@@ -37,7 +37,7 @@ class TripsUseCase {
   Future<List<TripsModel>> getCustomTrips(String name,context)async{
     return await baseTripsRepo.getCustomTrips(name,context);
   }
-  Future<UserModel?> getProfile()async{
+  Future<List<UserModel>> getProfile()async{
     return await baseTripsRepo.getProfile();
   }
   Future<List<UsersTableModel>> getUsers()async{
@@ -91,8 +91,6 @@ class TripsUseCase {
   Future<List<UsersTableModel>> getAdmin(context)async{
     return await baseTripsRepo.getAdmin(context);
   }
-  Future<List<UserModel>> getUser(context)async{
-    return await baseTripsRepo.getUser(context);
-  }
+
 
 }

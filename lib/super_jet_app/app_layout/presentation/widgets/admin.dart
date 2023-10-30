@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
-
 import '../../../auth/presentation/widgets/widget.dart';
 import '../../data/models/admin_trips_model.dart';
 import '../bloc/cubit.dart';
@@ -759,7 +758,6 @@ Future customBottomSheetCustomTrips({required String title,required bool isUpdat
                                       onChanged: (value) {
                                         setState(() {
                                           c.selectedOptionType = value!;
-                                          print(c.selectedOptionType);
                                         }
                                         );
                                       },
@@ -1095,7 +1093,7 @@ Future customBottomSheetCustomUsers({required String title,required bool isUpdat
                         width: MediaQuery.of(context).size.width *
                             0.35,
                         decoration: BoxDecoration(color: Theme.of(context).primaryColor,
-                            boxShadow: [BoxShadow(color: Colors.black54,blurRadius: 5)],
+                            boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
                             borderRadius: const BorderRadius.all(
                                 Radius.circular(30))),
                         child: const Center(

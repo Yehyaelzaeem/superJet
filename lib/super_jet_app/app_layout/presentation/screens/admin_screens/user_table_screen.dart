@@ -87,8 +87,6 @@ class UserTableScreen extends StatelessWidget{
                   label: 'Add User',
                   backgroundColor: Colors.blue,
                   onTap: () {
-                    print('Add User');
-                    // c.addUser(context);
                     customBottomSheetCustomUsers(
                         title: 'Add User', isUpdate: false, actionText: 'Save',
                         onTap: (){
@@ -105,8 +103,6 @@ class UserTableScreen extends StatelessWidget{
                   label: 'Delete Users',
                   backgroundColor: Colors.red.shade400,
                   onTap: () {
-                    print('Delete User');
-
                      c.deleteUser(context);
                   }),
               SpeedDialChild(
@@ -114,9 +110,21 @@ class UserTableScreen extends StatelessWidget{
                   label: 'Update User',
                   backgroundColor: Colors.green.shade300,
                   onTap: () {
-                    print('Update User');
-
                      c.updateUser(context);
+                  }),
+              SpeedDialChild(
+                  child: const Icon(Icons.notifications_active,color: Colors.white,),
+                  label: 'Send Notification',
+                  backgroundColor: Colors.pink.shade300,
+                  onTap: () {
+                     c.sendNotificationToUsersScreen(context);
+                  }),
+              SpeedDialChild(
+                  child: const Icon(Icons.chat,color: Colors.white,),
+                  label: 'Chat User',
+                  backgroundColor: Colors.blue.shade300,
+                  onTap: () {
+                    c.chatToUsers(context);
                   }),
               SpeedDialChild(
                   child: const Icon(Icons.search),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
@@ -70,6 +71,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
     isNotLoading =false;
     emit(LoginGetDataModelStates());
     await authUseCase.login(LoginModel(email: email, password: password),context);
+    await FirebaseMessaging.instance.subscribeToTopic('usersSuperJet');
     isNotLoading =true;
     emit(LoginGetDataModelStates());
   }
@@ -147,6 +149,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
             tripIdList: [],
           ), context);
     }
+    await FirebaseMessaging.instance.subscribeToTopic('usersSuperJet');
     emit(LoginGoogleStates());
   }
 
@@ -164,6 +167,7 @@ var isKnowType = '';
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+    await FirebaseMessaging.instance.subscribeToTopic('usersSuperJet');
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const CustomMain()));
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:superjet/core/services/routeing_page/reoute.dart';
+import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/states.dart';
 import 'package:superjet/super_jet_app/auth/presentation/screens/chick_user.dart';

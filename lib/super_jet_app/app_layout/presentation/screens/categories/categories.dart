@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import '../../../../core/services/routeing_page/reoute.dart';
-import '../../../../core/services/services_locator.dart';
-import '../widgets/categories_widgets.dart';
+import '../../../../../core/services/routeing_page/routing.dart';
+import '../../widgets/categories_widgets.dart';
 import 'categories_details_screen.dart';
 
 class Categories extends StatelessWidget {
   const Categories({super.key});
-
   @override
   Widget build(BuildContext context) {
-
     return
       Scaffold(
         appBar:AppBar(
@@ -28,11 +25,9 @@ class Categories extends StatelessWidget {
             elevation: 0,
         ),
         body:
-        BlocProvider(
-          create: (context)=>TripsBloc(sl())..add(GetCategoriesTripsEvent()),
-          child: BlocBuilder<TripsBloc,TripsState>(
+          BlocBuilder<TripsBloc,TripsState>(
               builder: (context,state){
-                return   Padding(
+                return Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 15),
                   child: ListView.separated(
                       physics: const BouncingScrollPhysics(),
@@ -52,8 +47,6 @@ class Categories extends StatelessWidget {
                       itemCount: state.categoriesModelList.length),
                 );
               }),
-        )
-
      );
   }
 }

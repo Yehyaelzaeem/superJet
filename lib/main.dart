@@ -1,18 +1,18 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/categories.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/chat_details.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/chats.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/home.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment_screen.dart';
-import 'package:superjet/super_jet_app/app_layout/presentation/screens/profile.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/categories/categories.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/chat/chats.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/home/home.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment/payment_screen.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/screens/profile/profile.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/widgets/main_home_widget.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/auth/presentation/bloc/states.dart';
@@ -26,22 +26,32 @@ import 'core/services/services_locator.dart';
 import 'core/shared_preference/shared_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/utils/constants.dart';
-import 'core/utils/enums.dart';
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 
 void main() async {
   Stripe.publishableKey = App.publishableKey;
   ServicesLocator().init();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  messaging.getToken().then((value)async {
+    await CacheHelper.saveDate(key: 'token', value: value);
+    print(value);
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+
+  Bloc.observer = MyBlocObserver();
   Widget widget;
-  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [ SystemUiOverlay.top ]);
+
   var onBoarding = await CacheHelper.getDate(key: 'onBoarding');
   var type = await CacheHelper.getDate(key: 'type');
   var isLog = await CacheHelper.getDate(key: 'isLog');
   var uId = await CacheHelper.getDate(key: 'uId');
-
   print(type);
   print(isLog);
   print(uId);
@@ -76,22 +86,10 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AppOnBoardingCubit()),
-        BlocProvider(
-          create: (context) => AuthCubit(sl()),
-        ),
-        BlocProvider(
-          create: (context) => AuthCubit(sl())..getPermission(),
-        ),
-        BlocProvider(
-            create: (context) => TripsBloc(sl())
-              ..add(GetProfileEvent(context))
-              ..add(GetCategoriesTripsEvent())),
-        BlocProvider(
-          create: (context) => SuperCubit(sl()),
-        ),
-        // BlocProvider(create: (context)=>AppCubit()..getHomeData(context),),
-        // BlocProvider(create: (context)=>AppCubit()..getHomeData(context),),
-        // BlocProvider(create: (context)=>AppCubit()..getHomeData(context)..getCategories(context)..getFavoritesData(context)..getProfileData(context),),
+        BlocProvider(create: (context) => AuthCubit(sl()),),
+        BlocProvider(create: (context) => AuthCubit(sl())..getPermission(),),
+        BlocProvider(create: (context) => TripsBloc(sl())..add(GetCategoriesTripsEvent())..add(GetTripsEvent('All',context))..add(GetProfileEvent(context))),
+        BlocProvider(create: (context) => SuperCubit(sl()),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -125,93 +123,145 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class CustomMain extends StatelessWidget {
+class CustomMain extends StatefulWidget {
   const CustomMain({super.key});
+  @override
+  State<CustomMain> createState() => _CustomMainState();
+}
 
+class _CustomMainState extends State<CustomMain> {
+  @override
+  initState(){
+    onMessageAndOpenedApp();
+    onMessageNotification();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     var cubit = AuthCubit.get(context);
     cubit.getType();
-    SuperCubit.get(context).getType();
     PersistentTabController controller = PersistentTabController(initialIndex: 0);
     return SafeArea(
-        child: Scaffold(
-      body:  BlocConsumer<AuthCubit, AppAuthStates>(
-        builder: (context, state1) {
-          return WillPopScope(
-            onWillPop: () {
-              customDialogPopScope(context);
-              return Future.value(false);
-            },
-            child: ConditionalBuilder(
-                condition: cubit.type.isNotEmpty,
-                //&& cubit.city.isNotEmpty,
-                builder: (context) {
-                  return PersistentTabView(
-                    context,
-                    controller: controller,
-                    screens: cubit.type == "user"
-                        ? AppHomeWidgets.userScreens
-                        : cubit.type == "admin"
-                        ? AppHomeWidgets.adminScreens
-                        : [
-                      const Home(city: 'cairo'),
-                      const Categories(),
-                      const PaymentScreen(),
-                      const Profile(),
-                    ],
-                    items: cubit.type == "user"
-                        ? AppHomeWidgets.userNavBarsItems(context)
-                        : cubit.type == "admin"
-                        ? AppHomeWidgets.adminNavBarsItems(
-                        context)
-                        : AppHomeWidgets.branchNavBarsItems(
-                        context),
-                    confineInSafeArea: true,
-                    backgroundColor: Colors.white,
-                    // Default is Colors.white.
-                    handleAndroidBackButtonPress: true,
-                    // Default is true.
-                    resizeToAvoidBottomInset: true,
-                    // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-                    stateManagement: false,
-                    // Default is true.
-                    hideNavigationBarWhenKeyboardShows: true,
-                    // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-                    decoration: NavBarDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      colorBehindNavBar: Colors.white,
-                    ),
-                    popAllScreensOnTapOfSelectedTab: true,
-                    popActionScreens: PopActionScreensType.all,
-                    itemAnimationProperties:
-                    const ItemAnimationProperties(
-                      // Navigation Bar's items animation properties.
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.ease,
-                    ),
-                    screenTransitionAnimation:
-                    const ScreenTransitionAnimation(
-                      // Screen transition animation on change of selected tab.
-                      animateTabTransition: true,
-                      curve: Curves.ease,
-                      duration: Duration(milliseconds: 200),
-                    ),
+        child:
+        Scaffold(
+         body:
+            BlocConsumer<AuthCubit,AppAuthStates>(
+              builder: (context, state) {
+                return WillPopScope(
+                  onWillPop: () {
+                    customDialogPopScope(context);
+                    return Future.value(false);
+                  },
+                  child:
+                   ConditionalBuilder(
+                       condition: cubit.type.isNotEmpty,
+                       builder: (context){
+                         return PersistentTabView(
+                           context,
+                           controller: controller,
+                           screens:
+                           cubit.type == "user"
+                               ? AppHomeWidgets.userScreens
+                               : cubit.type == "admin"
+                               ? AppHomeWidgets.adminScreens
+                               : [
+                             const Home(city: 'cairo'),
+                             const Categories(),
+                             const PaymentScreen(),
+                             const Profile(),
+                           ],
+                           items: cubit.type == "user"
+                               ? AppHomeWidgets.userNavBarsItems(context)
+                               : cubit.type == "admin"
+                               ? AppHomeWidgets.adminNavBarsItems(
+                               context)
+                               : AppHomeWidgets.branchNavBarsItems(
+                               context),
+                           confineInSafeArea: true,
+                           backgroundColor: Colors.white,
+                           // Default is Colors.white.
+                           handleAndroidBackButtonPress: true,
+                           // Default is true.
+                           resizeToAvoidBottomInset: true,
+                           // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+                           stateManagement: false,
+                           // Default is true.
+                           hideNavigationBarWhenKeyboardShows: true,
+                           // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+                           decoration: NavBarDecoration(
+                             borderRadius: BorderRadius.circular(10.0),
+                             colorBehindNavBar: Colors.white,
+                           ),
+                           popAllScreensOnTapOfSelectedTab: true,
+                           popActionScreens: PopActionScreensType.all,
+                           itemAnimationProperties:
+                           const ItemAnimationProperties(
+                             // Navigation Bar's items animation properties.
+                             duration: Duration(milliseconds: 200),
+                             curve: Curves.ease,
+                           ),
+                           screenTransitionAnimation:
+                           const ScreenTransitionAnimation(
+                             // Screen transition animation on change of selected tab.
+                             animateTabTransition: true,
+                             curve: Curves.ease,
+                             duration: Duration(milliseconds: 200),
+                           ),
 
-                    navBarStyle: NavBarStyle
-                        .style3, // Choose the nav bar style with this property.
-                  );
-                },
-                fallback: (context) => const Center(
-                  child: CircularProgressIndicator(
-                    color: Colors.yellowAccent,
-
-                  ),
-                )),
-          );
-        },
-        listener: (context, state) {},
-      ),
-    ));
+                           navBarStyle: NavBarStyle
+                               .style3, // Choose the nav bar style with this property.
+                         );
+                       },
+                       fallback: (context)=>const Center(child: CircularProgressIndicator(),))
+                );
+              },
+              listener: (context, state) {},
+           ),
+        ),
+    );
   }
+
+  onMessageAndOpenedApp(){
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if(message.data['type']=='chat'){
+          setState(() {
+            SuperCubit.get(context).listOfChats.add(1);
+            SuperCubit.get(context).listOfChatSetting.add(1);
+            SuperCubit.get(context).listOfChat.add(1);
+            SuperCubit.get(context).listOfNameChats.add(message.notification!.title!.trim());
+          });
+
+        }
+        else if(message.data['type']=='all'){
+          setState(() {
+            SuperCubit.get(context).listOfChatSetting.add(1);
+          });
+        }
+      }
+
+    });
+
+  }
+  onMessageNotification(){
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        if(message.data['type']=='chat'){
+          setState(() {
+            SuperCubit.get(context).listOfChatSetting.add(1);
+            SuperCubit.get(context).listOfChats.add(1);
+            SuperCubit.get(context).listOfChat.add(1);
+            SuperCubit.get(context).listOfNameChats.add(message.notification!.title!.trim());
+          });
+        }else if(message.data['type']=='all'){
+          setState(() {
+            SuperCubit.get(context).listOfChatSetting.add(1);
+          });
+        }
+      }
+
+    });
+
+  }
+
 }

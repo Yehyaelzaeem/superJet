@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:superjet/core/services/routeing_page/reoute.dart';
+import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/admin_screens/admin_notification.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/widgets/admin.dart';
-import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
-import 'admin_screens/branches_table_screen.dart';
-import 'admin_screens/trips_table_screen.dart';
-import 'admin_screens/user_table_screen.dart';
+import 'branches_table_screen.dart';
+import 'trips_table_screen.dart';
+import 'user_table_screen.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -14,6 +13,8 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var m =MediaQuery.of(context).size;
+    var token = 'dm3quspCQ8KDfx9sVy7ADa:APA91bFVFdVKVTr6A2vNryfDDLgtbRwpmFTU7MVOMJQuH1Ork1fHoA-qbod2PgNOb_FkMSc_sDUhxmcUYeZJ2eaXuVQSEzgx3P8Ua5VF5PHhG8N-ZdFxbTGI_Y0fPYY6IHvjRU_IzFcR';
+
     return   Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -49,12 +50,13 @@ class AdminScreen extends StatelessWidget {
 
             customAdminItems(Icons.chat, "Chat", (){
               // NavigatePages.persistentNavBarNavigator(const AdminTripsScreen2(), context);
-
-
             }, context),
             SizedBox(height: m.height*0.04,),
             customAdminItems(Icons.notification_add, "Notification", (){
-              NavigatePages.persistentNavBarNavigator(const AdminNotification(), context);
+              NavigatePages.persistentNavBarNavigator(
+                  const AdminNotification(
+                    text: 'Send notification to all users in Super Jet App',
+                    token:'/topics/usersSuperJet',), context);
             }, context),
             SizedBox(height: m.height*0.04,),
 
