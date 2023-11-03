@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:superjet/core/image/image.dart';
 import 'package:superjet/core/widgets/widgets.dart';
@@ -32,6 +33,19 @@ abstract class BaseSuperJetDataSource {
   Future addTrips(AddTripModel addTripModel ,context);
   Future deleteTrips(TripsModelDataTable tripsModelDataTable,  context);
   Future updateTrips(TripsModelDataTable tripsModelDataTable, context);
+
+
+// Cancel trips
+  Future cancelTrips(TripsModel tripsModel ,UserModel userModel,String chairID);
+
+
+//Recycling Trips
+  Future recyclingTrip(TripsModelDataTable tripsModelDataTable);
+  Future recyclingChairsOfTrip(TripsModelDataTable tripsModelDataTable);
+
+//Change Email
+  Future changeEmail(String email ,String id ,String type,context);
+  Future changePassword(String password ,String id ,String type,context);
 
 
 // Admin
@@ -844,6 +858,8 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
 
   @override
   Future addUser(UsersTableModel usersTableModel, context) async {
+    var token = await CacheHelper.getDate(key: 'token');
+
     try {
       UserModel userModel = UserModel(
         name: usersTableModel.name,
@@ -858,6 +874,7 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
         coverImage: AppImage.baseCoverImage,
         lat: 'null',
         long: 'null',
+        wallet: '0.0', token: token,
       );
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: userModel.email,
@@ -905,6 +922,8 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
 
   @override
   Future updateUser(UsersTableModel usersTableModel, context) async {
+    var token = await CacheHelper.getDate(key: 'token');
+
     try {
       UserModel userModel = UserModel(
         name: usersTableModel.name,
@@ -919,6 +938,7 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
         coverImage: AppImage.baseCoverImage,
         lat: usersTableModel.lat,
         long: usersTableModel.long,
+        wallet: usersTableModel.wallet, token: token,
       );
       var x = FirebaseFirestore.instance.collection('Accounts')
           .doc('1')
@@ -935,6 +955,8 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
 //Branch *******************************************************
   @override
   Future addBranch(UsersTableModel usersTableModel, context) async {
+    var token = await CacheHelper.getDate(key: 'token');
+
     try {
       UserModel userModel = UserModel(
         name: usersTableModel.name,
@@ -949,6 +971,8 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
         coverImage: AppImage.baseCoverImage,
         lat: 'null',
         long: 'null',
+        wallet: usersTableModel.wallet,
+        token: token,
       );
       var x = FirebaseFirestore.instance.collection('Accounts')
           .doc('1')
@@ -982,6 +1006,7 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
   @override
   Future updateBranch(UsersTableModel usersTableModel, context) async {
     try {
+     var token = await CacheHelper.getDate(key: 'token');
       UserModel userModel = UserModel(
         name: usersTableModel.name,
         email: usersTableModel.email,
@@ -995,6 +1020,8 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
         coverImage: AppImage.baseCoverImage,
         lat: usersTableModel.lat,
         long: usersTableModel.long,
+        wallet: usersTableModel.wallet,
+        token: token,
       );
       var x = FirebaseFirestore.instance.collection('Accounts')
           .doc('1')
@@ -1082,5 +1109,103 @@ class SuperJetDataSource implements BaseSuperJetDataSource {
     return list;
   }
 
+  @override
+  Future cancelTrips(TripsModel tripsModel,UserModel userModel, String chairID)async {
+    var res = FirebaseFirestore.instance.collection('Trips').doc(tripsModel.categoryID.trim())
+        .collection(tripsModel.categoryName.trim()).doc(
+        tripsModel.tripID.trim()).collection('Chairs');
+       var t =await res.get();
+        for(var r in t.docs){
+          if(r.data()['chairID'].toString().trim()==chairID.trim()){
+            res.doc(r.id).update({
+              'isAvailable': 'true',
+              'isPaid': 'false',
+              'passengerID': 'null',
+            });
+          }
+        }
+    List<TripID> list = userModel.tripIdList!;
+    var money ="0.0";
+    for(var f in list){
+      if(f.tripID.trim()==tripsModel.tripID.trim() && f.chairID.toString().trim()==chairID.trim()){
+        money=tripsModel.price;
+        break;
+      }
+    }
+    list.removeWhere((element) => element.tripID.trim()==tripsModel.tripID.trim() && element.chairID.toString().trim()==chairID.trim());
+    var r = FirebaseFirestore.instance.collection('Accounts')
+        .doc('1').collection(userModel.type).doc(userModel.uId);
+    r.update({
+      'trips':List<Map<String, dynamic>>.from(list.map((e) => e.toJson())),
+      'wallet':'${double.parse(userModel.wallet)+double.parse(money)}'
+    });
+  }
 
+  @override
+  Future recyclingTrip(TripsModelDataTable tripsModelDataTable)async {
+    var x = FirebaseFirestore.instance.collection('Trips').doc(tripsModelDataTable.categoryID.trim())
+        .collection(tripsModelDataTable.categoryName.trim()).doc(
+        tripsModelDataTable.tripID.trim()).collection('Chairs');
+    var res =await x.get();
+    for(var a in res.docs){
+       x.doc(a.id).update({
+         'isAvailable':'true',
+         'isPaid':'false',
+         'passengerID':'null',
+       });
+    }
+  }
+
+  @override
+  Future recyclingChairsOfTrip(TripsModelDataTable tripsModelDataTable)async {
+    var x = FirebaseFirestore.instance.collection('Trips').doc(tripsModelDataTable.categoryID.trim())
+        .collection(tripsModelDataTable.categoryName.trim()).doc(
+        tripsModelDataTable.tripID.trim()).collection('Chairs');
+    var res =await x.get();
+    for(var a in res.docs){
+      if(a.data()['isAvailable']=='true'&&a.data()['isPaid']=='true' ||
+          a.data()['isAvailable']=='false'&&a.data()['isPaid']=='false'){
+        x.doc(a.id).update({
+          'isAvailable':'true',
+          'isPaid':'false',
+          'passengerID':'null',
+        });
+      }
+    }
+  }
+
+  @override
+  Future changeEmail(String email ,String id ,String type,context)async {
+    try{
+      User user =FirebaseAuth.instance.currentUser!;
+      user.updateEmail(email.trim()).then((value){
+        showToast('Success Update ', ToastStates.success, context);
+      });
+      var res =  FirebaseFirestore.instance.collection('Accounts')
+          .doc('1').collection(type).doc(id);
+        res.update({
+          'email':email.trim(),
+        });
+    }catch(e){
+      showToast(e.toString(), ToastStates.error, context);
+    }
+  }
+
+  @override
+  Future changePassword(String password, String id, String type, context) async{
+
+    try{
+      User user =FirebaseAuth.instance.currentUser!;
+      user.updatePassword(password.trim()).then((value){
+        showToast('Success Update ', ToastStates.success, context);
+      });
+      var res =  FirebaseFirestore.instance.collection('Accounts')
+          .doc('1').collection(type).doc(id);
+      res.update({
+        'password':password.trim(),
+      });
+    }catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
 }

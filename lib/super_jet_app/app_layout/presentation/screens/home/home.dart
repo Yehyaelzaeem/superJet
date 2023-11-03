@@ -10,7 +10,6 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
             body:
             BlocConsumer<TripsBloc,TripsState>(
                 builder: (context,state){
@@ -26,9 +25,9 @@ class Home extends StatelessWidget {
                                 carouselSlider(context),
                                 const SizedBox(height: 8,),
                                 listOfCityWidget(),
-                                rowTitleHome('Categories'),
+                                rowTitleHome('Categories',context),
                                 categoriesWidget(context),
-                                rowTitleHome('Trips'),
+                                rowTitleHome('Trips',context),
                                 customLinearProgressIndicatorHome(),
                                 const SizedBox(height: 8,),
                                 gridViewTrips(context,false,false),

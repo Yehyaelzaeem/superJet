@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
@@ -62,7 +63,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
   double tax = 0.0;
   double discount = -0.0;
   bool isPay = false;
-  String? uId ;
+  var uId ='' ;
   bool lightEn = true;
   bool lightAr = false;
 
@@ -80,7 +81,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
 //Send Notification
   sendNotification(String title, String body,String type, String token) async {
-    print('start sending');
     await http.post(
       Uri.parse(
         'https://fcm.googleapis.com/fcm/send',
@@ -282,8 +282,9 @@ class SuperCubit extends Cubit<AppSuperStates> {
             long: 'null',
             lat: 'null',
             type: 'user',
-            token: ''
-          );
+            token: '',
+            wallet: '0.0',
+        );
         await tripsUseCase.addUser(usersTableModel, context);
         usersList.clear();
         Navigator.pop(context);
@@ -357,7 +358,6 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
   //Update Data to Date Table
   updateTrip(context) async {
-
     bool isFoundUpdate =false;
     for (var a in filteredDataTrips) {
       if (a.selected == true) {
@@ -379,11 +379,12 @@ class SuperCubit extends Cubit<AppSuperStates> {
                 categoryID: a.categoryID,
                 categoryName: a.categoryName,
                 state: selectedOptionState == 2 ? 'waiting' : 'finished',
-              )
-              , context);
+              ),
+              context);
           tripsList.clear();
           Navigator.pop(context);
           getTrips(context);
+          emit(UpdateTrips());
         },context: context,tripsModelDataTable: a);
         break;
       }
@@ -416,6 +417,8 @@ class SuperCubit extends Cubit<AppSuperStates> {
                 lat: a.lat.trim(),
                 type: a.type.trim(),
                 token: a.token,
+                wallet: a.wallet,
+
             )
 
               , context);
@@ -473,7 +476,38 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(SendNotification());
   }
 
-  //Branches
+
+//Payment
+  payWallet(context,String total)async{
+    var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection(type).doc(uId!.trim());
+    var res =await d.get();
+    var wallet ='${double.parse(res.data()!['wallet'])-double.parse(total)}';
+    for(var i =0;i<=listCartTrips.length-1;i++){
+      TripsModel list =listCartTrips[i];
+      var chair=chairsId[i];
+      var chairId=chairsDoc[i];
+      var collectionReference = FirebaseFirestore.instance
+          .collection('Trips').doc(list.categoryID.trim())
+          .collection(list.categoryName.trim())
+          .doc(list.tripID.trim()).collection('Chairs');
+      collectionReference.doc(chairId.toString().trim()).update({'isPaid': 'true'});
+      d.update({
+        'trips':FieldValue.arrayUnion([
+          {
+            'chairID': int.parse(chair),
+            'tripID': list.tripID,
+          }
+        ]),
+        'wallet':wallet,
+      });
+    }
+   removeCart();
+    Navigator.pop(context);
+    emit(PayByWallet());
+  }
+
+
+//Branches
   getBranches(context) async {
     var res = await tripsUseCase.getBranches(context);
     branchesList = res;
@@ -498,7 +532,8 @@ class SuperCubit extends Cubit<AppSuperStates> {
           long: 'null',
           lat: 'null',
           type: 'branch',
-          token: ''
+          token: '',
+          wallet: '0.0',
         );
         await tripsUseCase.addBranch(usersTableModel, context);
         branchesList.clear();
@@ -560,6 +595,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
                     lat: a.lat,
                     type: a.type,
                     token: a.token,
+                    wallet: a.wallet,
                   )
                   , context);
               branchesList.clear();
@@ -577,10 +613,65 @@ class SuperCubit extends Cubit<AppSuperStates> {
     emit(UpdateBranchesDataTable());
   }
 
+//Cancel Booked Trips
+  Future cancelBookedTrips(TripsModel tripsModel,UserModel userModel, String chairID)async{
+    await tripsUseCase.cancelTrips(tripsModel, userModel, chairID);
+    emit(CancelBookedTrips());
+  }
 
+//Recycling Trip
+  recyclingTrip(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataTrips) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        await tripsUseCase.recyclingTrip(a);
+        showToast('Recycling is success...', ToastStates.success, context);
+        break;
+      }
+    }
+    if(isFoundUpdate==false){
+      showToast('Select your item for Recycling', ToastStates.warning, context);
+    }
+    isFoundUpdate =false;
+    emit(RecyclingTrips());
+  }
+  recyclingChairsOfTrip(context) async {
+    bool isFoundUpdate =false;
+    for (var a in filteredDataTrips) {
+      if (a.selected == true) {
+        isFoundUpdate=true;
+        await tripsUseCase.recyclingChairsOfTrip(a);
+        showToast('Recycling Chairs UnAvailable is success...', ToastStates.success, context);
+        break;
+      }
+    }
+    if(isFoundUpdate==false){
+      showToast('Select your item for Recycling', ToastStates.warning, context);
+    }
+    isFoundUpdate =false;
+    emit(RecyclingTrips());
+  }
 
-
-
+//Change Email
+  changeEmail(String email ,context)async{
+    getID();
+    getType();
+    await tripsUseCase.changeEmail(email,uId,type,context).then((value) {
+      controllerName.text='';
+      Navigator.pop(context);
+    });
+    emit(ChangeEmailOrPassword());
+  }
+  changePassword(String password ,context)async{
+    getID();
+    getType();
+    await tripsUseCase.changePassword(password,uId,type,context).then((value) {
+      controllerName.text='';
+      Navigator.pop(context);
+    });
+    emit(ChangeEmailOrPassword());
+  }
 //Chat
   sendMessage({required UserModel userModelSender ,required UsersTableModel userModelReceiver}) async {
     try{
@@ -632,6 +723,19 @@ class SuperCubit extends Cubit<AppSuperStates> {
     isSearchingBranches =!isSearchingBranches;
     searchBranchController.text='';
     emit(SearchTrips());
+  }
+  bool isDark =false;
+  changeMode( bool fromShard)async{
+    if(fromShard.toString().isNotEmpty){
+      isDark=fromShard;
+      await CacheHelper.saveDate(key: 'isDark', value: isDark);
+      emit(ChangeMode());
+    }else{
+      isDark =!isDark;
+      await CacheHelper.saveDate(key: 'isDark', value: isDark);
+      emit(ChangeMode());
+    }
+
   }
   changeSearchUser(){
     isSearchingUser =!isSearchingUser;

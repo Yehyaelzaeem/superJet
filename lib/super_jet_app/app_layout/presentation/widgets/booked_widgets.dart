@@ -5,7 +5,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
   return Container(
     height: MediaQuery.of(context).size.height * 0.1,
     decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).canvasColor,
         borderRadius: const BorderRadius.only(
             bottomRight: Radius.circular(30),
             bottomLeft: Radius.circular(30))),
@@ -25,8 +25,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                 children: [
                   Text(
                     'From city : ',
-                    style: TextStyle(
-                        color: Colors.grey.shade600),
+                    style:Theme.of(context).textTheme.titleSmall
                   ),
                   Text(
                     tripsModel.fromCity,
@@ -45,8 +44,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                 children: [
                   Text(
                     'To city      : ',
-                    style: TextStyle(
-                        color: Colors.grey.shade600),
+                    style:Theme.of(context).textTheme.titleSmall
                   ),
                   Text(
                     tripsModel.toCity,
@@ -65,8 +63,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                 children: [
                   Text(
                     'Type         : ',
-                    style: TextStyle(
-                        color: Colors.grey.shade600),
+                    style: Theme.of(context).textTheme.titleSmall
                   ),
                   Text(
                     tripsModel.isVip == "true"
@@ -87,8 +84,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                 children: [
                   Text(
                     'Price        : ',
-                    style: TextStyle(
-                        color: Colors.grey.shade600),
+                    style: Theme.of(context).textTheme.titleSmall
                   ),
                   Text(
                     tripsModel.price,
@@ -114,37 +110,37 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8,),
-            const Row(
+             Row(
               children: [
-                Text('Available chair',
+                const Text('Available chair',
                   style: TextStyle(
                       fontSize: 10
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 SizedBox(
                   width: 8,
                   height: 8,
                   child: CircleAvatar(
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Theme.of(context).hoverColor,
                     radius: 50,
                   ),
                 )
               ],
             ),
-            const Row(
+             Row(
               children: [
-                Text('Unavailable chair',
+                const Text('Unavailable chair',
                   style: TextStyle(
                       fontSize: 10
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 SizedBox(
                   width: 8,
                   height: 8,
                   child: CircleAvatar(
-                    backgroundColor: Colors.grey,
+                    backgroundColor:  Theme.of(context).disabledColor,
                     radius: 50,
                   ),
                 )
@@ -154,9 +150,7 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
 
             Text(
               'Date of Trip ',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600),
+              style: Theme.of(context).textTheme.titleSmall
             ),
             const SizedBox(height: 1,),
             Text(tripsModel.date,
@@ -169,19 +163,6 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                           color: Colors.white54,
                           blurRadius: 1)
                     ])),
-            // BlocConsumer<SuperCubit,AppSuperStates>(
-            //     builder: (context,state){
-            //       var c = SuperCubit.get(context);
-            //       return    DropdownButton(
-            //         dropdownColor: Theme.of(context).primaryColor,
-            //         value: c.selectedValue,
-            //         items: c.dropdownItems,
-            //         onChanged: (String? value) {
-            //           c.changeDropdownValue(value!);
-            //         },
-            //       );
-            //     },
-            //     listener: (context,state){})
           ],
         ),
         SizedBox(
@@ -192,37 +173,37 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8,),
-            const Row(
+             Row(
               children: [
-                Text('Waiting in Cart',
+                const Text('Waiting in Cart',
                   style: TextStyle(
                       fontSize: 10
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 SizedBox(
                   width: 8,
                   height: 8,
                   child: CircleAvatar(
-                    backgroundColor: Colors.red,
+                    backgroundColor:Theme.of(context).focusColor,
                     radius: 50,
                   ),
                 )
               ],
             ),
-            const Row(
+             Row(
               children: [
-                Text('Damaged chair',
+                const Text('Damaged chair',
                   style: TextStyle(
                       fontSize: 10
                   ),
                 ),
-                SizedBox(width: 5,),
+                const SizedBox(width: 5,),
                 SizedBox(
                   width: 8,
                   height: 8,
                   child: CircleAvatar(
-                    backgroundColor: Colors.black54,
+                    backgroundColor: Theme.of(context).splashColor,
                     radius: 50,
                   ),
                 )
@@ -231,14 +212,10 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
             const SizedBox(height: 5,),
             Text(
               'Time of Trip',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade600),
-            ),
+              style: Theme.of(context).textTheme.titleSmall,),
             const SizedBox(height: 1,),
-
             Text(
-              tripsModel.time,
+              '     ${tripsModel.time.substring(0,5)}',
               style: const TextStyle(
                   color: Colors.white,
                   fontSize: 14,
@@ -249,20 +226,6 @@ Widget bookedDateScreen(TripsModel tripsModel ,context){
                         blurRadius: 1)
                   ]),
             ),
-
-            // BlocConsumer<SuperCubit,AppSuperStates>(
-            //     builder: (context,state){
-            //       var c = SuperCubit.get(context);
-            //       return    DropdownButton(
-            //         dropdownColor: Theme.of(context).primaryColor,
-            //         value: c.selectedValueTime,
-            //         items: c.dropdownItemsTime,
-            //         onChanged: (String? value) {
-            //           c.changeDropdownValueTime(value!);
-            //         },);
-            //
-            //     },
-            //     listener: (context,state){}),
           ],
         ),
       ],

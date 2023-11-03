@@ -4,6 +4,7 @@ import 'package:superjet/core/image/image.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment/cart_trips_details.dart';
+import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../../../core/services/routeing_page/routing.dart';
 import '../../data/models/trip_model.dart';
 
@@ -259,15 +260,15 @@ Widget customCartGridView(List<TripsModel> listTrips,List chairId,List chairDoc 
 Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel,String chairId,String chairDoc) =>
     GestureDetector(
       onTap: ()async{
-         NavigatePages.persistentNavBarNavigator(DisplayCartTripsDetails(tripsState: tripsState, tripsModel: tripsModel, chairId: chairId), context);
+         NavigatePages.persistentNavBarNavigator(DisplayCartTripsDetails(tripsState: tripsState, tripsModel: tripsModel, chairId: chairId, chairDoc: chairDoc,), context);
       },
       child: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 7)]),
+            decoration:  BoxDecoration(
+                color: Theme.of(context).highlightColor,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                boxShadow: const [BoxShadow(color: Colors.black54, blurRadius: 7)]),
             child: Padding(
               padding: const EdgeInsets.all(3.0),
               child: Column(
@@ -310,7 +311,7 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
                     padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5),
                     child: Text(
                       tripsModel.name,
-                      style: const TextStyle(fontSize: 12),
+                      style:  Theme.of(context).textTheme.displaySmall,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -333,7 +334,7 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Text(
-                          tripsModel.time,
+                          tripsModel.time.substring(0,5),
                           style: const TextStyle(
                             fontSize: 10,
                             color: Colors.grey,
@@ -419,3 +420,179 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
       ),
     );
 
+Future customBottomSheetCustomWallets(UserModel userModel ,String chairsNumber ,String total ,context){
+  var c =SuperCubit.get(context);
+  return   showModalBottomSheet(
+    backgroundColor: Colors.white,
+      elevation:5.5,
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30.0),
+            topRight: Radius.circular(30.0)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 18, right: 18),
+          child: SingleChildScrollView(
+            child: Column(
+              // mainAxisSize: MainAxisSize.min,
+              // crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  height: 30,
+                ),
+               Row(
+                 children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                       mainAxisAlignment: MainAxisAlignment.start,
+                       children: [
+                         const SizedBox(height: 30,),
+                         customWalletRowSheetButton(text: 'Name : ${userModel.name}', color: Colors.black),
+                         customWalletRowSheetButton(text: 'Email : ${userModel.email}', color: Colors.black),
+                         customWalletRowSheetButton(text: 'Phone : ${userModel.phone}', color: Colors.black),
+                         customWalletRowSheetButton(text: 'The Wallet : ${userModel.wallet} EG', color: Colors.black),
+                         const SizedBox(
+                           height: 8,
+                         ),
+                       ],
+                   ),
+                    ),
+                   Expanded(
+                     child: Center(
+                         child: Image.asset(AppImage.wallet)),
+                   ),
+                 ],
+               ),
+                 const Divider(),
+                 const SizedBox(height: 20,),
+                 Row(
+                  children: [
+                    const Text(
+                      'Chairs :  ',
+                      style:  TextStyle(
+                          color: Colors.black45,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      chairsNumber,
+                      style:  const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8,),
+                Row(
+                  children: [
+                    const Text(
+                      'Total :  ',
+                      style:  TextStyle(
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    Text(
+                      '$total EG',
+                      style:  const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 18),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                InkWell(
+                  onTap:(){
+                    c.payWallet(context,total);
+                  },
+                  child: Container(
+                    height:
+                    MediaQuery.of(context).size.width *
+                        0.115,
+                    width: MediaQuery.of(context).size.width *
+                        0.8,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(30))),
+                    child:  const Center(
+                        child: Text(
+                          'Pay',
+                          style: TextStyle(
+                              color: Colors.white,
+                              shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
+
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                ),
+                const SizedBox(
+                  height: 25,
+                ),
+                InkWell(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    height:
+                    MediaQuery.of(context).size.width *
+                        0.115,
+                    width: MediaQuery.of(context).size.width *
+                        0.8,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
+                        borderRadius: const BorderRadius.all(
+                            Radius.circular(30))),
+                    child: const Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                              color: Colors.white,
+                              shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
+                              fontWeight: FontWeight.bold),
+                        )),
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            ),
+          ),
+        );
+      });
+}
+
+Widget customWalletRowSheetButton({required String text,required Color? color}){
+  return   Padding(
+    padding: const EdgeInsets.only(top:5.0),
+    child: Text(
+      text,
+      style:  TextStyle(
+          color: color,
+          fontWeight: FontWeight.w500,
+          fontSize: 13),
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
+    ),
+  );
+}

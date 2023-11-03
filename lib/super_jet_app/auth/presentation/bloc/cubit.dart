@@ -120,6 +120,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
     var long =await CacheHelper.getDate(key: 'long');
     var city =await CacheHelper.getDate(key: 'city');
     var type =await CacheHelper.getDate(key: 'type');
+    var token =await CacheHelper.getDate(key: 'token');
     UserCredential us = await signInWithGoogle(context);
     CacheHelper.saveDate(key: 'isLog', value: true);
     CacheHelper.saveDate(key: 'uId', value: us.user!.uid);
@@ -147,6 +148,8 @@ class AuthCubit extends Cubit<AppAuthStates>{
             profileImage: (us.user!.photoURL.toString()),
             coverImage:AppImage.baseCoverImage,
             tripIdList: [],
+            wallet: '0.0',
+            token: token,
           ), context);
     }
     await FirebaseMessaging.instance.subscribeToTopic('usersSuperJet');

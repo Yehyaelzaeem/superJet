@@ -29,13 +29,12 @@ class UserTableScreen extends StatelessWidget{
                     child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            const Padding(
+                             Padding(
                               padding:
-                              EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
+                              const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
                               child: Text(
                                 'Users Data',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.titleMedium
                               ),
                             ),
                             c.isSearchingUser == true
@@ -52,6 +51,7 @@ class UserTableScreen extends StatelessWidget{
                             ),
                           ):const SizedBox(),
                             PaginatedDataTable(
+                              showCheckboxColumn:true,
                               sortColumnIndex: c.currentSortColumn,
                               sortAscending: c.isSortAsc,
                               rowsPerPage: c.rowPer,

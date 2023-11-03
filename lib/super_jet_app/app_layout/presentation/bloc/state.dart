@@ -28,4 +28,9 @@ class  GetMessage extends AppSuperStates{}
 class  RemoveNotificationNumber extends AppSuperStates{}
 class  ChangeLanguage extends AppSuperStates{}
 class  SendNotification extends AppSuperStates{}
+class  CancelBookedTrips extends AppSuperStates{}
+class  PayByWallet extends AppSuperStates{}
+class  RecyclingTrips extends AppSuperStates{}
+class  ChangeEmailOrPassword extends AppSuperStates{}
+class  ChangeMode extends AppSuperStates{}
 

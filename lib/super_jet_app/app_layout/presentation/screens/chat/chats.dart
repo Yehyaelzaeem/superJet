@@ -15,17 +15,13 @@ class Chats extends StatelessWidget {
  final UserModel userModel;
   @override
   Widget build(BuildContext context) {
-    SuperCubit.get(context).removeNotificationListOfChat();
+    // SuperCubit.get(context).removeNotificationListOfChat();
     List<UsersTableModel> chatNewList = [];
     var cubit= SuperCubit.get(context);
 
     return Scaffold(
        appBar: AppBar(
          automaticallyImplyLeading: false,
-         systemOverlayStyle:  const SystemUiOverlayStyle(
-           statusBarColor: Colors.white,
-             statusBarIconBrightness:Brightness.dark,),
-         backgroundColor: Colors.white,
          title:
          Container(
            alignment: AlignmentDirectional.centerStart,
@@ -39,15 +35,11 @@ class Chats extends StatelessWidget {
                  },
                  child: const Icon(
                    Icons.arrow_back,
-                   color: Colors.black,),
+                   ),
                ),
                const SizedBox(width: 5,),
-               const Text('Chats',
-                 style: TextStyle(
-                     fontSize: 25,
-                     fontWeight: FontWeight.bold,
-                     color: Colors.black87
-                 ),),
+                Text('Chats',
+                 style: Theme.of(context).textTheme.titleMedium),
 
              ],
            ),

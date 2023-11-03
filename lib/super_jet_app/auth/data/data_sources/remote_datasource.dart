@@ -23,17 +23,20 @@ class AuthDataSource implements BaseAuthDataSource{
   @override
   Future login(LoginModel loginModel,context) async {
     var type =await CacheHelper.getDate(key: 'type');
-    print(type);
+    var token =await CacheHelper.getDate(key: 'token');
     try{
       if(type =='user'){
         await FirebaseAuth.instance.signInWithEmailAndPassword(
             email: loginModel.email,
             password: loginModel.password).then((value) async{
-          var r = await FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type).get();
-          for(var n in r.docs){
+          var r =  FirebaseFirestore.instance.collection("Accounts").doc('1').collection(type);
+          var t =await r.get();
+          for(var n in t.docs){
             if(loginModel.email == n.data()['email']){
               CacheHelper.saveDate(key: "uId", value: n.id);
-
+              r.doc(n.id).update({
+                'token':token
+              });
             }
           }
         });
@@ -114,6 +117,7 @@ class AuthDataSource implements BaseAuthDataSource{
            var long =await CacheHelper.getDate(key: 'long');
            var city =await CacheHelper.getDate(key: 'city');
             var type =await CacheHelper.getDate(key: 'type');
+            var token =await CacheHelper.getDate(key: 'token');
           createUserData(
               UserModel(
                 name: registerModel.name,
@@ -127,7 +131,9 @@ class AuthDataSource implements BaseAuthDataSource{
                 type: type,
                 profileImage: AppImage.baseProfileImage,
                 coverImage: AppImage.baseCoverImage,
-                tripIdList: [],),
+                tripIdList: [],
+                wallet: '0.0',
+                token: token,),
               context);
         Navigator.pop(context);
         showToast('Register successful', ToastStates.success, context);
@@ -153,7 +159,7 @@ class AuthDataSource implements BaseAuthDataSource{
    try{
      FirebaseFirestore.instance.collection('Accounts')
          .doc('1')
-         .collection(userModel.type!)
+         .collection(userModel.type)
          .doc(userModel.uId)
          .set(userModel.toMap());
    }

@@ -12,16 +12,9 @@ class Categories extends StatelessWidget {
     return
       Scaffold(
         appBar:AppBar(
-          backgroundColor: Colors.white,
-            title: const Center(child: Text('Categories',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.black
-            ),
-            )),
-            actions: [IconButton(onPressed: (){}, icon: const Icon(Icons.search,
-                color: Colors.black
-            ),),],
+            title:  const Center(child: Text('Categories',)),
+            actions: [
+              IconButton(onPressed: (){}, icon: const Icon(Icons.search,),),],
             elevation: 0,
         ),
         body:

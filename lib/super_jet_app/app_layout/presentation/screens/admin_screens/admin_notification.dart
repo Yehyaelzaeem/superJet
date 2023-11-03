@@ -21,7 +21,7 @@ class AdminNotification extends StatelessWidget {
                 SizedBox(height: m.height*0.1,),
                  Center(
                   child: Icon(Icons.notifications_active_rounded,
-                  color: Colors.blue.shade900,
+                  color: Theme.of(context).indicatorColor,
                   size: 100,),
                 ),
                  Center(
@@ -29,7 +29,7 @@ class AdminNotification extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 35,
-                    color: Colors.blue.shade900,
+                    color: Theme.of(context).indicatorColor,
                   ),
                   ),
                 ),
@@ -37,10 +37,10 @@ class AdminNotification extends StatelessWidget {
                  Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(text,
-                    style: const TextStyle(
+                    style:  TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 15,
-                        color: Colors.black54
+                        color: Theme.of(context).indicatorColor,
                     ),
                   ),
                 ),

@@ -37,6 +37,7 @@ dependencies:
   get_it: ^7.6.0
   firebase_messaging:
   intl:
+  hexcolor:
   flutter_stripe:
   change_app_package_name: ^1.1.0
   bloc:

@@ -7,7 +7,7 @@ Widget rowCategories(context, CategoriesModel categoriesModel) =>
      child: Container(
        decoration: BoxDecoration(
            borderRadius: const BorderRadius.all(Radius.circular(20)),
-           color: Colors.grey.shade200,
+           color: Theme.of(context).dialogBackgroundColor,
            border: Border.all(color: Colors.white,width: 2),
            boxShadow: const [
              BoxShadow(color: Colors.black54, blurRadius: 2)
@@ -42,19 +42,16 @@ Widget rowCategories(context, CategoriesModel categoriesModel) =>
                        Text(
                           "${categoriesModel.masterCity} - ${categoriesModel.city}",
                          textAlign:TextAlign.start,
-                         style: const TextStyle(
-                           fontWeight: FontWeight.bold,
-                           fontSize: 18,
-                         ),
+                         style: Theme.of(context).textTheme.displayMedium,
                          maxLines: 1,
                          overflow: TextOverflow.ellipsis,
 
                        ),
                        const SizedBox(height: 5,),
-                       customRowCategoriesDetails('Name Of Category : ', categoriesModel.name,),
-                       customRowCategoriesDetails('First Type : ',categoriesModel.categoryName),
-                       customRowCategoriesDetails('Second Type : ',categoriesModel.categorySecondName),
-                       customRowCategoriesDetails('Number Of Trips: ', categoriesModel.numberOfTrips),
+                       customRowCategoriesDetails('Name Of Category : ', categoriesModel.name,context),
+                       customRowCategoriesDetails('First Type : ',categoriesModel.categoryName,context),
+                       customRowCategoriesDetails('Second Type : ',categoriesModel.categorySecondName,context),
+                       customRowCategoriesDetails('Number Of Trips: ', categoriesModel.numberOfTrips,context),
                      ],
                    )
              ),
@@ -69,24 +66,17 @@ Widget rowCategories(context, CategoriesModel categoriesModel) =>
      ),
       );
 
-Widget customRowCategoriesDetails(String constText,String data)=> Row(children: [
+Widget customRowCategoriesDetails(String constText,String data,context)=> Row(children: [
    Text(
     constText,
-    style: const TextStyle(
-      fontWeight: FontWeight.w500,
-      color: Colors.grey,
-      fontSize: 8,
-    ),
+    style: Theme.of(context).textTheme.headlineSmall,
     maxLines: 1,
     overflow: TextOverflow.ellipsis,
   ),
   Expanded(
     child: Text(
       data,
-      style: const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
-      ),
+      style:  Theme.of(context).textTheme.bodySmall,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
     ),

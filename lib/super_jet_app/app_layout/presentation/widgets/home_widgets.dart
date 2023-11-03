@@ -27,22 +27,30 @@ Widget carouselSlider(context) => CarouselSlider(
           Image.asset(
             AppImage.onBoarding1,
             fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
           ),
           Image.asset(
             AppImage.onBoarding2,
             fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
           ),
           Image.asset(
             AppImage.onBoarding3,
             fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+
           ),
           Image.asset(
             AppImage.onBoarding4,
             fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+
           ),
           Image.asset(
             AppImage.onBoarding4,
             fit: BoxFit.cover,
+            width: MediaQuery.of(context).size.width,
+
           ),
         ],
         options: CarouselOptions(
@@ -86,13 +94,12 @@ Widget listOfCityWidget() => SizedBox(
                               decoration: BoxDecoration(
                                   color:
                                   SuperCubit.get(context).categoriesIndex==i?Theme.of(context).primaryColor:
-                                  Colors.grey.shade300,
+                                  Theme.of(context).dividerColor,
                                   borderRadius: const BorderRadius.all(Radius.circular(10))),
                               padding: const EdgeInsets.symmetric(horizontal: 15),
                               child: Center(
-                                child: Text(listOfCity[i],
-                                    style: const TextStyle(
-                                        fontSize: 18, fontWeight: FontWeight.bold)),
+                                child: Text(listOfCity[i], style:Theme.of(context).textTheme.displaySmall
+                                ),
                               ));
 
                         }, listener: (context,state){})
@@ -108,14 +115,14 @@ Widget categoriesWidget(context) =>
       switch (state.categoriesState) {
         case RequestState.loading:
           return const SizedBox(
-              height: 120,
+              height: 130,
               child: Center(
                 child: CircularProgressIndicator(),
               ));
         case RequestState.loaded:
           return Container(
             margin: const EdgeInsets.only(left: 5),
-            height: 130,
+            height: 145,
             child: ListView.separated(
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
@@ -124,7 +131,6 @@ Widget categoriesWidget(context) =>
                   builder: (context1) =>
                       InkWell(
                           onTap: (){
-
                               context.read<TripsBloc>().add(GetTestTripsEvent());
                               context.read<TripsBloc>().add(GetCustomFromTripsEvent(state.categoriesModelList[index].categoryName,context));
                               context.read<TripsBloc>().add(GetCustomToTripsEvent(state.categoriesModelList[index].categorySecondName,context));
@@ -150,77 +156,78 @@ Widget categoriesWidget(context) =>
     });
 
 //Category Widget
-Widget categoryWidget(context, CategoriesModel tripsModel) => Padding(
-  padding: const EdgeInsets.only(top: 8.0, bottom: 6.0, right: 3.0),
-  child: Stack(
-    children: [
-      Container(
-        width: 100,
-        height: 110,
-        decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(color: Colors.black54, blurRadius: 2)
-          ],
-          border: Border.all(color: Colors.white, width: 2),
-          borderRadius: const BorderRadius.all(Radius.circular(20)),
+Widget categoryWidget(context, CategoriesModel tripsModel) {
+  var m =MediaQuery.of(context).size;
+  return  Padding(
+    padding: const EdgeInsets.only(top: 8.0, bottom: 6.0, right: 3.0),
+    child: Stack(
+      children: [
+        Container(
+          width: m.width*0.3,
+          height: m.height*0.153,
+          decoration: BoxDecoration(
+            boxShadow:  [
+              BoxShadow(color: Theme.of(context).shadowColor, blurRadius: 2)
+            ],
+            border: Border.all(
+                color: Colors.white, width: 2),
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+          ),
+          child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(18)),
+              child: Image.network(
+                tripsModel.image,
+                fit: BoxFit.cover,
+              )),
         ),
-        child: ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(18)),
-            child: Image.network(
-              tripsModel.image,
-              fit: BoxFit.fill,
-            )),
-      ),
-      Container(
-        width: 100,
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(17)),
-            gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [
-                  Colors.black54,
-                  // Colors.black45,
-                  Colors.black12,
-                  Colors.transparent,
-                ])),
-      ),
-      Positioned(
-          left: 10,
-          top: 70,
-          right: 10,
-          child: Center(
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child: Text(
-                tripsModel.name,
-                maxLines: 2,
-                style: const TextStyle(
-                  shadows: [BoxShadow(color: Colors.black,blurRadius: 3)],
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13),
+        Container(
+          width: m.width*0.3,
+          decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(17)),
+              gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Colors.black54,
+                    Colors.black12,
+                    Colors.transparent,
+                  ])),
+        ),
+        Positioned(
+            left: 10,
+            top: 70,
+            right: 10,
+            child: Center(
+              child: Container(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  tripsModel.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style:  const TextStyle(
+                      shadows: [BoxShadow(color: Colors.black,blurRadius: 3)],
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13),
+                ),
               ),
-            ),
-          ))
-    ],
-  ),
-);
+            ))
+      ],
+    ),
+  );
+
+}
 
 // row title
-Widget rowTitleHome(String title) => Row(
+Widget rowTitleHome(String title,context) => Row(
       children: [
-        const SizedBox(
-          width: 10,
-        ),
+        const SizedBox(width: 10,),
         Text(
           title,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black54),
+          style: Theme.of(context).textTheme.displayMedium,
         ),
         const Spacer(),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios,
-            color: Colors.black54
-        ))
+        IconButton(onPressed: () {}, icon: const Icon(Icons.arrow_forward_ios,))
       ],
     );
 

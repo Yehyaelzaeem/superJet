@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/profile/profile.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../../../../core/services/routeing_page/routing.dart';
+import '../../../../../core/services/services_locator.dart';
 import '../../../../auth/presentation/widgets/widget.dart';
 import '../../bloc/cubit.dart';
 import '../../bloc/trips_bloc.dart';
@@ -15,9 +17,16 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return
-      BlocConsumer<TripsBloc,TripsState>(
-        builder: (context,state){
-          return  Scaffold(
+    BlocProvider(create: (context)=>TripsBloc(sl())..add(GetProfileEvent(context)),
+    child:   BlocConsumer<TripsBloc,TripsState>(
+      builder: (context,state){
+        return  WillPopScope(
+          onWillPop: () {
+            NavigatePages.pushReplacePage(const Profile(), context);
+            return Future.value(false);
+          },
+          child:
+          Scaffold(
             appBar: AppBar(
               toolbarHeight: 50,
               backgroundColor: Colors.white,
@@ -58,6 +67,8 @@ class EditProfileScreen extends StatelessWidget {
                             context,
                           )),
                         }).then((value) {
+                          cubit.controllerName.text='';
+                          cubit.controllerPhone.text='';
                           NavigatePages.pushReplacePage( const Profile(), context);
                         });
                       },
@@ -74,7 +85,90 @@ class EditProfileScreen extends StatelessWidget {
                   children: [
                     state.isUpdating == true
                         ?const LinearProgressIndicator(): const SizedBox(),
-                    customEditeProfileDesign(state),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 320,
+                      child: Stack(
+                          alignment: AlignmentDirectional.bottomCenter,
+                          children: [
+                            Stack(
+                              alignment: AlignmentDirectional.topEnd,
+                              children: [
+                                Align(
+                                  alignment: AlignmentDirectional.topCenter,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 260,
+                                    decoration:  const BoxDecoration(
+                                      borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
+                                    ),
+                                    child:
+                                    state.coverImageFile !=null?
+                                    Image.file(state.coverImageFile!,fit: BoxFit.cover,):
+                                    Image.network(userModel.coverImage!,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child:
+                                  CircleAvatar(
+                                    backgroundColor: Colors.blue.shade300,
+                                    radius: 20,
+                                    child: IconButton(
+                                      onPressed: (){
+                                        context.read<TripsBloc>().add(EditCoverImageEvent(context));
+                              },
+                              icon: const Icon(Icons.camera_alt_outlined,
+                                color: Colors.white,
+                                size: 23,),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      children: [
+                        state.profileImageFile !=null?
+                        CircleAvatar(
+                          radius: 75,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                              radius:70,
+                              backgroundImage:
+                              FileImage(state.profileImageFile!)
+                          ),):
+                        CircleAvatar(
+                          radius: 75,
+                          backgroundColor: Colors.white,
+                          child: CircleAvatar(
+                              radius:70,
+                              backgroundImage:
+                              NetworkImage(userModel.profileImage!)
+                          ),),
+                        Positioned(
+                          bottom: 13,
+                          right: 5,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.blue.shade300,
+                            radius: 20,
+                            child: IconButton(
+                              onPressed: (){
+                                context.read<TripsBloc>().add(EditProfileImageEvent(context));
+                              },
+                              icon: const Icon(Icons.camera_alt_outlined,
+                                color: Colors.white,
+                                size: 23,),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ]
+              ),
+            ),
                     const SizedBox(
                       height: 50,
                     ),
@@ -131,9 +225,12 @@ class EditProfileScreen extends StatelessWidget {
                 )
 
             ),
-          );
+          ),
+        );
 
-        },
-        listener: (context,state){},);
+      },
+      listener: (context,state){},
+    ),
+    );
   }
 }

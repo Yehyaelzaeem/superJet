@@ -8,6 +8,8 @@ class UserEntities{
   final String long;
   final String city;
   final String type;
+  final String wallet;
+  final String token;
   final String? profileImage;
   final String? coverImage;
   List<TripID>? tripIdList;
@@ -23,6 +25,8 @@ class UserEntities{
     required this.long,
     required this.city,
     required this.type,
+    required this.wallet,
+    required this.token,
      this.profileImage,
      this.coverImage,
      this.tripIdList,

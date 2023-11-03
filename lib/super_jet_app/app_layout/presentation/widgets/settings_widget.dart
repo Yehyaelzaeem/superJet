@@ -4,32 +4,25 @@ import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import 'package:badges/badges.dart' as badges;
 
-Widget customTitleSettingScreen(){
-  return const Text('Settings',
-    style: TextStyle(
-        fontSize: 30,
-        color: Colors.black,
-        fontWeight: FontWeight.bold),
+Widget customTitleSettingScreen(context){
+  return  Text('Settings',
+    style: Theme.of(context).textTheme.displayLarge
   );
 }
 
-Widget customWidgetTitleRowSettings({required Size m,required String text ,required IconData iconData}){
+Widget customWidgetTitleRowSettings({required Size m,required String text ,required IconData iconData,required context}){
   return Row(
     children: [
       Icon(iconData),
       SizedBox(width: m.width*0.025,),
        Text(text,
-        style: const TextStyle(
-            fontSize: 18,
-            color: Colors.black87,
-            fontWeight: FontWeight.w500
-        ),
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
     ],
   );
 }
 
-Widget customWidgetRowDetailsSettings({required Size m ,required String text,required void Function()? onTap}){
+Widget customWidgetRowDetailsSettings({required TextStyle? style ,required Size m ,required String text,required void Function()? onTap,required context}){
   return  InkWell(
     onTap: onTap,
     child: SizedBox(
@@ -47,34 +40,16 @@ Widget customWidgetRowDetailsSettings({required Size m ,required String text,req
                 badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
                 child:  Padding(
                   padding: const EdgeInsets.only(right: 10.0),
-                  child: Text(text,
-                    style: const TextStyle(
-                        fontSize: 17,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w400
-                    ),
-                  ),
+                  child: Text(text, style:style),
                 ),
 
-              ):  Text(text,
-                style: const TextStyle(
-                    fontSize: 17,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.w400
-                ),
-              );
+              ):   Text(text, style:style);
           },
             listener: (context, state){}):
-          Text(text,
-            style: const TextStyle(
-                fontSize: 17,
-                color: Colors.black54,
-                fontWeight: FontWeight.w400
-            ),
-          ),
+          Text(text, style:style),
           const Spacer(),
           const Icon(Icons.arrow_forward_ios,
-            color: Colors.black54,
+
           )
         ],
       ),
@@ -83,36 +58,28 @@ Widget customWidgetRowDetailsSettings({required Size m ,required String text,req
 }
 
 
-Widget customWidgetRowSwitchModeSettings({required Size m ,required String text,}){
-  bool light = false;
+Widget customWidgetRowSwitchModeSettings({required Size m ,required String text,required context}){
+  var c =SuperCubit.get(context);
   return  SizedBox(
     height: m.height*0.05,
     child: Row(
       children: [
         SizedBox(width: m.width*0.02,),
         Text(text,
-          style: const TextStyle(
-              fontSize: 17,
-              color: Colors.black54,
-              fontWeight: FontWeight.w400
-          ),
+          style: Theme.of(context).textTheme.titleSmall
         ),
         const Spacer(),
-        StatefulBuilder(builder: (context,setState){
-          return Switch(
-            value: light,
-            onChanged: (bool value) {
-              setState(() {
-                light = value;
-              });
-            },
-          );
-        }),
+       Switch(
+         value: c.isDark,
+         onChanged: (bool value) {
+           c.changeMode(value);
+         },
+       ),
       ],
     ),
   );
 }
-Widget customWidgetRowSwitchLanguageSettings({required Size m ,required String text,required bool isEn,required void Function(bool)? onChanged}){
+Widget customWidgetRowSwitchLanguageSettings({required TextStyle? style ,required Size m ,required String text,required bool isEn,required void Function(bool)? onChanged}){
   return BlocConsumer<SuperCubit,AppSuperStates>
     (
       builder: (context ,state){
@@ -122,11 +89,7 @@ Widget customWidgetRowSwitchLanguageSettings({required Size m ,required String t
         children: [
           SizedBox(width: m.width*0.02,),
           Text(text,
-            style: const TextStyle(
-                fontSize: 17,
-                color: Colors.black54,
-                fontWeight: FontWeight.w400
-            ),
+            style:style
           ),
           const Spacer(),
           isEn==true?

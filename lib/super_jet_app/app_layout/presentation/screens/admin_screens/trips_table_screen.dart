@@ -40,13 +40,12 @@ class TripsDateTableScreen extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            const Padding(
+                             Padding(
                               padding:
-                                  EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
+                                  const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
                               child: Text(
                                 'Trips Data',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                style: Theme.of(context).textTheme.titleMedium
                               ),
                             ),
                             c.isSearching == true
@@ -134,6 +133,20 @@ class TripsDateTableScreen extends StatelessWidget {
                   backgroundColor: Colors.green.shade300,
                   onTap: () {
                     c.updateTrip(context);
+                  }),
+              SpeedDialChild(
+                  child: const Icon(Icons.recycling,color: Colors.white,),
+                  label: 'Recycling Trip',
+                  backgroundColor: Colors.blue.shade300,
+                  onTap: () {
+                     c.recyclingTrip(context);
+                  }),
+              SpeedDialChild(
+                  child: const Icon(Icons.chair_sharp,color: Colors.white,),
+                  label: 'Recycling Chairs',
+                  backgroundColor: Colors.red.shade300,
+                  onTap: () {
+                    c.recyclingChairsOfTrip(context);
                   }),
               SpeedDialChild(
                   child: const Icon(Icons.control_point_duplicate,color: Colors.white,),

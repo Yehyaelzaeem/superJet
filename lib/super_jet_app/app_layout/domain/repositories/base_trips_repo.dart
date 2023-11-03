@@ -33,5 +33,9 @@ abstract class BaseTripsRepo {
   Future<List<MessageModel>> getMessages(UserModel userModelSender ,UsersTableModel userModelReceiver,);
   Future<MessageModel> sendMessages(UserModel userModelSender ,UsersTableModel userModelReceiver,String messageText);
   Future<List<UsersTableModel>> getAdmin(context);
-
+  Future cancelTrips(TripsModel tripsModel,UserModel userModel, String chairID);
+  Future recyclingTrip(TripsModelDataTable tripsModelDataTable);
+  Future recyclingChairsOfTrip(TripsModelDataTable tripsModelDataTable);
+  Future changeEmail(String email ,String id ,String type,context);
+  Future changePassword(String password ,String id ,String type,context);
 }

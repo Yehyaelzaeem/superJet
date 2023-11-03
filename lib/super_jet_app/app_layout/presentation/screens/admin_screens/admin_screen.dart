@@ -13,7 +13,6 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var m =MediaQuery.of(context).size;
-    var token = 'dm3quspCQ8KDfx9sVy7ADa:APA91bFVFdVKVTr6A2vNryfDDLgtbRwpmFTU7MVOMJQuH1Ork1fHoA-qbod2PgNOb_FkMSc_sDUhxmcUYeZJ2eaXuVQSEzgx3P8Ua5VF5PHhG8N-ZdFxbTGI_Y0fPYY6IHvjRU_IzFcR';
 
     return   Scaffold(
       body: SingleChildScrollView(
@@ -48,7 +47,7 @@ class AdminScreen extends StatelessWidget {
             },context),
             SizedBox(height: m.height*0.04,),
 
-            customAdminItems(Icons.chat, "Chat", (){
+            customAdminItems(Icons.groups, "Employees", (){
               // NavigatePages.persistentNavBarNavigator(const AdminTripsScreen2(), context);
             }, context),
             SizedBox(height: m.height*0.04,),

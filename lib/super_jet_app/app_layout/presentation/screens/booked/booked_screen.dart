@@ -49,52 +49,56 @@ class BookedScreen extends StatelessWidget {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title:  Text('Booked Chair :  ${snapshot.data!.docs[index]['chairID'].toString()}'),
+                                            backgroundColor: Colors.white,
+                                            title:  Text('Booked Chair :  ${snapshot.data!.docs[index]['chairID'].toString()}',
+                                            style: const TextStyle(
+                                              fontSize: 25
+                                            ),
+                                            ),
                                             content:  Column(
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                const Text('Are You sure ? \nYou want to Book this chair ',),
+                                                 Text('Are You sure ? \nYou want to Book this chair ',style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Trip name : ${tripsModel.name}',),
+                                                Text('Trip name : ${tripsModel.name}',
+                                                style: Theme.of(context).textTheme.titleLarge,
+                                                ),
                                                 const SizedBox(height: 2,),
-                                                Text('From City : ${tripsModel.fromCity}',),
+                                                Text('From City : ${tripsModel.fromCity}' , style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('To City      : ${tripsModel.toCity}',),
+                                                Text('To City      : ${tripsModel.toCity}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Price         : ${tripsModel.price}',),
+                                                Text('Price         : ${tripsModel.price}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Date          : ${tripsModel.date}',),
+                                                Text('Date          : ${tripsModel.date}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Time         : ${tripsModel.time}',),
+                                                Text('Time         : ${tripsModel.time}',  style: Theme.of(context).textTheme.titleLarge,),
                                               ],
                                             ),
                                             actions: <Widget>[
                                               TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: Theme.of(context).textTheme.labelLarge,
-                                                ),
                                                 child: const Text('Cancel'),
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
                                               TextButton(
-                                                style: TextButton.styleFrom(
-                                                  textStyle: Theme.of(context).textTheme.labelLarge,
-                                                ),
                                                 child: const Text('OK'),
                                                 onPressed: () {
+                                                  var x =snapshot.data!.docs[index]['isPaid'];
                                                   collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
                                                   cubit.addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString(),snapshot.data!.docs[index].id);
                                                   showToast('To Complete Booking Trip Go To Payment Page for 2 minutes', ToastStates.warning, context);
                                                   Navigator.of(context).pop();
-                                                  Future.delayed(const Duration(minutes: 2)).then((value) {
-                                                    if(snapshot.data!.docs[index]['isPaid'] =='false'){
-                                                      collectionReference.doc(snapshot.data!.docs[index ].id).update({'isAvailable': 'true','passengerID':'null'});
+                                                  Future.delayed(const Duration(minutes: 2)).then((value) async{
+                                                    var res =await collectionReference.doc(snapshot.data!.docs[index].id).get();
+                                                    if(res.data()!['isPaid']=='false'){
+                                                      collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'true','passengerID': 'null'});
+                                                      cubit.removeCart();
+                                                    }else{
                                                       cubit.removeCart();
                                                     }
-
                                                   });
                                                 },
                                               ),
@@ -103,12 +107,12 @@ class BookedScreen extends StatelessWidget {
                                         },
                                       );
 
-                                    } else if(snapshot.data!.docs[index]['isPaid'] == 'false') {
+                                    }
+                                    else if(snapshot.data!.docs[index]['isPaid'] == 'false') {
                                       showToast(
                                           'This chair is now reserved',
                                           ToastStates.warning,
                                           context);
-
                                     }
                                     else{
                                       showToast(
@@ -124,8 +128,8 @@ class BookedScreen extends StatelessWidget {
                                         Icons.chair_rounded,
                                         color:    snapshot.data!.docs[index]['isPaid'] == 'false' ?
                                         (snapshot.data!.docs[index]['isAvailable'] == 'true' ?
-                                        App.availableChair:App.waitingCart
-                                        ) : App.unAvailableChair,
+                                       Theme.of(context).hoverColor:Theme.of(context).focusColor
+                                        ) : Theme.of(context).disabledColor,
                                         size: 59,
                                       )),
                                       Positioned(
@@ -140,8 +144,7 @@ class BookedScreen extends StatelessWidget {
                                           child: Text(
                                             "${snapshot.data!.docs[index]['chairID']}",
                                             style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
+                                                color: Theme.of(context).primaryColorDark,
                                                 // Colors.white,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold),
@@ -171,24 +174,25 @@ class BookedScreen extends StatelessWidget {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title:  Text('Booked Chair :  ${snapshot.data!.docs[index+52]['chairID'].toString()}'),
+                                                backgroundColor: Colors.white,
+                                                title:  Text('Booked Chair :  ${snapshot.data!.docs[index+52]['chairID'].toString()}',style: Theme.of(context).textTheme.titleLarge,),
                                                 content:  Column(
                                                   mainAxisSize: MainAxisSize.min,
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    const Text('Are You sure ? \nYou want to Book this chair ',),
+                                                     Text('Are You sure ? \nYou want to Book this chair ',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('Trip name : ${tripsModel.name}',),
+                                                    Text('Trip name : ${tripsModel.name}',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('From City : ${tripsModel.fromCity}',),
+                                                    Text('From City : ${tripsModel.fromCity}',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('To City      : ${tripsModel.toCity}',),
+                                                    Text('To City      : ${tripsModel.toCity}',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('Price         : ${tripsModel.price}',),
+                                                    Text('Price         : ${tripsModel.price}',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('Date          : ${tripsModel.date}',),
+                                                    Text('Date          : ${tripsModel.date}',style: Theme.of(context).textTheme.titleLarge,),
                                                     const SizedBox(height: 2,),
-                                                    Text('Time         : ${tripsModel.time}',),
+                                                    Text('Time         : ${tripsModel.time}',style: Theme.of(context).textTheme.titleLarge,),
                                                   ],
                                                 ),
                                                 actions: <Widget>[
@@ -214,8 +218,8 @@ class BookedScreen extends StatelessWidget {
                                                       Future.delayed(const Duration(minutes: 2)).then((value) {
                                                         if(snapshot.data!.docs[index + 52]['isPaid'] =='false'){
                                                           collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'true','passengerID':'null'});
+                                                          cubit.removeCart();
                                                         }
-
                                                       });
                                                     },
                                                   ),
@@ -223,8 +227,6 @@ class BookedScreen extends StatelessWidget {
                                               );
                                             },
                                           );
-
-
                                         } else if(snapshot.data!.docs[index+52]['isPaid'] == 'false') {
                                           showToast(
                                               'This chair is now reserved',
@@ -246,8 +248,8 @@ class BookedScreen extends StatelessWidget {
                                             color:
                                             snapshot.data!.docs[index+52]['isPaid'] == 'false' ?
                                             (snapshot.data!.docs[index+52]['isAvailable'] == 'true' ?
-                                            App.availableChair:App.waitingCart
-                                            ) : App.unAvailableChair,
+                                            Theme.of(context).hoverColor:Theme.of(context).focusColor
+                                            ) : Theme.of(context).disabledColor,
                                             size: 59,
                                           )),
                                           Positioned(
@@ -262,8 +264,7 @@ class BookedScreen extends StatelessWidget {
                                               child: Text(
                                                 "${snapshot.data!.docs[index + 52]['chairID']}",
                                                 style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
+                                                    color: Theme.of(context).primaryColorDark,
                                                     // Colors.white,
                                                     fontSize: 10,
                                                     fontWeight:

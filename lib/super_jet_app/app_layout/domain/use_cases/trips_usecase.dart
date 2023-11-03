@@ -91,6 +91,21 @@ class TripsUseCase {
   Future<List<UsersTableModel>> getAdmin(context)async{
     return await baseTripsRepo.getAdmin(context);
   }
+  Future cancelTrips(TripsModel tripsModel,UserModel userModel, String chairID)async{
+    return await baseTripsRepo.cancelTrips(tripsModel, userModel, chairID);
+  }
+  Future recyclingTrip(TripsModelDataTable tripsModelDataTable)async{
+    return await baseTripsRepo.recyclingTrip(tripsModelDataTable);
+  }
+  Future recyclingChairsOfTrip(TripsModelDataTable tripsModelDataTable) async{
+    return await baseTripsRepo.recyclingChairsOfTrip(tripsModelDataTable);
+  }
+  Future changeEmail(String email ,String id ,String type,context) async{
+    return await baseTripsRepo.changeEmail(email,id,type,context);
+  }
+  Future changePassword(String password ,String id ,String type,context) async{
+    return await baseTripsRepo.changePassword(password,id,type,context);
+  }
 
 
 }

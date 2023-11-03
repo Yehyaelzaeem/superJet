@@ -11,6 +11,7 @@ class UsersEntities{
   final String city;
   final String type;
   final String token;
+  final String wallet;
   List<TripID>? tripIdList;
   final String profileImage;
   bool selected =false;
@@ -28,5 +29,6 @@ class UsersEntities{
     required this.lat,
     required this.type,
     required this.token,
+    required this.wallet,
   });
 }

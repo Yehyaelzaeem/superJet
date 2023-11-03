@@ -25,36 +25,38 @@ Widget customRowChatPerson(
             builder: (context, state) {
               int i =0;
               bool  isFound=false;
-              if(SuperCubit.get(context).listOfNameChats.isNotEmpty){
-                for(var x in  SuperCubit.get(context).listOfNameChats){
-                 if(x==nameID.trim()){
-                  i++;
-                  isFound=true;
-                 }
-                }
-                return
-                  isFound==true?
-                  badges.Badge(
-                  badgeContent: Text(i.toString(),style: const TextStyle(color: Colors.white),),
-                  badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
-                  child:  Padding(
-                    padding: const EdgeInsets.only(right: 15.0),
-                    child: Text(
-                      name,
+              return StatefulBuilder(builder: (context,setState){
+                if(SuperCubit.get(context).listOfNameChats.isNotEmpty){
+                  for(var x in  SuperCubit.get(context).listOfNameChats){
+                    if(x==nameID.trim()){
+                     setState((){
+                       i++;
+                       isFound=true;
+                     });
+                    }
+                  }
+                  return
+                    isFound==true?
+                    badges.Badge(
+                      badgeContent: Text(i.toString(),style: const TextStyle(color: Colors.white),),
+                      badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
+                      child:  Padding(
+                        padding: const EdgeInsets.only(right: 15.0),
+                        child: Text(
+                          name,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
+                      ),):
+                    Text(name,
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                    ),
-                  ),):
-                  Text(name,
+                    );
+                }else{
+                  return   Text(
+                    name,
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   );
-                ;
-
-              }else{
-                return   Text(
-                  name,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                );
-              }
+                }
+              });
           },
             listener: (context, state){},),
 

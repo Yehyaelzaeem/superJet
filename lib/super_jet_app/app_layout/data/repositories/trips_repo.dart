@@ -137,5 +137,31 @@ class TripsRepo extends BaseTripsRepo{
     return await baseSuperJetDataSource.getAdmin(context);
   }
 
+  @override
+  Future cancelTrips(TripsModel tripsModel, UserModel userModel, String chairID) async{
+    return await baseSuperJetDataSource.cancelTrips(tripsModel, userModel, chairID);
+
+  }
+
+  @override
+  Future recyclingTrip(TripsModelDataTable tripsModelDataTable) async{
+    return await baseSuperJetDataSource.recyclingTrip(tripsModelDataTable);
+  }
+
+  @override
+  Future recyclingChairsOfTrip(TripsModelDataTable tripsModelDataTable)async {
+    return await baseSuperJetDataSource.recyclingChairsOfTrip(tripsModelDataTable);
+
+  }
+
+  @override
+  Future changeEmail(String email ,String id ,String type, context) async{
+   return await baseSuperJetDataSource.changeEmail(email,id, type,context);
+  }
+  @override
+  Future changePassword(String password ,String id ,String type, context) async{
+   return await baseSuperJetDataSource.changePassword(password,id, type,context);
+  }
+
 
 }

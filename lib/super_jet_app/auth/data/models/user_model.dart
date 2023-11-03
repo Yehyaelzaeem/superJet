@@ -7,7 +7,7 @@ class UserModel extends UserEntities{
     required super.name, required super.email, required super.password,
     required super.phone, required super.uId, required super.lat,
     required super.long, required super.city, required super.type,
-    required super.tripIdList, required super.profileImage, required super.coverImage});
+    required super.tripIdList, required super.profileImage, required super.coverImage, required super.wallet, required super.token});
 
   factory UserModel.fromJson(Map<String,dynamic> data) {
     // Map data=doc.data() as Map<String,dynamic>;
@@ -24,6 +24,8 @@ class UserModel extends UserEntities{
         profileImage: data['profileImage'],
         coverImage:data['coverImage'],
         tripIdList: List<TripID>.from(data['trips'].map((e)=>TripID.fromJson(e))),
+        wallet: data['wallet'],
+        token:data['token'],
     );
   }
   Map<String, dynamic> toMap() {
@@ -39,6 +41,8 @@ class UserModel extends UserEntities{
       'type':type,
       'profileImage':profileImage,
       'coverImage':coverImage,
+      'wallet':wallet,
+      'token':token,
       'trips':List<Map<String, dynamic>>.from(tripIdList!.map((x) => x.toJson())),
     };
   }

@@ -17,10 +17,11 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
          NavigatePages.persistentNavBarNavigator(BookedScreen(tripsModel: tripsModel, userID:uId,), context);
       },
       child: Container(
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 7)]),
+        decoration:  BoxDecoration(
+            color: Theme.of(context).highlightColor,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            boxShadow: [BoxShadow(color: Theme.of(context).shadowColor, blurRadius: 7)],
+        ),
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Column(
@@ -63,7 +64,7 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 5),
                 child: Text(
                   tripsModel.name,
-                  style: const TextStyle(fontSize: 12),
+                  style: Theme.of(context).textTheme.displaySmall,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -85,7 +86,7 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
                       width: MediaQuery.of(context).size.width * 0.02,
                     ),
                     Text(
-                      tripsModel.time,
+                      tripsModel.time.substring(0,5),
                       style: const TextStyle(
                         fontSize: 12,
                         color: Colors.grey,
@@ -94,14 +95,6 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    // Expanded(
-                    //   child: IconButton(onPressed: (){
-                    //     AppCubit.get(context).editeFavorites(productsModel.id, context);
-                    //     // AppCubit.get(context).favorites[productsModel.id]= !AppCubit.get(context).favorites[productsModel.id]!;
-                    //   }, icon:
-                    //   AppCubit.get(context).favorites[productsModel.id] ==true ? Icon(Icons.favorite,color: Theme.of(context).primaryColor):
-                    //   const Icon(Icons.favorite_border,color: Colors.grey,)),
-                    // )
                   ],
                 ),
               ),
@@ -111,10 +104,8 @@ Widget customTripWidget(context, TripsModel tripsModel) =>
         ),
       ),
     );
-Future<String> getUserId()async{
-  var uId =await CacheHelper.getDate(key: 'uId');
-  return uId;
-}
+
+
 //GridView Trips
 Widget gridViewTrips(context,bool isCustom,bool isFrom){
   return  isCustom==true?

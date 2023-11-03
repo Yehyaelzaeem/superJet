@@ -3,7 +3,7 @@ import 'package:superjet/super_jet_app/app_layout/domain/entities/users_entities
 import '../../../auth/domain/entities/user_entities.dart';
 
 class UsersTableModel extends UsersEntities {
-  UsersTableModel({required super.name, required super.email, required super.phone, required super.uId, required super.city, required super.tripIdList, required super.profileImage, required super.password, required super.long, required super.lat, required super.type, required super.token});
+  UsersTableModel({required super.name, required super.email, required super.phone, required super.uId, required super.city, required super.tripIdList, required super.profileImage, required super.password, required super.long, required super.lat, required super.type, required super.token, required super.wallet});
 
 
   factory UsersTableModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +20,7 @@ class UsersTableModel extends UsersEntities {
       lat: json["lat"],
       type: json["type"],
       token: json["token"],
+      wallet: json["wallet"],
     );
   }
 
@@ -37,6 +38,7 @@ class UsersTableModel extends UsersEntities {
       'tripIdList':tripIdList,
       'type':type,
       'token':token,
+      'wallet':wallet,
     };
   }
 }

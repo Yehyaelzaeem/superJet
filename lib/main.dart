@@ -1,12 +1,15 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
+import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/categories/categories.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/chat/chats.dart';
@@ -22,6 +25,8 @@ import 'package:superjet/super_jet_app/auth/presentation/widgets/login_widget.da
 import 'package:superjet/super_jet_app/onBoarding/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/onBoarding/presentation/screens/onboarding_screen.dart';
 import 'core/bloc_observer/bloc_observer.dart';
+import 'core/global/theme/theme_data/theme_data_dark.dart';
+import 'core/global/theme/theme_data/theme_data_light.dart';
 import 'core/services/services_locator.dart';
 import 'core/shared_preference/shared_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,6 +57,8 @@ void main() async {
   var type = await CacheHelper.getDate(key: 'type');
   var isLog = await CacheHelper.getDate(key: 'isLog');
   var uId = await CacheHelper.getDate(key: 'uId');
+  var isDark = await CacheHelper.getDate(key: 'isDark');
+  print(isDark);
   print(type);
   print(isLog);
   print(uId);
@@ -73,52 +80,41 @@ void main() async {
 
   runApp(MyApp(
     widget: widget,
+    isDark: isDark??false,
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.widget});
+  const MyApp( {super.key, required this.widget,required this.isDark});
 
   final Widget widget;
+  final bool isDark;
 
   @override
   Widget build(context) {
-    return MultiBlocProvider(
+    return
+      MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AppOnBoardingCubit()),
         BlocProvider(create: (context) => AuthCubit(sl()),),
         BlocProvider(create: (context) => AuthCubit(sl())..getPermission(),),
         BlocProvider(create: (context) => TripsBloc(sl())..add(GetCategoriesTripsEvent())..add(GetTripsEvent('All',context))..add(GetProfileEvent(context))),
-        BlocProvider(create: (context) => SuperCubit(sl()),),
+        BlocProvider(create: (context) => SuperCubit(sl())..changeMode(isDark),),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Super Jet',
-        theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            primaryColor: const Color(0xffEABE67),
-            appBarTheme: const AppBarTheme(
-                systemOverlayStyle: SystemUiOverlayStyle(
-                  systemNavigationBarColor: Colors.white,
-                  statusBarColor: Color(0xffEABE67),
-                ),
-                elevation: 0)
-            // useMaterial3: true,
-            ),
-        // themeMode: ThemeMode.light,
-        // darkTheme:ThemeData(
-        //     scaffoldBackgroundColor: Colors.black,
-        //     primaryColor: const Color(0xff1c2860),
-        //     appBarTheme: const AppBarTheme(
-        //         systemOverlayStyle: SystemUiOverlayStyle(
-        //           statusBarColor: Colors.blueGrey,
-        //         ),
-        //         elevation: 0
-        //     )
-        //   // useMaterial3: true,
-        // ) ,
-        home: widget,
-      ),
+      child:
+      BlocConsumer<SuperCubit,AppSuperStates>(
+        builder: (context,state){
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Super Jet',
+          theme: getThemeDataLight(),
+          darkTheme: getThemeDataDark(),
+          themeMode: SuperCubit.get(context).isDark?ThemeMode.dark:ThemeMode.light,
+          home: widget,
+        );
+      },
+      listener: (context,state){},
+      )
     );
   }
 }
@@ -178,7 +174,7 @@ class _CustomMainState extends State<CustomMain> {
                                : AppHomeWidgets.branchNavBarsItems(
                                context),
                            confineInSafeArea: true,
-                           backgroundColor: Colors.white,
+                           backgroundColor:Theme.of(context).scaffoldBackgroundColor,
                            // Default is Colors.white.
                            handleAndroidBackButtonPress: true,
                            // Default is true.
@@ -207,9 +203,7 @@ class _CustomMainState extends State<CustomMain> {
                              curve: Curves.ease,
                              duration: Duration(milliseconds: 200),
                            ),
-
-                           navBarStyle: NavBarStyle
-                               .style3, // Choose the nav bar style with this property.
+                           navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
                          );
                        },
                        fallback: (context)=>const Center(child: CircularProgressIndicator(),))

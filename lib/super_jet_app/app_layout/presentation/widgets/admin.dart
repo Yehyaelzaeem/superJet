@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:superjet/core/image/image.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/admin_users_model.dart';
 import '../../../auth/presentation/widgets/widget.dart';
 import '../../data/models/admin_trips_model.dart';
@@ -332,7 +333,9 @@ Future customBottomSheetCustomTrips({required String title,required bool isUpdat
   isUpdate==true? c.addAvgTime.text = tripsModelDataTable!.avgTime:c.addAvgTime.text='';
   isUpdate==true? (c.selectedOptionType=tripsModelDataTable!.isVip=='false'?0:1)  :c.selectedOptionType=0;
   isUpdate==true? (c.selectedOptionState=tripsModelDataTable!.state=='waiting'?2:3):c.selectedOptionState=2;
-  return   showModalBottomSheet(
+  return
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
       elevation:5.5,
       isScrollControlled: true,
       context: context,
@@ -520,8 +523,7 @@ Future customBottomSheetCustomTrips({required String title,required bool isUpdat
                                   newDate.toString()))
                               .then((value) => {
                             c.addDate.text =
-                                DateFormat.yMMMd()
-                                    .format(value!)
+                                DateFormat('yyyy-MM-dd').format(value!)
                           });
                         },
                         controller: c
@@ -558,7 +560,7 @@ Future customBottomSheetCustomTrips({required String title,required bool isUpdat
                               initialTime: TimeOfDay.now())
                               .then((value) => {
                             c.addTime.text =
-                                value!.format(context),
+                                '${value!.hour.toString().length==1?'0${value.hour.toString()}':value.hour.toString()}:${value.minute.toString().length==1?'0${value.minute.toString()}':value.minute.toString()}:00'
                           });
                         },
                         controller: c
@@ -855,6 +857,7 @@ Future customBottomSheetCustomUsers({required String title,required bool isUpdat
   isUpdate==true? isBranch==true?c.userEmail.text=usersTableModel!.email:null:c.userEmail.text='';
   isUpdate==true? isBranch==true?c.userPassword.text=usersTableModel!.password:null:c.userPassword.text='';
   return   showModalBottomSheet(
+    backgroundColor: Colors.white,
       elevation:5.5,
       isScrollControlled: true,
       context: context,
@@ -1137,3 +1140,5 @@ Future customBottomSheetCustomUsers({required String title,required bool isUpdat
         );
       });
 }
+
+

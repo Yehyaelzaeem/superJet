@@ -11,7 +11,7 @@ class CategoriesDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).primaryColorLight,
     body: SafeArea(
       child:
            BlocBuilder<TripsBloc,TripsState>(
@@ -25,20 +25,15 @@ class CategoriesDetailsScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width*0.9,
                         height: MediaQuery.of(context).size.height*0.08,
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).unselectedWidgetColor,
                             borderRadius: const BorderRadius.all(Radius.circular(20)),
                             border: Border.all(color: Colors.white,width: 1),
-                            boxShadow: const [BoxShadow(color: Colors.black38,blurRadius: 7)]
+                            boxShadow:  [BoxShadow(color: Theme.of(context).shadowColor,blurRadius: 7)]
                         ),
                         child:
                         Center(child:
                         Text('${categoriesModel.masterCity} to ${categoriesModel.city}',
-                          style:  TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Theme.of(context).primaryColor,
-
-                          ),
+                          style:   Theme.of(context).textTheme.titleMedium
                         ))
                         ,),
                     ),
@@ -53,7 +48,7 @@ class CategoriesDetailsScreen extends StatelessWidget {
                         width: MediaQuery.of(context).size.width*0.9,
                         height: MediaQuery.of(context).size.height*0.08,
                         decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).unselectedWidgetColor,
                             borderRadius: const BorderRadius.all(Radius.circular(18)),
                             border: Border.all(color: Colors.white,width: 1),
                             boxShadow: const [BoxShadow(color: Colors.black38,blurRadius: 7)]
@@ -61,12 +56,7 @@ class CategoriesDetailsScreen extends StatelessWidget {
                         child:
                         Center(child:
                         Text('${categoriesModel.city} to ${categoriesModel.masterCity}',
-                          style:  TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Theme.of(context).primaryColor,
-
-                          ),
+                          style:  Theme.of(context).textTheme.titleMedium
                         ))
                         ,),
                     ),
