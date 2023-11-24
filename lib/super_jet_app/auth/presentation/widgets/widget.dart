@@ -1,78 +1,84 @@
 import 'package:flutter/material.dart';
 import '../../../../core/image/image.dart';
 
-Widget customAuthDesignBackGround(Widget designScreen, context,) =>
-    Stack(
-      alignment: Alignment.center,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: double.infinity,
-                width: 200,
-                decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(200),
-                    ),
-                    color: Theme.of(context).primaryColor),
+Widget customAuthDesignBackGround(Widget designScreen, context,) {
+  final isDarkMode = Theme.of(context).brightness;
+  return  Stack(
+    alignment: Alignment.center,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: double.infinity,
+              width: 200,
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(200),
+                ),
+                color: Theme.of(context).primaryColor,
               ),
             ),
-            Expanded(
-              child: Container(
-                height: double.infinity,
-                width: 200,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(205),
-                  ),
-                  color: Colors.white,
+          ),
+          Expanded(
+            child: Container(
+              height: double.infinity,
+              width: 200,
+              decoration:  BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  bottomRight: Radius.circular(205),
                 ),
+                color:Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
-          ],
-        ),
-        Column(
-          children: [
-            Expanded(
-                child: Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(120),
-                    ),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 50, top: 0),
-                    height: 190,
-                    child: Image.asset(
-                      AppImage.logImage,
-                      fit: BoxFit.cover,
+          ),
+        ],
+      ),
+      Column(
+        children: [
+          Expanded(
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        bottomRight: Radius.circular(120),
+                      ),
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
-                ),
-              ],
-            )),
-            Expanded(
-              flex: 2,
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(100),
+                  Center(
+                    child:
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 50, top: 0),
+                      height: 190,
+                      child: Image.asset(
+                        isDarkMode==Brightness.dark?
+                        AppImage.darkLogImage:AppImage.logImage,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                  color: Colors.white,
+                ],
+              )),
+          Expanded(
+            flex: 2,
+            child: Container(
+              decoration:  BoxDecoration(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(100),
                 ),
+                color: Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
-          ],
-        ),
-        designScreen,
-      ],
-    );
+          ),
+        ],
+      ),
+      designScreen,
+    ],
+  );
+}
+
 
 Widget customTitleScreen(String title,Color color)=>
     Text(title,
@@ -110,7 +116,7 @@ Future signInWithFacebook(context) async {
   // return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
 }
 
-Widget customAuthButton(context, double x, String text, void Function()? onPressed) =>
+Widget customAuthButton(context, double x, String text, void Function()? onPressed,Color? textColor) =>
     SizedBox(
       width: MediaQuery.of(context).size.width * x,
       child: ElevatedButton(
@@ -123,7 +129,9 @@ Widget customAuthButton(context, double x, String text, void Function()? onPress
         ),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 17),
+          style:  TextStyle(
+              color: textColor,
+              fontSize: 17),
         ),
       ),
     );

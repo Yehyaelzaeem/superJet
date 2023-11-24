@@ -39,7 +39,7 @@ class Chats extends StatelessWidget {
                ),
                const SizedBox(width: 5,),
                 Text('Chats',
-                 style: Theme.of(context).textTheme.titleMedium),
+                 style: Theme.of(context).textTheme.displayLarge),
 
              ],
            ),
@@ -48,12 +48,12 @@ class Chats extends StatelessWidget {
            IconButton(
                onPressed: (){
                },
-               icon:  const Icon(Icons.notifications_active_rounded,color: Colors.black87)),
+               icon:   Icon(Icons.notifications_active_rounded,color: Theme.of(context).hintColor)),
            IconButton(
                onPressed: (){
 
                },
-               icon:  const Icon(Icons.search,color: Colors.black87)),
+               icon:   Icon(Icons.search,color: Theme.of(context).hintColor)),
          ],
        ),
       body:

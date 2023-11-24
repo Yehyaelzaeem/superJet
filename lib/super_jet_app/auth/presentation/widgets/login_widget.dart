@@ -13,32 +13,49 @@ import '../screens/register.dart';
 import '../screens/reset_password.dart';
 
 
-Future<String?> customDialogPopScope(context)=>
-    showDialog<String>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: const Text("Are You Sure ?"),
-      titleTextStyle: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-          fontSize: 20),
-      actionsOverflowButtonSpacing: 20,
-      actions: [
-        MaterialButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            color: Theme.of(context).primaryColor,
-            child: const Text("Back")),
-        MaterialButton(
-            onPressed: () {
-              exit(0);
-            },
-            color: Theme.of(context).primaryColor,
-            child: const Text("Yes")),
-      ],
-      content: const Text("Want to close the app"),
-    ));
+Future<String?> customDialogPopScope(context){
+  final isDarkModel =Theme.of(context).brightness;
+  return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text("Are You Sure ?"),
+        titleTextStyle:  TextStyle(
+            fontWeight: FontWeight.bold,
+            color: isDarkModel==Brightness.dark?Colors.white:Colors.black54,
+            fontSize: 20),
+        actionsOverflowButtonSpacing: 20,
+        actions: [
+          MaterialButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              color: Theme.of(context).primaryColor,
+              child:  Text("Back",
+              style: TextStyle(
+                color:  isDarkModel==Brightness.dark?Colors.black54:Colors.white70,
+              ),
+              )),
+          MaterialButton(
+              onPressed: () {
+                exit(0);
+              },
+              color: Theme.of(context).primaryColor,
+              child:  Text("Yes",
+                style: TextStyle(
+                  color:  isDarkModel==Brightness.dark?Colors.black54:Colors.white70,
+                ),
+              )),
+        ],
+        content:  Text("Want to close the app",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w400,
+            color:  isDarkModel==Brightness.dark?Colors.grey.shade200:Colors.grey,
+          ),
+        ),
+      ));
+}
+
 
 Widget customLoginDesign(var type ,context){
   var h= MediaQuery.of(context).size.height;
@@ -75,6 +92,8 @@ Widget customLoginDesign(var type ,context){
 
 Widget customWidgetsLogin(var type,context){
   var m =MediaQuery.of(context).size;
+  final isDarkMode = Theme.of(context).brightness;
+
   return Container(
     decoration: const BoxDecoration(
         color: Colors.white,
@@ -111,9 +130,13 @@ Widget customWidgetsLogin(var type,context){
                           }
                           return null;
                   },
+                  textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                  hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                  colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                   controller: AuthCubit.get(context).emailLog,
                   hintText: 'User name/Email',
                   iconData:  Icons.person,
+
                   obscureText: false,
                 ),),
             type=='user'? SizedBox(height:m.height*.03,):SizedBox(height:m.height*.04,),
@@ -126,6 +149,9 @@ Widget customWidgetsLogin(var type,context){
                   ),
                   child:
                   customTextField(
+                      textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                      hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                      colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                       isPassword: true,
                       context: context,
                       keyboardType:TextInputType.text,
@@ -143,8 +169,12 @@ Widget customWidgetsLogin(var type,context){
                       IconButton(onPressed: (){AuthCubit.get(context).changeEyePassword();}, icon:
                       Icon(AuthCubit.get(context).isEye==false ?
                       Icons.visibility_off: Icons.visibility,
-                          color: AuthCubit.get(context).isEye==false ?
-                          Colors.white:Colors.grey.shade300) ,),
+                          color:
+                          isDarkMode==Brightness.dark?
+                          (AuthCubit.get(context).isEye==false ?
+                          Colors.black45:Colors.white70):
+                          (AuthCubit.get(context).isEye==false ?
+                          Colors.white:Colors.grey.shade300)) ,),
                       onFieldSubmitted:
                           (value){
                         if(AuthCubit.get(context).formKey.currentState!.validate() ){
@@ -176,7 +206,9 @@ Widget customWidgetsLogin(var type,context){
                               if(AuthCubit.get(context).formKey.currentState!.validate() ){
                                 AuthCubit.get(context).login(AuthCubit.get(context).emailLog.text, AuthCubit.get(context).passwordLog.text,context);}
                             }
-                          }),
+                          },
+                          isDarkMode==Brightness.dark?Colors.black45:Colors.white
+                          ),
                       fallback: (context)=> Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),),
                     ), listener: (context,state){}),
             const Spacer(),
@@ -205,46 +237,55 @@ Widget customWidgetsLogin(var type,context){
 
 }
 
-Widget customAccountsIcons(context)=>Row(
-  crossAxisAlignment: CrossAxisAlignment.center,
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    IconButton(onPressed: ()async{
-      signInWithFacebook(context);
-      //  var result = await FacebookAuth.instance.login();
-      // print(result.message);
-      // print(result.status);
-      // if (kIsWeb || defaultTargetPlatform == TargetPlatform.macOS) {
-      //   // initialiaze the facebook javascript SDK
-      //  await FacebookAuth.instance.webAndDesktopInitialize(
-      //     appId: "227421716303304",
-      //     cookie: true,
-      //     xfbml: true,
-      //     version: "v15.0",
-      //   );
-      //
-      // }
-      // String prettyPrint(Map json) {
-      //   JsonEncoder encoder = const JsonEncoder.withIndent('  ');
-      //   String pretty = encoder.convert(json);
-      //   return pretty;
-      // }
-    },
-      icon:  const Icon(FontAwesomeIcons.facebook, size: 30,color: Colors.blue,),),
-    IconButton(onPressed: (){
-    },
-      icon:  const Icon(FontAwesomeIcons.instagram, size: 30,color: Color(0xffF500A2),),),
-    IconButton(onPressed: (){
-    },
-      icon:  Icon(FontAwesomeIcons.twitter, size: 30,color: Colors.blue.shade400,),),
-    InkWell(
-      onTap: (){
-        AuthCubit.get(context).loginWithGoogle(context);
+Widget customAccountsIcons(context){
+  final isDarkMode = Theme.of(context).brightness;
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      IconButton(onPressed: ()async{
+        signInWithFacebook(context);
+        //  var result = await FacebookAuth.instance.login();
+        // print(result.message);
+        // print(result.status);
+        // if (kIsWeb || defaultTargetPlatform == TargetPlatform.macOS) {
+        //   // initialiaze the facebook javascript SDK
+        //  await FacebookAuth.instance.webAndDesktopInitialize(
+        //     appId: "227421716303304",
+        //     cookie: true,
+        //     xfbml: true,
+        //     version: "v15.0",
+        //   );
+        //
+        // }
+        // String prettyPrint(Map json) {
+        //   JsonEncoder encoder = const JsonEncoder.withIndent('  ');
+        //   String pretty = encoder.convert(json);
+        //   return pretty;
+        // }
       },
-      child: SizedBox(
-        height: 37,
-        width:37,
-        child:Image.asset(AppImage.googleImage,fit: BoxFit.cover,),
-      ),
-    ),
-  ],);
+        icon:   Icon(FontAwesomeIcons.facebook, size: 30,color: isDarkMode==Brightness.light?Colors.blue: Theme.of(context).primaryColor,),),
+      IconButton(onPressed: (){
+      },
+        icon:
+        Icon(FontAwesomeIcons.instagram, size: 30,color: isDarkMode==Brightness.light? const Color(0xffF500A2): Theme.of(context).primaryColor,),),
+      IconButton(onPressed: (){
+      },
+        icon:  Icon(FontAwesomeIcons.twitter, size: 30,color: isDarkMode==Brightness.light?Colors.blue.shade400: Theme.of(context).primaryColor,),),
+      InkWell(
+        onTap: (){
+          AuthCubit.get(context).loginWithGoogle(context);
+        },
+        child: SizedBox(
+          height: 37,
+          width:37,
+          child:
+          isDarkMode==Brightness.light?
+          Image.asset(AppImage.googleImage,fit: BoxFit.cover,):
+           Icon(FontAwesomeIcons.google, size: 26,color: Theme.of(context).primaryColor,),),
+        ),
+    ],);
+
+}
+
+

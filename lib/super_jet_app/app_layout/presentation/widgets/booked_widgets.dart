@@ -3,7 +3,7 @@ import '../../data/models/trip_model.dart';
 
 Widget bookedDateScreen(TripsModel tripsModel ,context){
   return Container(
-    height: MediaQuery.of(context).size.height * 0.1,
+    height: MediaQuery.of(context).size.height * 0.11,
     decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
         borderRadius: const BorderRadius.only(

@@ -40,7 +40,6 @@ class ChatDetails extends StatelessWidget {
                         statusBarColor: Colors.white,
                         statusBarIconBrightness:Brightness.dark,
                       ),
-                      backgroundColor: Colors.white,
                       toolbarHeight: 60,
                       title:
                       Container(
@@ -55,7 +54,7 @@ class ChatDetails extends StatelessWidget {
                               },
                               child: const Icon(
                                 Icons.arrow_back,
-                                color: Colors.black,),
+                                ),
                             ),
                             const SizedBox(width: 5,),
                             CircleAvatar(
@@ -66,11 +65,7 @@ class ChatDetails extends StatelessWidget {
                               width: 15,
                             ),
                             Text(userModelReceiver.name,
-                              style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18
-                              ),
+                            style: Theme.of(context).textTheme.bodyMedium,
                             )
                           ],
                         ),
@@ -127,12 +122,20 @@ class ChatDetails extends StatelessWidget {
                                             Expanded(
                                               child:
                                               TextField(
+                                                style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: Colors.black
+                                                ),
                                                 controller:cubit.chatController ,
                                                 keyboardType: TextInputType.multiline,
                                                 maxLines: null,
                                                 decoration: const InputDecoration(
                                                     border: InputBorder.none,
-                                                    hintText: 'type your message here ... '
+                                                    hintText: 'type your message here ... ',
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.grey
+                                                    )
                                                 ),
                                               ),
                                             ),

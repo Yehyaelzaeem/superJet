@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:superjet/core/image/image.dart';
+import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/payment/cart_trips_details.dart';
@@ -420,8 +421,10 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
       ),
     );
 
-Future customBottomSheetCustomWallets(UserModel userModel ,String chairsNumber ,String total ,context){
+Future customBottomSheetCustomWallets(UserModel userModel ,String chairsNumber ,String total ,double walletMoney ,context)async{
   var c =SuperCubit.get(context);
+  c.getType();
+  var res = FirebaseFirestore.instance.collection('Accounts').doc('1').collection(c.type.trim()).doc(c.uId.trim());
   return   showModalBottomSheet(
     backgroundColor: Colors.white,
       elevation:5.5,
@@ -433,152 +436,166 @@ Future customBottomSheetCustomWallets(UserModel userModel ,String chairsNumber ,
             topRight: Radius.circular(30.0)),
       ),
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(left: 18, right: 18),
-          child: SingleChildScrollView(
-            child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  height: 30,
-                ),
-               Row(
-                 children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                       mainAxisAlignment: MainAxisAlignment.start,
-                       children: [
-                         const SizedBox(height: 30,),
-                         customWalletRowSheetButton(text: 'Name : ${userModel.name}', color: Colors.black),
-                         customWalletRowSheetButton(text: 'Email : ${userModel.email}', color: Colors.black),
-                         customWalletRowSheetButton(text: 'Phone : ${userModel.phone}', color: Colors.black),
-                         customWalletRowSheetButton(text: 'The Wallet : ${userModel.wallet} EG', color: Colors.black),
-                         const SizedBox(
-                           height: 8,
-                         ),
-                       ],
-                   ),
-                    ),
-                   Expanded(
-                     child: Center(
-                         child: Image.asset(AppImage.wallet)),
-                   ),
-                 ],
-               ),
-                 const Divider(),
-                 const SizedBox(height: 20,),
-                 Row(
+        return StreamBuilder(
+            stream: res.snapshots(),
+            builder:(context,snapshot){
+          if(snapshot.hasData){
+            return  Padding(
+              padding: const EdgeInsets.only(left: 18, right: 18),
+              child: SingleChildScrollView(
+                child: Column(
+                  // mainAxisSize: MainAxisSize.min,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Chairs :  ',
-                      style:  TextStyle(
-                          color: Colors.black45,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    const SizedBox(
+                      height: 30,
                     ),
-                    Text(
-                      chairsNumber,
-                      style:  const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 30,),
+                              customWalletRowSheetButton(text: 'Name : ${userModel.name}', color: Colors.black),
+                              customWalletRowSheetButton(text: 'Email : ${userModel.email}', color: Colors.black),
+                              customWalletRowSheetButton(text: 'Phone : ${userModel.phone}', color: Colors.black),
+                              customWalletRowSheetButton(text: 'The Wallet : ${snapshot.data!['wallet']} EG', color: Colors.black),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                              child: Image.asset(AppImage.wallet)),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    const SizedBox(height: 20,),
+                    Row(
+                      children: [
+                        const Text(
+                          'Chairs :  ',
+                          style:  TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          chairsNumber,
+                          style:  const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8,),
+                    Row(
+                      children: [
+                        const Text(
+                          'Total :  ',
+                          style:  TextStyle(
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 20),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(
+                          '$total EG',
+                          style:  const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    InkWell(
+                      onTap:(){
+                        if(double.parse(snapshot.data!['wallet']) >= double.parse(total)){
+                          print('paaaaaaaaaaaaaaaaaaaay=============');
+                          c.payWallet(context,total);
+                        }else{
+                          showToast('Your wallet is ${snapshot.data!['wallet']} , Not enough to pay , The Total trips is $total', ToastStates.error, context);
+                        }
+                      },
+                      child: Container(
+                        height:
+                        MediaQuery.of(context).size.width *
+                            0.115,
+                        width: MediaQuery.of(context).size.width *
+                            0.8,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(30))),
+                        child:  const Center(
+                            child: Text(
+                              'Pay',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
+
+                                  fontWeight: FontWeight.bold),
+                            )),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        height:
+                        MediaQuery.of(context).size.width *
+                            0.115,
+                        width: MediaQuery.of(context).size.width *
+                            0.8,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
+                            borderRadius: const BorderRadius.all(
+                                Radius.circular(30))),
+                        child: const Center(
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
+                                  fontWeight: FontWeight.bold),
+                            )),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 50,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8,),
-                Row(
-                  children: [
-                    const Text(
-                      'Total :  ',
-                      style:  TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                    Text(
-                      '$total EG',
-                      style:  const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                InkWell(
-                  onTap:(){
-                    c.payWallet(context,total);
-                  },
-                  child: Container(
-                    height:
-                    MediaQuery.of(context).size.width *
-                        0.115,
-                    width: MediaQuery.of(context).size.width *
-                        0.8,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(30))),
-                    child:  const Center(
-                        child: Text(
-                          'Pay',
-                          style: TextStyle(
-                              color: Colors.white,
-                              shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
+              ),
+            );
+          }else{
+            return Center(child: CircularProgressIndicator(),);
+          }
+        });
 
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ),
-                ),
-                const SizedBox(
-                  height: 25,
-                ),
-                InkWell(
-                  onTap: (){
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    height:
-                    MediaQuery.of(context).size.width *
-                        0.115,
-                    width: MediaQuery.of(context).size.width *
-                        0.8,
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
-                        borderRadius: const BorderRadius.all(
-                            Radius.circular(30))),
-                    child: const Center(
-                        child: Text(
-                          'Cancel',
-                          style: TextStyle(
-                              color: Colors.white,
-                              shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
-                              fontWeight: FontWeight.bold),
-                        )),
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
-            ),
-          ),
-        );
       });
 }
 

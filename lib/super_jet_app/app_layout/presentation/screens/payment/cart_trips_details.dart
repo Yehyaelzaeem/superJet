@@ -58,10 +58,16 @@ class DisplayCartTripsDetails extends StatelessWidget {
                         SizedBox(height: MediaQuery.of(context).size.height*0.1,),
                         Padding(
                           padding: const EdgeInsets.only(left: 20.0, right: 20),
-                          child: SizedBox(
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.9,
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius
+                                    .circular(10)),
+                                border: Border.all(color: Colors.grey.shade400,
+                                    width: 1)
+                            ),
                             child:
-                            TextButton(onPressed: () {
+                            TextButton(onPressed: ()  {
                               SuperCubit.get(context).deleteCartTrips(tripsModel, chairId,chairDoc);
                               var collectionReference = FirebaseFirestore.instance
                                   .collection('Trips')
@@ -74,26 +80,28 @@ class DisplayCartTripsDetails extends StatelessWidget {
                                 'passengerID':'null',
                               });
                               Navigator.pop(context);
-                            }, child: const Text(
-                              'Delete Trip',
-                              ),
+                            },
+                              child:  Text('Delete Trip',
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),)
                             ,),
+                        ),
                         const SizedBox(height: 10,),
                         Padding(
                           padding: const EdgeInsets.only(left: 20.0, right: 20),
-                          child: SizedBox(
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.9,
-                            // decoration: BoxDecoration(
-                            //     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                            //     border: Border.all(color: Colors.grey.shade400, width: 1)
-                            // ),
+                            decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(Radius
+                                    .circular(10)),
+                                border: Border.all(color: Colors.grey.shade400,
+                                    width: 1)
+                            ),
                             child:
                             TextButton(onPressed: () {
                               Navigator.pop(context);
-
-                            }, child: const Text('Cancel',
-
+                            }, child:  Text('Cancel',
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),)
                             ,),
                         ),

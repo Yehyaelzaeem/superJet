@@ -47,7 +47,15 @@ Widget customProfileDesign(TripsState state,context){
 
 
 Widget customProfileWidgets(TripsState state,context){
-  return Column(
+  return
+  Theme(data: ThemeData(
+    textButtonTheme:  TextButtonThemeData(
+        style: ButtonStyle(
+            backgroundColor:MaterialStateProperty.all(Colors.transparent),
+        )
+    ),
+        ),
+      child:   Column(
     children: [
       Row(
         children: [
@@ -59,15 +67,13 @@ Widget customProfileWidgets(TripsState state,context){
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(
                     Radius.circular(10)),
-                border: Border.all(
-                    color: Colors.grey.shade400, width: 1)),
+                border: Border.all(color: Colors.grey.shade400, width: 1)),
+            clipBehavior: Clip.antiAliasWithSaveLayer,
             child: TextButton(
               onPressed: () {},
-              child: const Text(
+              child:  Text(
                 ' The Wallet',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18),
+                style: Theme.of(context).textTheme.labelLarge,
               ),
             ),
           ),
@@ -85,9 +91,9 @@ Widget customProfileWidgets(TripsState state,context){
               onPressed: () {
                 NavigatePages.pushReplacePage( EditProfileScreen(userModel: state.userModel[0],), context);
               },
-              icon: const Icon(
+              icon:  Icon(
                 Icons.edit,
-                color: Colors.blue,
+                color: Theme.of(context).secondaryHeaderColor,
               ),
             ),
           ),
@@ -108,10 +114,9 @@ Widget customProfileWidgets(TripsState state,context){
           onPressed: () {
             NavigatePages.pushReplacePage(RecentTrips(tripIdLis: state.userModel[0].tripIdList!), context);
           },
-          child: const Text(
+          child:  Text(
             'Recent Trips',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 18),
+            style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
       ),
@@ -127,61 +132,31 @@ Widget customProfileWidgets(TripsState state,context){
                 color: Colors.grey.shade400, width: 1)),
         child: TextButton(
           onPressed: () {
-            // if(state.userModel!.type=='user'){
-            //   print('user============================================');
-            //
-            //   SuperCubit.get(context).chatList.clear();
-            //   SuperCubit.get(context).getAdminDate(context);
-            //   SuperCubit.get(context).getBranches(context);
-            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
-            // }
-            // else if(state.userModel!.type=='branch'){
-            //   print('branch============================================');
-            //
-            //   SuperCubit.get(context).chatList.clear();
-            //   SuperCubit.get(context).getAdminDate(context);
-            //   SuperCubit.get(context).getUsers();
-            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
-            //
-            // }
-            // else if(state.userModel!.type=='admin'){
-            //   print('admin============================================');
-            //   SuperCubit.get(context).chatList.clear();
-            //   SuperCubit.get(context).getAdminDate(context);
-            //   SuperCubit.get(context).getBranches(context);
-            //   SuperCubit.get(context).getUsers();
-            //   NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel!,), context);
-            //
-            // }else{
-            //   print('Erorrrrrr============================================');
-            //
-            // }
-              SuperCubit.get(context).getAdminDate(context);
-              SuperCubit.get(context).getBranches(context);
-              SuperCubit.get(context).getUsers();
+
+            SuperCubit.get(context).getAdminDate(context);
+            SuperCubit.get(context).getBranches(context);
+            SuperCubit.get(context).getUsers();
             NavigatePages.persistentNavBarNavigator(Chats(userModel: state.userModel[0],), context);
 
           },
           child:
-          BlocConsumer<SuperCubit,AppSuperStates>(builder: (context, state) {
+          BlocConsumer<SuperCubit,AppSuperStates>(builder: (context1, state) {
             return
-              SuperCubit.get(context).listOfChat.isNotEmpty?
+              SuperCubit.get(context1).listOfChat.isNotEmpty?
               badges.Badge(
-                badgeContent: Text(SuperCubit.get(context).listOfChat.length.toString(),style: const TextStyle(color: Colors.white),),
+                badgeContent: Text(SuperCubit.get(context1).listOfChat.length.toString(),style: const TextStyle(color: Colors.white),),
                 badgeStyle:const badges.BadgeStyle(badgeColor: Colors.red) ,
-                child: const Padding(
-                  padding: EdgeInsets.only(right: 10.0),
+                child:  Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
                   child: Text(
                     'Chats',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 18),
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
-
-              ): const Text(
+              ):
+              Text(
                 'Chats',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 18),
+                style: Theme.of(context).textTheme.labelLarge,
               );
           },
             listener: (context, state){},),
@@ -203,10 +178,9 @@ Widget customProfileWidgets(TripsState state,context){
             //  c.add(SignOutEvent(context));
             // NavigatePages.persistentNavBarNavigator(LoginScreen(type: SuperCubit.get(context).type,),context);
           },
-          child: const Text(
+          child:  Text(
             'Offers %',
-            style: TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 18),
+            style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
       ),
@@ -214,7 +188,7 @@ Widget customProfileWidgets(TripsState state,context){
         height: 15,
       ),
     ],
-  );
+  ));
 }
 Future customBottomSheetChangeEmail({required String title,required String text,required String hintText,
   required IconData? iconData,required IconData? iconTitle,required void Function()? onTap,required context}){

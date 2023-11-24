@@ -157,7 +157,7 @@ class PaymentScreen extends StatelessWidget {
                                       var user= context.read<TripsBloc>().state.userModel[0];
                                       if(double.parse(user.wallet) > 0.0){
                                         showToast("The wallet equal ${user.wallet} ", ToastStates.success, context);
-                                        customBottomSheetCustomWallets(user, cubit.listCartTrips.length.toString(),cubit.total.toString(),context);
+                                        customBottomSheetCustomWallets(user, cubit.listCartTrips.length.toString(),cubit.total.toString(),double.parse(user.wallet),context);
                                       }else{
                                         showToast("The wallet equal zero ", ToastStates.error, context);
                                       }

@@ -109,7 +109,8 @@ class MyApp extends StatelessWidget {
           title: 'Super Jet',
           theme: getThemeDataLight(),
           darkTheme: getThemeDataDark(),
-          themeMode: SuperCubit.get(context).isDark?ThemeMode.dark:ThemeMode.light,
+          themeMode:
+         SuperCubit.get(context).isDark?ThemeMode.dark:ThemeMode.light,
           home: widget,
         );
       },

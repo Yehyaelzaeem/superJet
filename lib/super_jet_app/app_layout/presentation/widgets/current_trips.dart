@@ -35,7 +35,7 @@ Widget customPageViewCurrentTrips(TripsState state){
                   )),
                   Center(child: Text("There are ${res.day} days and ${res.hour} hours \nto left until the launch",
                     style: const TextStyle(
-                         color: Colors.black54,
+                         color: Colors.grey,
                         fontWeight: FontWeight.normal, fontSize: 10),
                     textAlign: TextAlign.center,
                   )),
@@ -84,11 +84,8 @@ Widget customPageViewCurrentTrips(TripsState state){
                             showToast("Can't delete this trip because this trip inside redTime\n { the red time : 6 days} .....", ToastStates.error, context);
                           }
 
-                        }, child: const Text('Delete Trip',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
-                        ),
+                        }, child:  Text('Delete Trip',
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),)
                       ,),
                   ),
@@ -109,11 +106,8 @@ Widget customPageViewCurrentTrips(TripsState state){
                       child:
                       TextButton(onPressed: () {
                         NavigatePages.pushReplacePage(const Profile(), context);
-                      }, child: const Text('Cancel',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18
-                        ),
+                      }, child:  Text('Cancel',
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),)
                       ,),
                   ),
@@ -140,6 +134,7 @@ Widget customPageViewCurrentTrips(TripsState state){
                   child: const Center(
                     child: Text('This Trip was Finished',
                       style: TextStyle(
+                        color: Colors.black,
                           fontWeight: FontWeight.bold,
                           fontSize: 17
                       ),

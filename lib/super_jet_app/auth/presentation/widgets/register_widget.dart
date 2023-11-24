@@ -8,6 +8,7 @@ import '../bloc/states.dart';
 Widget customRegisterDesign() {
   return BlocConsumer<AuthCubit, AppAuthStates>(
       builder: (context, state) {
+        final isDarkMode = Theme.of(context).brightness;
         var m = MediaQuery.of(context).size;
         return SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
@@ -25,6 +26,9 @@ Widget customRegisterDesign() {
                       borderRadius: const BorderRadius.all(Radius.circular(20))),
                   child:
                   customTextField(
+                    textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                    hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                    colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                     isPassword: false,
                     context: context,
                     keyboardType:TextInputType.text,
@@ -48,6 +52,9 @@ Widget customRegisterDesign() {
                           const BorderRadius.all(Radius.circular(20))),
                   child:
                   customTextField(
+                    textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                    hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                    colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                     isPassword: false,
                     context: context,
                     keyboardType:TextInputType.number,
@@ -72,6 +79,9 @@ Widget customRegisterDesign() {
                           const BorderRadius.all(Radius.circular(20))),
                   child:
                   customTextField(
+                    textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                    hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                    colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                     isPassword: false,
                     context: context,
                     keyboardType:TextInputType.text,
@@ -95,6 +105,9 @@ Widget customRegisterDesign() {
                       borderRadius: const BorderRadius.all(Radius.circular(20))),
                   child:
                   customTextField(
+                    textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                    hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                    colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                     isPassword: true,
                     context: context,
                     keyboardType:TextInputType.text,
@@ -114,8 +127,12 @@ Widget customRegisterDesign() {
                       },
                       icon: Icon(
                           AuthCubit.get(context).isEyePassword == false ? Icons.visibility_off
-                              : Icons.visibility, color: AuthCubit.get(context).isEyePassword == false
-                              ? Colors.white : Colors.blue.shade300),
+                              : Icons.visibility, color:
+                      isDarkMode==Brightness.dark?
+                      (AuthCubit.get(context).isEyePassword==false ?
+                      Colors.black45:Colors.white70):
+                      (AuthCubit.get(context).isEye==false ?
+                      Colors.white : Colors.blue.shade300)),
                     ),
                   ),
                 ),
@@ -127,6 +144,9 @@ Widget customRegisterDesign() {
                       borderRadius: const BorderRadius.all(Radius.circular(20))),
                   child:
                   customTextField(
+                    textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                    hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                    colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                     isPassword: true,
                     context: context,
                     keyboardType:TextInputType.text,
@@ -146,8 +166,11 @@ Widget customRegisterDesign() {
                       },
                       icon: Icon(AuthCubit.get(context).isEyeConPassword == false
                               ? Icons.visibility_off : Icons.visibility, color:
-                          AuthCubit.get(context).isEyeConPassword == false ? Colors.white
-                              : Colors.blue.shade300),
+                      isDarkMode==Brightness.dark?
+                      (AuthCubit.get(context).isEyeConPassword==false ?
+                      Colors.black45:Colors.white70):
+                      (AuthCubit.get(context).isEye==false ?
+                      Colors.white : Colors.blue.shade300)),
                       ),
                     onFieldSubmitted:  (value) {
                       AuthCubit.get(context).register(
@@ -161,6 +184,7 @@ Widget customRegisterDesign() {
                   ),
                 SizedBox(height: m.height * 0.07,),
                 customAuthButton(context, 0.5, 'Sign In', () {
+
                   var c = AuthCubit.get(context);
                   if (c.name.text.isEmpty ||
                       c.phone.text.isEmpty ||
@@ -206,7 +230,8 @@ Widget customRegisterDesign() {
                       }
                     }
                   }
-                })
+                },isDarkMode==Brightness.dark?Colors.black45:Colors.white
+                     )
               ],
             ),
           ),

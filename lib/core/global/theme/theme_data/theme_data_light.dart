@@ -7,6 +7,7 @@ import '../app_color/app_color_light.dart';
 
 ThemeData getThemeDataLight()=>
     ThemeData(
+        brightness:Brightness.light,
         shadowColor: AppColorLight.shadowColor,
         //Trip Color Widget
         highlightColor:AppColorLight.tripWidgetColor ,
@@ -25,7 +26,7 @@ ThemeData getThemeDataLight()=>
         indicatorColor: AppColorLight.notificationTitleColor,
         hintColor:  AppColorLight.primaryHardColor,
         canvasColor: AppColorLight.bookedDetailTopBackgroundColor,
-
+        secondaryHeaderColor: AppColorLight.textButtonColor,
         appBarTheme: getAppThemeDataDark(),
         bottomNavigationBarTheme: getBottomNavigationBarThemeDataDark(),
         textTheme: getTextTheme(),
@@ -35,7 +36,6 @@ ThemeData getThemeDataLight()=>
         textButtonTheme:  TextButtonThemeData(
             style:
             ButtonStyle(
-                backgroundColor:MaterialStateProperty.all(AppColorLight.primaryColor),
                 foregroundColor: MaterialStateProperty.all(Colors.white)
             )
         )
@@ -86,6 +86,12 @@ TextTheme getTextTheme() =>
         fontWeight: FontWeight.w600,
         color:AppColorLight.primaryHardColor,
       ),
+      labelLarge: const TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.bold,
+        color:AppColorLight.textButtonColor,
+      ),
+
 
 
 

@@ -9,7 +9,7 @@ class ResetPassword extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: 
-        customAuthDesignBackGround(customResetDesign(), context)
+        customAuthDesignBackGround(customResetDesign(context), context)
    );
   }
 }

@@ -7,7 +7,8 @@ import '../../../../core/utils/enums.dart';
 import '../bloc/cubit.dart';
 import '../bloc/states.dart';
 
-Widget customResetDesign(){
+Widget customResetDesign(context){
+  final isDarkMode = Theme.of(context).brightness;
   return   BlocProvider(create: (context)=>AuthCubit(sl()),
     child: BlocConsumer<AuthCubit, AppAuthStates>(builder: (context, state) {
       return SingleChildScrollView(
@@ -19,7 +20,7 @@ Widget customResetDesign(){
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Center(child: customTitleScreen('Reset Password', Colors.black)),
+            Center(child: customTitleScreen('Reset Password', Theme.of(context).hintColor)),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
@@ -45,6 +46,9 @@ Widget customResetDesign(){
                 ),
                 child:
                 customTextField(
+                  textColor: isDarkMode==Brightness.dark? Colors.black:Colors.white,
+                  hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
+                  colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                   isPassword: false,
                   context: context,
                   keyboardType:TextInputType.text,
@@ -82,7 +86,8 @@ Widget customResetDesign(){
                     }else{
                       showToast('Email address is empty', ToastStates.error, context);
                     }
-                  }),
+                  },isDarkMode==Brightness.dark?Colors.black45:Colors.white
+                  ),
                   fallback: (context)=>Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor,),)),
             )
           ],

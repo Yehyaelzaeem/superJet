@@ -9,6 +9,8 @@ class ChickUsers extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var h =MediaQuery.of(context).size.height;
+    final isDarkMode = Theme.of(context).brightness;
+
     return WillPopScope(
       onWillPop: () {
         customDialogPopScope(context);
@@ -19,11 +21,12 @@ class ChickUsers extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: h*0.01,),
             Expanded(
               child: Center(
                 child:
-                Image.asset(AppImage.onBoarding1,
+                Image.asset(
+                  isDarkMode==Brightness.light?
+                  AppImage.onBoarding1:AppImage.darkLogImage,
                 fit: BoxFit.cover,
                 ),
               ),

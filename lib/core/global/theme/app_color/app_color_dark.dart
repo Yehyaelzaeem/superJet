@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class AppColorDark{
-  static const Color  primaryColor= Colors.white70;
+  static  Color  primaryColor= Colors.grey.shade300;
   static const Color  primarySecondColor= Colors.white70;
   static const Color  primaryHardColor= Colors.white;
+  static const Color  textButtonColor = Colors.white;
+
   static  Color  tripWidgetColor= Colors.grey.shade800;
   static   Color categoryDetailsBackgroundColor=HexColor('333739');
   static   Color categoryDetailsTitleBackgroundColor=Colors.white70;

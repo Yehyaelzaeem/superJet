@@ -17,85 +17,83 @@ class TripsDateTableScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var c = SuperCubit.get(context);
+    final isDarkMode = Theme.of(context).brightness;
     return SafeArea(
       child: Scaffold(
-          body: WillPopScope(
-            onWillPop: () {
-              for (var a in c.tripsList) {
-                a.selected = false;
-              }
-              return Future.value(true);
-            },
-            child: BlocConsumer<SuperCubit, AppSuperStates>(
-              builder: (context, state) {
-                return ConditionalBuilder(
-                  condition: SuperCubit.get(context).tripsList.isNotEmpty,
-                  builder: (BuildContext context) {
-                    return WillPopScope(
-                      onWillPop: (){
-                        c.changeSearch();
-                        Navigator.pop(context);
-                        return Future.value(false);
-                      },
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                             Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
-                              child: Text(
-                                'Trips Data',
-                                style: Theme.of(context).textTheme.titleMedium
-                              ),
+          body: BlocConsumer<SuperCubit, AppSuperStates>(
+            builder: (context, state) {
+              return ConditionalBuilder(
+                condition: SuperCubit.get(context).tripsList.isNotEmpty,
+                builder: (BuildContext context) {
+                  return WillPopScope(
+                    onWillPop: (){
+                      for (var a in c.tripsList) {
+                        a.selected = false;
+                      }
+                      Navigator.pop(context);
+                      return Future.value(false);
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                           Padding(
+                            padding:
+                                const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
+                            child: Text(
+                              'Trips Data',
+                              style: Theme.of(context).textTheme.titleMedium
                             ),
-                            c.isSearching == true
-                                ? Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0,
-                                        right: 20,
-                                        top: 15,
-                                        bottom: 5),
-                                    child: TextField(
-                                      controller: c.searchTripsController,
-                                      decoration: const InputDecoration(
-                                          hintText: 'Search...',
-                                          border: OutlineInputBorder(),
-                                          suffixIcon: Icon(Icons.search)),
-                                      onChanged: c.onSearchTripsTextChanged,
-                                    ),
-                                  )
-                                : const SizedBox(
-                                    height: 20,
+                          ),
+                          c.isSearching == true
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 20.0,
+                                      right: 20,
+                                      top: 15,
+                                      bottom: 5),
+                                  child: TextField(
+                                    controller: c.searchTripsController,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Search...',
+                                        border: OutlineInputBorder(),
+                                        suffixIcon: Icon(Icons.search)),
+                                    onChanged: c.onSearchTripsTextChanged,
                                   ),
-                            PaginatedDataTable(
-                              sortColumnIndex: c.currentSortColumnTrips,
-                              sortAscending: c.isSortAscTrips,
-                              rowsPerPage: c.rowPer,
-                              availableRowsPerPage: const <int>[5, 10, 15, 20],
-                              onRowsPerPageChanged: (int? v) {
-                                c.rowPerPage(v!);
-                              },
-                              showCheckboxColumn: true,
-                              columns: createColumnsTripsDataTable(context),
-                              source: TripsRowDataSource(
-                                  SuperCubit.get(context).filteredDataTrips),
-                            ),
-                          ],
-                        ),
+                                )
+                              : const SizedBox(
+                                  height: 20,
+                                ),
+                          PaginatedDataTable(
+                            sortColumnIndex: c.currentSortColumnTrips,
+                            sortAscending: c.isSortAscTrips,
+                            rowsPerPage: c.rowPer,
+                            availableRowsPerPage: const <int>[5, 10, 15, 20],
+                            onRowsPerPageChanged: (int? v) {
+                              c.rowPerPage(v!);
+                            },
+                            showCheckboxColumn: true,
+                            columns: createColumnsTripsDataTable(context),
+                            source: TripsRowDataSource(
+                                SuperCubit.get(context).filteredDataTrips),
+                          ),
+                        ],
                       ),
-                    );
-                  },
-                  fallback: (BuildContext context) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              },
-              listener: (context, state) {},
-            ),
+                    ),
+                  );
+                },
+                fallback: (BuildContext context) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            },
+            listener: (context, state) {},
           ),
           floatingActionButton: SpeedDial(
             animatedIcon: AnimatedIcons.menu_close,
-            backgroundColor: Colors.black,
+            animatedIconTheme: IconThemeData(
+              color: isDarkMode==Brightness.light?Colors.white:Colors.black,
+            ),
+            backgroundColor:isDarkMode==Brightness.light?Colors.black:Colors.white,
             overlayColor: Colors.black,
             overlayOpacity: 0.5,
             spacing: 4,

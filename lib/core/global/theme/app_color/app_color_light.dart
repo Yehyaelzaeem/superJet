@@ -5,6 +5,7 @@ class AppColorLight{
   static const Color  primaryColor= Color(0xffEABE67);
   static const Color  primarySecondColor= Colors.black54;
   static const Color  primaryHardColor= Colors.black;
+  static const Color  textButtonColor = Colors.blue;
   static const  Color categoryDetailsBackgroundColor= Color(0xffEABE67);
   static  Color  tripWidgetColor= Colors.white;
   static  Color categoryDetailsTitleBackgroundColor=Colors.white;

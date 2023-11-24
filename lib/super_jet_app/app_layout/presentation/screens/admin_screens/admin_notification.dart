@@ -10,6 +10,8 @@ class AdminNotification extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var m =MediaQuery.of(context).size;
+
+
     return  Scaffold(
       body: Center(
         child: Padding(

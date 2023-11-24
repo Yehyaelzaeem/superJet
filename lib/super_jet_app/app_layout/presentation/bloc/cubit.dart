@@ -479,7 +479,8 @@ class SuperCubit extends Cubit<AppSuperStates> {
 
 //Payment
   payWallet(context,String total)async{
-    var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection(type).doc(uId!.trim());
+    getType();
+     var d = FirebaseFirestore.instance.collection('Accounts').doc('1').collection(type.trim()).doc(uId.trim());
     var res =await d.get();
     var wallet ='${double.parse(res.data()!['wallet'])-double.parse(total)}';
     for(var i =0;i<=listCartTrips.length-1;i++){
@@ -501,7 +502,7 @@ class SuperCubit extends Cubit<AppSuperStates> {
         'wallet':wallet,
       });
     }
-   removeCart();
+    removeCart();
     Navigator.pop(context);
     emit(PayByWallet());
   }

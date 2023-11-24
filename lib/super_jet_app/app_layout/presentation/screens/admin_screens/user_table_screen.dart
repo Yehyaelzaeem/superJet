@@ -12,6 +12,8 @@ class UserTableScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var c =SuperCubit.get(context);
+    final isDarkMode = Theme.of(context).brightness;
+
     return SafeArea(
       child: Scaffold(
         body:
@@ -20,51 +22,44 @@ class UserTableScreen extends StatelessWidget{
             return ConditionalBuilder(
                 condition: SuperCubit.get(context).usersList.isNotEmpty,
                 builder: (BuildContext context){
-                  return WillPopScope(
-                    onWillPop: (){
-                      c.changeSearchUser();
-                      Navigator.pop(context);
-                      return Future.value(false);
-                    },
-                    child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                             Padding(
-                              padding:
-                              const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
-                              child: Text(
-                                'Users Data',
-                                style: Theme.of(context).textTheme.titleMedium
-                              ),
+                  return SingleChildScrollView(
+                      child: Column(
+                        children: [
+                           Padding(
+                            padding:
+                            const EdgeInsets.only(top: 20.0, bottom: 5, left: 0),
+                            child: Text(
+                              'Users Data',
+                              style: Theme.of(context).textTheme.titleMedium
                             ),
-                            c.isSearchingUser == true
-                                ?   Padding(
-                            padding: const EdgeInsets.only(left: 20.0,right: 20,top: 35),
-                            child: TextField(
-                              controller: c.searchUsersController,
-                              decoration: const InputDecoration(
-                                  hintText: 'Search...',
-                                  border: OutlineInputBorder(),
-                                  suffixIcon: Icon(Icons.search)
-                              ),
-                              onChanged: c.onSearchUsersTextChanged,
+                          ),
+                          c.isSearchingUser == true
+                              ?   Padding(
+                          padding: const EdgeInsets.only(left: 20.0,right: 20,top: 35),
+                          child: TextField(
+                            controller: c.searchUsersController,
+                            decoration: const InputDecoration(
+                                hintText: 'Search...',
+                                border: OutlineInputBorder(),
+                                suffixIcon: Icon(Icons.search)
                             ),
-                          ):const SizedBox(),
-                            PaginatedDataTable(
-                              showCheckboxColumn:true,
-                              sortColumnIndex: c.currentSortColumn,
-                              sortAscending: c.isSortAsc,
-                              rowsPerPage: c.rowPer,
-                              availableRowsPerPage: const <int>[5,10,15,20],
-                              onRowsPerPageChanged: (int? v){
-                                c.rowPerPage(v!);
-                              },
-                              columns: createColumnsUsersDataTable(context),
-                              source: RowDataSource(SuperCubit.get(context).filteredDataUsers),
-                            ),
-                          ],
-                        )
-                    ),
+                            onChanged: c.onSearchUsersTextChanged,
+                          ),
+                        ):const SizedBox(),
+                          PaginatedDataTable(
+                            showCheckboxColumn:true,
+                            sortColumnIndex: c.currentSortColumn,
+                            sortAscending: c.isSortAsc,
+                            rowsPerPage: c.rowPer,
+                            availableRowsPerPage: const <int>[5,10,15,20],
+                            onRowsPerPageChanged: (int? v){
+                              c.rowPerPage(v!);
+                            },
+                            columns: createColumnsUsersDataTable(context),
+                            source: RowDataSource(SuperCubit.get(context).filteredDataUsers),
+                          ),
+                        ],
+                      )
                   );
                 },
                 fallback: (context)=>const Center(child: CircularProgressIndicator(),));
@@ -73,7 +68,10 @@ class UserTableScreen extends StatelessWidget{
         ),
           floatingActionButton: SpeedDial(
             animatedIcon: AnimatedIcons.menu_close,
-            backgroundColor: Colors.black,
+            animatedIconTheme: IconThemeData(
+              color: isDarkMode==Brightness.light?Colors.white:Colors.black,
+            ),
+            backgroundColor:isDarkMode==Brightness.light?Colors.black:Colors.white,
             overlayColor: Colors.black,
             overlayOpacity: 0.5,
             spacing: 4,

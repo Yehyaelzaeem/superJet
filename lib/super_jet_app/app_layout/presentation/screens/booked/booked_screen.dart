@@ -44,6 +44,8 @@ class BookedScreen extends StatelessWidget {
                               children: List.generate(52, (index) {
                                 return InkWell(
                                   onTap: () {
+                                    final isDarkMode = Theme.of(context).brightness;
+
                                     if (snapshot.data!.docs[index]['isAvailable'] == 'true') {
                                       showDialog(
                                         context: context,
@@ -78,13 +80,21 @@ class BookedScreen extends StatelessWidget {
                                             ),
                                             actions: <Widget>[
                                               TextButton(
-                                                child: const Text('Cancel'),
+                                                child: const Text('Cancel',
+                                                  style:TextStyle(
+                                                      color:  Colors.black
+                                                  ),
+                                                ),
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
                                               ),
                                               TextButton(
-                                                child: const Text('OK'),
+                                                child:  Text('OK',
+                                                style:TextStyle(
+                                                  color:  Colors.black
+                                                ),
+                                                ),
                                                 onPressed: () {
                                                   var x =snapshot.data!.docs[index]['isPaid'];
                                                   collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
@@ -200,7 +210,11 @@ class BookedScreen extends StatelessWidget {
                                                     style: TextButton.styleFrom(
                                                       textStyle: Theme.of(context).textTheme.labelLarge,
                                                     ),
-                                                    child: const Text('Cancel'),
+                                                    child: const Text('Cancel',
+                                                      style:TextStyle(
+                                                          color:  Colors.black
+                                                      ),
+                                                    ),
                                                     onPressed: () {
                                                       Navigator.of(context).pop();
                                                     },
@@ -209,7 +223,10 @@ class BookedScreen extends StatelessWidget {
                                                     style: TextButton.styleFrom(
                                                       textStyle: Theme.of(context).textTheme.labelLarge,
                                                     ),
-                                                    child: const Text('OK'),
+                                                    child: const Text('OK',
+                                                      style:TextStyle(
+                                                          color:  Colors.black
+                                                          ),),
                                                     onPressed: () {
                                                       collectionReference.doc(snapshot.data!.docs[index + 52].id).update({'isAvailable': 'false','passengerID':userID});
                                                       SuperCubit.get(context).addCartTrips(tripsModel,  snapshot.data!.docs[index+52]['chairID'].toString(),snapshot.data!.docs[index+52].id);

@@ -88,9 +88,9 @@ Widget designMyMessage(String text ,String time, context) {
                 color: Colors.black87),
           ),
           Text(newTime,
-            style:  TextStyle(
+            style:  const TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade200),
+                color: Colors.grey),
           ),
           // Text(date,
           //   style:  TextStyle(
@@ -124,9 +124,9 @@ Widget designMessage(String text ,String time , context) {
                 color: Colors.black87),
           ),
           Text(newTime,
-            style:  TextStyle(
+            style:  const TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade600),
+                color: Colors.grey),
           ),
           // Text(date,
           //   style:  TextStyle(

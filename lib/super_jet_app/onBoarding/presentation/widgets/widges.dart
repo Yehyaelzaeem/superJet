@@ -8,23 +8,21 @@ Widget customPageViewColum(OnBoardingModel onBoardingModel,context)=> Column(
       SizedBox(height:
       MediaQuery.of(context).size.height*0.15,
       ),
-      Expanded(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height*0.3,
-          width: MediaQuery.of(context).size.width,
-          child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: Image.asset(onBoardingModel.image,
-              fit: BoxFit.cover,
-              )),
-        ),
+      SizedBox(
+        height: MediaQuery.of(context).size.height*0.35,
+        width: MediaQuery.of(context).size.width,
+        child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            child: Image.asset(onBoardingModel.image,
+            fit: BoxFit.cover,
+            )),
       ),
        SizedBox(height:
        MediaQuery.of(context).size.height*0.15,
        ),
        Text(onBoardingModel.title,
-          style: const TextStyle(
-              color: Colors.black,
+          style:  TextStyle(
+              color:Theme.of(context).hintColor,
               fontSize: 25,
               fontWeight: FontWeight.bold
           )),

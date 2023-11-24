@@ -7,7 +7,8 @@ import '../app_color/app_color_dark.dart';
 
 ThemeData getThemeDataDark()=>
     ThemeData(
-    dialogBackgroundColor: AppColorDark.categoryItemColor,
+        brightness:Brightness.dark,
+        dialogBackgroundColor: AppColorDark.categoryItemColor,
     shadowColor: AppColorDark.shadowColor,
     hintColor:  AppColorDark.primaryHardColor,
     //Trip Color Widget
@@ -28,13 +29,13 @@ ThemeData getThemeDataDark()=>
     appBarTheme: getAppThemeDataDark(),
     bottomNavigationBarTheme: getBottomNavigationBarThemeDataDark(),
     textTheme: getTextTheme(),
-    iconTheme: const IconThemeData(
+    secondaryHeaderColor: AppColorDark.textButtonColor,
+    iconTheme:  const IconThemeData(
       color: AppColorDark.primarySecondColor
     ),
   textButtonTheme:  TextButtonThemeData(
     style:
     ButtonStyle(
-      backgroundColor:MaterialStateProperty.all(Colors.grey.shade600),
       foregroundColor: MaterialStateProperty.all(Colors.white)
     )
   )
@@ -78,13 +79,18 @@ TextTheme getTextTheme() =>
              color:AppColorDark.primaryHardColor,
            ),
            //title of booked screen
-           titleSmall: const TextStyle(
+           titleSmall:  TextStyle(
              color:AppColorDark.primaryColor,
            ),
            titleLarge: TextStyle(
              fontSize: 16,
              fontWeight: FontWeight.w600,
              color:AppColorDark.chairNumberColor,
+           ),
+           labelLarge: const TextStyle(
+             fontSize: 17,
+             fontWeight: FontWeight.bold,
+             color:AppColorDark.textButtonColor,
            ),
 
 
