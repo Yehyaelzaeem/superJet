@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import '../../bloc/trips_bloc.dart';
 import '../../widgets/home_widgets.dart';
 import '../../widgets/widgets.dart';
@@ -24,10 +25,10 @@ class Home extends StatelessWidget {
                               children: [
                                 carouselSlider(context),
                                 const SizedBox(height: 8,),
-                                listOfCityWidget(),
-                                rowTitleHome('Categories',context),
+                                listOfCityWidget(context),
+                                rowTitleHome('${getLang(context, 'categories')}',context),
                                 categoriesWidget(context),
-                                rowTitleHome('Trips',context),
+                                rowTitleHome('${getLang(context, 'trips')}',context),
                                 customLinearProgressIndicatorHome(),
                                 const SizedBox(height: 8,),
                                 gridViewTrips(context,false,false),

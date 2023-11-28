@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/profile/profile.dart';
-import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
 import '../../../../../core/services/routeing_page/routing.dart';
 import '../../../../../core/services/services_locator.dart';
 import '../../../../../core/utils/enums.dart';
 import '../../../../auth/domain/entities/user_entities.dart';
-import '../../../../auth/presentation/widgets/login_widget.dart';
 import '../../widgets/current_trips.dart';
 
 class RecentTrips extends StatelessWidget {

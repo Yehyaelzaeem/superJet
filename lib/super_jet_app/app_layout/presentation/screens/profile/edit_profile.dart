@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/profile/profile.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
@@ -41,9 +42,9 @@ class EditProfileScreen extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-              title: const Text(
-                'Edit Profile',
-                style: TextStyle(color: Colors.black, fontSize: 20),
+              title:  Text(
+                '${getLang(context, 'editProfile')}',
+                style: const TextStyle(color: Colors.black, fontSize: 20),
               ),
               actions: [
                 Padding(
@@ -72,10 +73,10 @@ class EditProfileScreen extends StatelessWidget {
                           NavigatePages.pushReplacePage( const Profile(), context);
                         });
                       },
-                      child: const Text(
-                        'UPDATE',
+                      child:  Text(
+                        '${getLang(context, 'UPDATE')}',
                         style:
-                        TextStyle(color: Colors.blue, fontSize: 18),
+                        const TextStyle(color: Colors.blue, fontSize: 18),
                       )),
                 )
               ],
@@ -189,7 +190,7 @@ class EditProfileScreen extends StatelessWidget {
                           return null;
                         },
                         controller: SuperCubit.get(context).controllerName,
-                        hintText: 'name',
+                        hintText: '${getLang(context, 'nameHintText')}',
                         iconData: Icons.person,
                         obscureText: false,
                       ),
@@ -213,7 +214,7 @@ class EditProfileScreen extends StatelessWidget {
                           return null;
                         },
                         controller: SuperCubit.get(context).controllerPhone,
-                        hintText: 'phone',
+                        hintText: '${getLang(context, 'phone')}',
                         iconData: Icons.phone,
                         obscureText: false,
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
 import '../../../../../core/services/routeing_page/routing.dart';
 import '../../widgets/categories_widgets.dart';
@@ -12,7 +13,8 @@ class Categories extends StatelessWidget {
     return
       Scaffold(
         appBar:AppBar(
-            title:  const Center(child: Text('Categories',)),
+            title:    Center(child:
+            Text('${getLang(context, 'categories')}',)),
             actions: [
               IconButton(onPressed: (){}, icon: const Icon(Icons.search,),),],
             elevation: 0,

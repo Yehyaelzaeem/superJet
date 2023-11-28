@@ -4,9 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
@@ -27,10 +30,13 @@ import 'package:superjet/super_jet_app/onBoarding/presentation/screens/onboardin
 import 'core/bloc_observer/bloc_observer.dart';
 import 'core/global/theme/theme_data/theme_data_dark.dart';
 import 'core/global/theme/theme_data/theme_data_light.dart';
+import 'core/image/image.dart';
 import 'core/services/services_locator.dart';
 import 'core/shared_preference/shared_preference.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'core/utils/constants.dart';
+import 'dart:io' show Platform;
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
 }
@@ -42,6 +48,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await CacheHelper.init();
+  var lang = await CacheHelper.getDate(key: 'lang');
+   if(lang ==null){
+     CacheHelper.sharedPreference!.setString('lang', Platform.localeName.split('_')[0].toString());
+   }
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   messaging.getToken().then((value)async {
     await CacheHelper.saveDate(key: 'token', value: value);
@@ -105,13 +116,25 @@ class MyApp extends StatelessWidget {
       BlocConsumer<SuperCubit,AppSuperStates>(
         builder: (context,state){
         return MaterialApp(
+          locale: SuperCubit.get(context).localeLanguage,
+          localizationsDelegates: const [
+             AppLocale.delegate,
+             GlobalMaterialLocalizations.delegate,
+             GlobalWidgetsLocalizations.delegate,
+             GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('ar'), // Arabic
+          ],
           debugShowCheckedModeBanner: false,
           title: 'Super Jet',
           theme: getThemeDataLight(),
           darkTheme: getThemeDataDark(),
           themeMode:
+
          SuperCubit.get(context).isDark?ThemeMode.dark:ThemeMode.light,
-          home: widget,
+          home: widget
         );
       },
       listener: (context,state){},
@@ -138,82 +161,121 @@ class _CustomMainState extends State<CustomMain> {
     var cubit = AuthCubit.get(context);
     cubit.getType();
     PersistentTabController controller = PersistentTabController(initialIndex: 0);
-    return SafeArea(
-        child:
-        Scaffold(
-         body:
-            BlocConsumer<AuthCubit,AppAuthStates>(
-              builder: (context, state) {
-                return WillPopScope(
-                  onWillPop: () {
-                    customDialogPopScope(context);
-                    return Future.value(false);
-                  },
-                  child:
-                   ConditionalBuilder(
-                       condition: cubit.type.isNotEmpty,
-                       builder: (context){
-                         return PersistentTabView(
-                           context,
-                           controller: controller,
-                           screens:
-                           cubit.type == "user"
-                               ? AppHomeWidgets.userScreens
-                               : cubit.type == "admin"
-                               ? AppHomeWidgets.adminScreens
-                               : [
-                             const Home(city: 'cairo'),
-                             const Categories(),
-                             const PaymentScreen(),
-                             const Profile(),
-                           ],
-                           items: cubit.type == "user"
-                               ? AppHomeWidgets.userNavBarsItems(context)
-                               : cubit.type == "admin"
-                               ? AppHomeWidgets.adminNavBarsItems(
-                               context)
-                               : AppHomeWidgets.branchNavBarsItems(
-                               context),
-                           confineInSafeArea: true,
-                           backgroundColor:Theme.of(context).scaffoldBackgroundColor,
-                           // Default is Colors.white.
-                           handleAndroidBackButtonPress: true,
-                           // Default is true.
-                           resizeToAvoidBottomInset: true,
-                           // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-                           stateManagement: false,
-                           // Default is true.
-                           hideNavigationBarWhenKeyboardShows: true,
-                           // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-                           decoration: NavBarDecoration(
-                             borderRadius: BorderRadius.circular(10.0),
-                             colorBehindNavBar: Colors.white,
-                           ),
-                           popAllScreensOnTapOfSelectedTab: true,
-                           popActionScreens: PopActionScreensType.all,
-                           itemAnimationProperties:
-                           const ItemAnimationProperties(
-                             // Navigation Bar's items animation properties.
-                             duration: Duration(milliseconds: 200),
-                             curve: Curves.ease,
-                           ),
-                           screenTransitionAnimation:
-                           const ScreenTransitionAnimation(
-                             // Screen transition animation on change of selected tab.
-                             animateTabTransition: true,
-                             curve: Curves.ease,
-                             duration: Duration(milliseconds: 200),
-                           ),
-                           navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
-                         );
-                       },
-                       fallback: (context)=>const Center(child: CircularProgressIndicator(),))
-                );
-              },
-              listener: (context, state) {},
-           ),
-        ),
-    );
+    return
+      OfflineBuilder(
+          connectivityBuilder: (
+              BuildContext context,
+              ConnectivityResult connectivity,
+              Widget child,)
+          {
+            final bool connected = connectivity != ConnectivityResult.none;
+            if (connected) {
+              return SafeArea(
+                child:
+                Scaffold(
+                  body:
+                  BlocConsumer<AuthCubit,AppAuthStates>(
+                    builder: (context, state) {
+                      return WillPopScope(
+                          onWillPop: () {
+                            customDialogPopScope(context);
+                            return Future.value(false);
+                          },
+                          child:
+                          ConditionalBuilder(
+                              condition: cubit.type.isNotEmpty,
+                              builder: (context){
+                                return PersistentTabView(
+                                  context,
+                                  controller: controller,
+                                  screens:
+                                  cubit.type == "user"
+                                      ? AppHomeWidgets.userScreens
+                                      : cubit.type == "admin"
+                                      ? AppHomeWidgets.adminScreens
+                                      : [
+                                    const Home(city: 'cairo'),
+                                    const Categories(),
+                                    const PaymentScreen(),
+                                    const Profile(),
+                                  ],
+                                  items: cubit.type == "user"
+                                      ? AppHomeWidgets.userNavBarsItems(context)
+                                      : cubit.type == "admin"
+                                      ? AppHomeWidgets.adminNavBarsItems(
+                                      context)
+                                      : AppHomeWidgets.branchNavBarsItems(
+                                      context),
+                                  confineInSafeArea: true,
+                                  backgroundColor:Theme.of(context).scaffoldBackgroundColor,
+                                  // Default is Colors.white.
+                                  handleAndroidBackButtonPress: true,
+                                  // Default is true.
+                                  resizeToAvoidBottomInset: true,
+                                  // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+                                  stateManagement: false,
+                                  // Default is true.
+                                  hideNavigationBarWhenKeyboardShows: true,
+                                  // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+                                  decoration: NavBarDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    colorBehindNavBar: Colors.white,
+                                  ),
+                                  popAllScreensOnTapOfSelectedTab: true,
+                                  popActionScreens: PopActionScreensType.all,
+                                  itemAnimationProperties:
+                                  const ItemAnimationProperties(
+                                    // Navigation Bar's items animation properties.
+                                    duration: Duration(milliseconds: 200),
+                                    curve: Curves.ease,
+                                  ),
+                                  screenTransitionAnimation:
+                                  const ScreenTransitionAnimation(
+                                    // Screen transition animation on change of selected tab.
+                                    animateTabTransition: true,
+                                    curve: Curves.ease,
+                                    duration: Duration(milliseconds: 200),
+                                  ),
+                                  navBarStyle: NavBarStyle.style3, // Choose the nav bar style with this property.
+                                );
+                              },
+                              fallback: (context)=>const Center(child: CircularProgressIndicator(),))
+                      );
+                    },
+                    listener: (context, state) {},
+                  ),
+                ),
+              );
+            } else {
+              return Scaffold(
+                backgroundColor: Theme.of(context).primaryColor,
+                body: Stack(
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height*0.5,
+                        width: MediaQuery.of(context).size.width,
+                        child: Image.asset(AppImage.offline,fit: BoxFit.cover,),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      margin: const EdgeInsets.all(20),
+                      child: const Text(
+                        "Can't Connect ....Check Your Internet",
+                        style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }
+          },
+          child: const Center(child: CircularProgressIndicator()));
+
   }
 
   onMessageAndOpenedApp(){

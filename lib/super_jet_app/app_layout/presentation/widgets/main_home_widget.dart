@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import '../screens/admin_screens/admin_screen.dart';
@@ -41,13 +42,13 @@ class AppHomeWidgets {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.home),
-        title: ("Home"),
+        title: ('${getLang(context, 'home')}'),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.apps),
-        title: ("Categories"),
+        title: ('${getLang(context, 'categories')}'),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -63,7 +64,7 @@ class AppHomeWidgets {
           ): const Icon(Icons.payments_outlined);
         },
                    listener: (context, state){},),
-        title: ("Payment"),
+        title: ('${getLang(context, 'payment')}'),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -79,7 +80,7 @@ class AppHomeWidgets {
             ): const Icon(Icons.settings);
         },
           listener: (context, state){},),
-        title: ("Setting"),
+        title: ('${getLang(context, 'setting')}'),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -89,14 +90,14 @@ class AppHomeWidgets {
   static List<PersistentBottomNavBarItem> adminNavBarsItems(context) {
     return [
       PersistentBottomNavBarItem(
-        icon: const Icon(Icons.home),
-        title: ("Home"),
+        icon:  Icon(Icons.home),
+        title: ("${getLang(context, 'home')}"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.apps),
-        title: ("Categories"),
+        title: ("${getLang(context, 'categories')}"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -112,13 +113,13 @@ class AppHomeWidgets {
           ): const Icon(Icons.payments_outlined);
         },
                    listener: (context, state){},),
-        title: ("Payment"),
+        title: ("${getLang(context, 'payment')}"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(Icons.admin_panel_settings_outlined),
-        title: ("Admin"),
+        title: ("${getLang(context, 'admin')}"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
@@ -134,7 +135,7 @@ class AppHomeWidgets {
             ): const Icon(Icons.settings);
         },
           listener: (context, state){},),
-        title: ("Setting"),
+        title: ("${getLang(context, 'settings')}"),
         activeColorPrimary: Theme.of(context).primaryColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

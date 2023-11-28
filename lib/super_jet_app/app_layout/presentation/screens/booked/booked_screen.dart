@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/widgets/widgets.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/widgets/booked_widgets.dart';
@@ -52,7 +53,7 @@ class BookedScreen extends StatelessWidget {
                                         builder: (BuildContext context) {
                                           return AlertDialog(
                                             backgroundColor: Colors.white,
-                                            title:  Text('Booked Chair :  ${snapshot.data!.docs[index]['chairID'].toString()}',
+                                            title:  Text('${getLang(context, 'bookedChair')} :  ${snapshot.data!.docs[index]['chairID'].toString()}',
                                             style: const TextStyle(
                                               fontSize: 25
                                             ),
@@ -61,27 +62,27 @@ class BookedScreen extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.min,
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                 Text('Are You sure ? \nYou want to Book this chair ',style: Theme.of(context).textTheme.titleLarge,),
+                                                 Text('${getLang(context, 'bookedPart1')} ',style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Trip name : ${tripsModel.name}',
+                                                Text('${getLang(context, 'tripName')} : ${tripsModel.name}',
                                                 style: Theme.of(context).textTheme.titleLarge,
                                                 ),
                                                 const SizedBox(height: 2,),
-                                                Text('From City : ${tripsModel.fromCity}' , style: Theme.of(context).textTheme.titleLarge,),
+                                                Text('${getLang(context, 'fromCity')} : ${tripsModel.fromCity}' , style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('To City      : ${tripsModel.toCity}',  style: Theme.of(context).textTheme.titleLarge,),
+                                                Text('${getLang(context, 'toCity')}  : ${tripsModel.toCity}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Price         : ${tripsModel.price}',  style: Theme.of(context).textTheme.titleLarge,),
+                                                Text('${getLang(context, 'price')}  : ${tripsModel.price}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Date          : ${tripsModel.date}',  style: Theme.of(context).textTheme.titleLarge,),
+                                                Text('${getLang(context, 'date')}   : ${tripsModel.date}',  style: Theme.of(context).textTheme.titleLarge,),
                                                 const SizedBox(height: 2,),
-                                                Text('Time         : ${tripsModel.time}',  style: Theme.of(context).textTheme.titleLarge,),
+                                                Text('${getLang(context, 'time')}  : ${tripsModel.time}',  style: Theme.of(context).textTheme.titleLarge,),
                                               ],
                                             ),
                                             actions: <Widget>[
                                               TextButton(
-                                                child: const Text('Cancel',
-                                                  style:TextStyle(
+                                                child:  Text('${getLang(context, 'cancel')}',
+                                                  style:const TextStyle(
                                                       color:  Colors.black
                                                   ),
                                                 ),
@@ -90,8 +91,8 @@ class BookedScreen extends StatelessWidget {
                                                 },
                                               ),
                                               TextButton(
-                                                child:  Text('OK',
-                                                style:TextStyle(
+                                                child:   Text('${getLang(context, 'ok')}',
+                                                style:const TextStyle(
                                                   color:  Colors.black
                                                 ),
                                                 ),
@@ -99,7 +100,7 @@ class BookedScreen extends StatelessWidget {
                                                   var x =snapshot.data!.docs[index]['isPaid'];
                                                   collectionReference.doc(snapshot.data!.docs[index].id).update({'isAvailable': 'false','passengerID':userID});
                                                   cubit.addCartTrips(tripsModel,  snapshot.data!.docs[index]['chairID'].toString(),snapshot.data!.docs[index].id);
-                                                  showToast('To Complete Booking Trip Go To Payment Page for 2 minutes', ToastStates.warning, context);
+                                                  showToast('${getLang(context, 'messageBooked')}', ToastStates.warning, context);
                                                   Navigator.of(context).pop();
                                                   Future.delayed(const Duration(minutes: 2)).then((value) async{
                                                     var res =await collectionReference.doc(snapshot.data!.docs[index].id).get();
@@ -169,7 +170,7 @@ class BookedScreen extends StatelessWidget {
                           ),
                           Container(
                             padding: const EdgeInsets.only(
-                                left: 20, bottom: 20, top: 10),
+                                left: 20, bottom: 20, top: 10,right: 20),
                             height: 80,
                             child: Center(
                               child: ListView.builder(

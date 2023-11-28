@@ -25,9 +25,17 @@ import 'package:http/http.dart' as http;
 class SuperCubit extends Cubit<AppSuperStates> {
   final TripsUseCase tripsUseCase;
 
-  SuperCubit(this.tripsUseCase) : super(AppSuperInitialStates());
+  SuperCubit(this.tripsUseCase) : super(AppSuperInitialStates()){
+    initialLanguage();
+  }
+  void initialLanguage()async{
+    var lang = await CacheHelper.getDate(key: 'lang');
+    lightEn =  lang=='en'?true:false;
+    lightAr =  lang=='en'?false:true;
+  }
   static SuperCubit get(context) => BlocProvider.of(context);
-
+  bool? lightEn ;
+  bool? lightAr ;
   final ScrollController scrollController = ScrollController();
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerTitleNotification = TextEditingController();
@@ -64,14 +72,22 @@ class SuperCubit extends Cubit<AppSuperStates> {
   double discount = -0.0;
   bool isPay = false;
   var uId ='' ;
-  bool lightEn = true;
-  bool lightAr = false;
+
+
 
   var type = '';
   File? profileImageFile;
   File? coverImageFile;
   String profileImageFilepath = '';
   String coverImageFilepath = '';
+  Locale localeLanguage=Locale(CacheHelper.sharedPreference!.getString('lang').toString());
+  changeLanguageApp(codeLang){
+    localeLanguage =Locale(codeLang);
+    CacheHelper.sharedPreference!.setString('lang', codeLang);
+    emit(ChangeLanguage());
+  }
+
+
   getID() async {
     uId = await CacheHelper.getDate(key: 'uId');
   }
@@ -111,14 +127,19 @@ class SuperCubit extends Cubit<AppSuperStates> {
     controllerBodyNotification.text='';
   }
 //setting change Language
-  changeLanguage(bool value){
-     lightEn = value;
+  changeLanguageSwitch(bool value){
+
+
+    lightEn = value;
      lightAr=!value;
+     changeLanguageApp('en');
     emit(ChangeLanguage());
   }
   changeLanguageAr(bool value){
+
     lightAr=value;
     lightEn = !value;
+    changeLanguageApp('ar');
     emit(ChangeLanguage());
   }
 //remove notification on profile

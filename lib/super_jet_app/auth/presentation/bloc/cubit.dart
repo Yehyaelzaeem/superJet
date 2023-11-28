@@ -35,6 +35,7 @@ class AuthCubit extends Cubit<AppAuthStates>{
   TextEditingController resetPasswordController =TextEditingController();
 
   bool isEye=false;
+  bool isEyeReg=false;
   bool isEyePassword=false;
   bool isEyeConPassword=false;
   bool isNotLoading=true;

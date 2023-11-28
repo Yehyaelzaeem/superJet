@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
 import '../../../../core/utils/enums.dart';
 import '../bloc/cubit.dart';
@@ -39,7 +40,7 @@ Widget customRegisterDesign() {
                       return null;
                     },
                     controller: AuthCubit.get(context).name,
-                    hintText: 'Name',
+                    hintText: '${getLang(context, 'nameHintText')}',
                     iconData:  Icons.person,
                     obscureText: false,
                   ),),
@@ -65,7 +66,7 @@ Widget customRegisterDesign() {
                       return null;
                     },
                     controller: AuthCubit.get(context).phone,
-                    hintText: 'Phone',
+                    hintText: '${getLang(context, 'phoneHintText')}',
                     iconData:  Icons.phone,
                     obscureText: false,
                   ),
@@ -92,7 +93,7 @@ Widget customRegisterDesign() {
                       return null;
                     },
                     controller: AuthCubit.get(context).email,
-                    hintText: 'User name/Email ',
+                    hintText: '${getLang(context, 'usernameHintText')}',
                     iconData:  Icons.email_outlined,
                     obscureText: false,
                   ),
@@ -118,7 +119,7 @@ Widget customRegisterDesign() {
                       return null;
                     },
                     controller: AuthCubit.get(context).password,
-                    hintText: 'Password',
+                    hintText: '${getLang(context, 'passwordHintText')}',
                     iconData:  Icons.lock_open,
                     obscureText: !AuthCubit.get(context).isEyePassword,
                     suffixIcon: IconButton(
@@ -131,8 +132,8 @@ Widget customRegisterDesign() {
                       isDarkMode==Brightness.dark?
                       (AuthCubit.get(context).isEyePassword==false ?
                       Colors.black45:Colors.white70):
-                      (AuthCubit.get(context).isEye==false ?
-                      Colors.white : Colors.blue.shade300)),
+                      (AuthCubit.get(context).isEyePassword==false ?
+                      Colors.white : Colors.grey.shade300)),
                     ),
                   ),
                 ),
@@ -157,7 +158,7 @@ Widget customRegisterDesign() {
                       return null;
                     },
                     controller: AuthCubit.get(context).confirmPassword,
-                    hintText: 'Confirm Password',
+                    hintText: '${getLang(context, 'confirmPasswordHintText')}',
                     iconData:  Icons.lock_open,
                     obscureText: !AuthCubit.get(context).isEyeConPassword,
                     suffixIcon: IconButton(
@@ -169,8 +170,8 @@ Widget customRegisterDesign() {
                       isDarkMode==Brightness.dark?
                       (AuthCubit.get(context).isEyeConPassword==false ?
                       Colors.black45:Colors.white70):
-                      (AuthCubit.get(context).isEye==false ?
-                      Colors.white : Colors.blue.shade300)),
+                      (AuthCubit.get(context).isEyeConPassword==false ?
+                      Colors.white : Colors.grey.shade300)),
                       ),
                     onFieldSubmitted:  (value) {
                       AuthCubit.get(context).register(
@@ -183,7 +184,7 @@ Widget customRegisterDesign() {
                     ),
                   ),
                 SizedBox(height: m.height * 0.07,),
-                customAuthButton(context, 0.5, 'Sign In', () {
+                customAuthButton(context, 0.5, '${getLang(context, 'signIn')}', () {
 
                   var c = AuthCubit.get(context);
                   if (c.name.text.isEmpty ||
@@ -191,15 +192,15 @@ Widget customRegisterDesign() {
                       c.email.text.isEmpty ||
                       c.password.text.isEmpty ||
                       c.confirmPassword.text.isEmpty) {
-                    showToast('Your registration found empty data',
+                    showToast('${getLang(context, 'fieldIsEmpty')}',
                         ToastStates.warning, context);
                   } else {
                     if (c.phone.text.length != 11) {
-                      showToast('The phone number not equal 11 number',
+                      showToast('${getLang(context, 'phoneValidate')}',
                           ToastStates.warning, context);
                     } else {
                       if (c.confirmPassword.text != c.password.text) {
-                        showToast('The Confirm Password Not Like Password',
+                        showToast('${getLang(context, 'confirmPassword')}',
                             ToastStates.warning, context);
                       } else {
                         if (AuthCubit.get(context)

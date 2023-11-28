@@ -12,15 +12,19 @@ class LocalDataBase implements BaseLocalDataBase{
           title: 'Book Travel Tickets Online',
           image: AppImage.onBoarding1,
           description: 'You can book your travel ticket from home, from your work, or from anywhere in the world to save your time and ease of booking',
+        number: '1',
       ),
       OnBoardingModel(
         title: 'Easy Payment',
         image: AppImage.onBoarding2,
         description: 'You can easily pay for the ticket in a convenient way.',
+        number: '2',
+
       ),
       OnBoardingModel(
         title: 'Comfort and pleasure in travel',
         image: AppImage.onBoarding4,
+        number: '2',
         description: "The company's buses are of high quality to suit and comfort our passengers",
       ),
     ];

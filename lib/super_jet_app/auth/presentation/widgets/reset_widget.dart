@@ -1,6 +1,7 @@
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
 import '../../../../core/services/services_locator.dart';
 import '../../../../core/utils/enums.dart';
@@ -20,7 +21,7 @@ Widget customResetDesign(context){
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
-            Center(child: customTitleScreen('Reset Password', Theme.of(context).hintColor)),
+            Center(child: customTitleScreen('${getLang(context, 'resetPassword')}', Theme.of(context).hintColor)),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.05,
             ),
@@ -28,8 +29,8 @@ Widget customResetDesign(context){
               padding:  EdgeInsets.only(left:
               MediaQuery.of(context).size.width*0.09,
               ),
-              child: const Text("Please enter your email for reset password",
-                style: TextStyle(
+              child:  Text("${getLang(context, 'pleaseEnterEmail')}",
+                style: const TextStyle(
                     color: Colors.grey,
                     fontWeight: FontWeight.bold,
                     fontSize: 12
@@ -59,14 +60,14 @@ Widget customResetDesign(context){
                     return null;
                   },
                   controller:AuthCubit.get(context).resetPasswordController,
-                  hintText: 'Email',
+                  hintText: '${getLang(context, 'usernameHintText')}',
                   iconData:  Icons.email_outlined,
                   obscureText: false,
                   onFieldSubmitted:(value) {
                     if(AuthCubit.get(context).resetPasswordController.text.isNotEmpty){
                       AuthCubit.get(context).resetPassword(AuthCubit.get(context).resetPasswordController.text, context);
                     }else{
-                      showToast('Email address is empty', ToastStates.error, context);
+                      showToast('${getLang(context, 'emailIsEmpty')}', ToastStates.error, context);
                     }
                   },
                 ),
@@ -80,11 +81,11 @@ Widget customResetDesign(context){
             Center(
               child: ConditionalBuilder(
                   condition: AuthCubit.get(context).y ==false,
-                  builder: (context)=> customAuthButton(context, 0.5, 'Reset Password', () {
+                  builder: (context)=> customAuthButton(context, 0.5, '${getLang(context, 'resetPassword')}', () {
                     if(AuthCubit.get(context).resetPasswordController.text.isNotEmpty){
                       AuthCubit.get(context).resetPassword(AuthCubit.get(context).resetPasswordController.text, context);
                     }else{
-                      showToast('Email address is empty', ToastStates.error, context);
+                      showToast('${getLang(context, 'emailIsEmpty')}', ToastStates.error, context);
                     }
                   },isDarkMode==Brightness.dark?Colors.black45:Colors.white
                   ),

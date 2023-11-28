@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/trip_model.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
@@ -36,8 +37,8 @@ class PaymentScreen extends StatelessWidget {
                     Column(
                       children: [
                         SizedBox(height: m.height*0.15,),
-                        const Center(child: Text('There are no trips currently',
-                          style: TextStyle(
+                         Center(child: Text('${getLang(context, 'noTrips')}',
+                          style: const TextStyle(
                               color: Colors.black54,
                               fontSize: 18
                           ),
@@ -74,7 +75,7 @@ class PaymentScreen extends StatelessWidget {
                                     cubit.getType();
                                     cubit.getID();
                                     if(cubit.total==0 ||cubit.total<0){
-                                      showToast("The total mustn't equal zero or less ", ToastStates.error, context);
+                                      showToast("${getLang(context, 'totalEqualZero')}", ToastStates.error, context);
                                     }else{
 
                                       SuperJetPaymentManager.makePayment(cubit.total.toInt(),"EGP",context).then((value){
@@ -150,16 +151,16 @@ class PaymentScreen extends StatelessWidget {
                                 child: MaterialButton(
                                   onPressed: (){
                                     if(cubit.total==0 ||cubit.total<0){
-                                      showToast("The total mustn't equal zero or less ", ToastStates.error, context);
+                                      showToast("${getLang(context, 'totalEqualZero')}", ToastStates.error, context);
                                     }
                                     else{
                                       context.read<TripsBloc>().add(GetProfileEvent(context));
                                       var user= context.read<TripsBloc>().state.userModel[0];
                                       if(double.parse(user.wallet) > 0.0){
-                                        showToast("The wallet equal ${user.wallet} ", ToastStates.success, context);
+                                        showToast("${getLang(context, 'wallet')} ${user.wallet} ", ToastStates.success, context);
                                         customBottomSheetCustomWallets(user, cubit.listCartTrips.length.toString(),cubit.total.toString(),double.parse(user.wallet),context);
                                       }else{
-                                        showToast("The wallet equal zero ", ToastStates.error, context);
+                                        showToast("${getLang(context, 'wallet')}${getLang(context, 'zero')} ", ToastStates.error, context);
                                       }
                                     }
                                   },

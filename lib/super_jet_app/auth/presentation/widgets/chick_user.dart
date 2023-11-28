@@ -3,7 +3,7 @@ import '../../../../core/services/routeing_page/routing.dart';
 import '../bloc/cubit.dart';
 import '../screens/login.dart';
 
-Widget customCheckUserButton(String type ,context){
+Widget customCheckUserButton(String type ,String name,context){
   final isDarkMode = Theme.of(context).brightness;
 
   return  Container(
@@ -123,7 +123,7 @@ Widget customCheckUserButton(String type ,context){
         }
 
       },
-      child:  Text(type,
+      child:  Text(name,
         style:  TextStyle(
             color: isDarkMode==Brightness.dark?Colors.black45:Colors.white,
             fontWeight: FontWeight.bold,

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/state.dart';
 import 'package:badges/badges.dart' as badges;
 
 Widget customTitleSettingScreen(context){
-  return  Text('Settings',
+  return  Text('${getLang(context, 'settings')}',
     style: Theme.of(context).textTheme.displayLarge
   );
 }
@@ -94,11 +95,11 @@ Widget customWidgetRowSwitchLanguageSettings({required TextStyle? style ,require
           const Spacer(),
           isEn==true?
           Switch(
-            value: SuperCubit.get(context).lightEn,
+            value: SuperCubit.get(context).lightEn!,
             onChanged: onChanged
           ):
           Switch(
-            value: SuperCubit.get(context).lightAr,
+            value: SuperCubit.get(context).lightAr!,
             onChanged: onChanged
           ),
         ],

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import '../../../../../core/services/services_locator.dart';
 import '../../../data/models/trip_model.dart';
 import '../../bloc/cubit.dart';
@@ -27,85 +28,92 @@ class DisplayCartTripsDetails extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        currentImageTrips(tripsModel.image,tripsModel.image,context,tripsState,true),
+                         currentImageTrips(tripsModel.image,tripsModel.image,context,tripsState,true),
+                         Padding(
+                           padding: const EdgeInsets.only(right: 18.0,left: 18),
+                           child: Column(
+                             children: [
+                               const SizedBox(height: 20,),
 
-                        const SizedBox(height: 20,),
+                               Center(child: Text("${x.fromCity} To ${x.toCity}",
+                                   style: Theme.of(context).textTheme.titleMedium
+                               )),
 
-                        Center(child: Text("${x.fromCity} To ${x.toCity}",
-                          style: Theme.of(context).textTheme.titleMedium
-                        )),
+                               const SizedBox(height: 20,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'fromCity')} :  ",x.fromCity,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'toCity')} :  ",x.toCity,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'price')} :  ",x.price,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'type')} :  ",x.isVip=='true'?"VIP":'Normal',12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'date')} :  ",x.date,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'time')} :  ",x.time,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'arrivalTime')} :  ",x.avgTime,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'chairNumber')} :  ",chairId.toString(),12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'state')} :  ",x.state,12,12),
+                               const SizedBox(height: 5,),
+                               customRowDataCurrentTrips(context,"${getLang(context, 'ticketId')} :  ","${x.tripID}$chairId",12,12),
+                               SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+                               Padding(
+                                 padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                 child: Container(
+                                   width: MediaQuery.of(context).size.width * 0.9,
+                                   decoration: BoxDecoration(
+                                       borderRadius: const BorderRadius.all(Radius
+                                           .circular(10)),
+                                       border: Border.all(color: Colors.grey.shade400,
+                                           width: 1)
+                                   ),
+                                   child:
+                                   TextButton(onPressed: ()  {
+                                     SuperCubit.get(context).deleteCartTrips(tripsModel, chairId,chairDoc);
+                                     var collectionReference = FirebaseFirestore.instance
+                                         .collection('Trips')
+                                         .doc(tripsModel.categoryID.trim())
+                                         .collection(tripsModel.categoryName.trim())
+                                         .doc(tripsModel.tripID.trim())
+                                         .collection('Chairs');
+                                     collectionReference.doc(chairDoc).update({
+                                       'isAvailable':'true',
+                                       'passengerID':'null',
+                                     });
+                                     Navigator.pop(context);
+                                   },
+                                     child:  Text('${getLang(context, 'deleteTrip')}',
+                                       style: Theme.of(context).textTheme.labelLarge,
+                                     ),)
+                                   ,),
+                               ),
+                               const SizedBox(height: 10,),
+                               Padding(
+                                 padding: const EdgeInsets.only(left: 20.0, right: 20),
+                                 child: Container(
+                                   width: MediaQuery.of(context).size.width * 0.9,
+                                   decoration: BoxDecoration(
+                                       borderRadius: const BorderRadius.all(Radius
+                                           .circular(10)),
+                                       border: Border.all(color: Colors.grey.shade400,
+                                           width: 1)
+                                   ),
+                                   child:
+                                   TextButton(onPressed: () {
+                                     Navigator.pop(context);
+                                   }, child:  Text('${getLang(context, 'cancel')}',
+                                     style: Theme.of(context).textTheme.labelLarge,
+                                   ),)
+                                   ,),
+                               ),
+                               const SizedBox(height: 15,),
+                             ],
+                           ),
+                         )
 
-                        const SizedBox(height: 20,),
-                        customRowDataCurrentTrips(context,"From City :  ",x.fromCity,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"To City :  ",x.toCity,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Price :  ",x.price,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Type :  ",x.isVip=='true'?"VIP":'Normal',12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Date :  ",x.date,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Time :  ",x.time,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Arrival Time :  ",x.avgTime,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Chair Number :  ",chairId.toString(),12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"State :  ",x.state,12,12),
-                        const SizedBox(height: 5,),
-                        customRowDataCurrentTrips(context,"Ticket Id :  ","${x.tripID}$chairId",12,12),
-                        SizedBox(height: MediaQuery.of(context).size.height*0.1,),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(Radius
-                                    .circular(10)),
-                                border: Border.all(color: Colors.grey.shade400,
-                                    width: 1)
-                            ),
-                            child:
-                            TextButton(onPressed: ()  {
-                              SuperCubit.get(context).deleteCartTrips(tripsModel, chairId,chairDoc);
-                              var collectionReference = FirebaseFirestore.instance
-                                  .collection('Trips')
-                                  .doc(tripsModel.categoryID.trim())
-                                  .collection(tripsModel.categoryName.trim())
-                                  .doc(tripsModel.tripID.trim())
-                                  .collection('Chairs');
-                              collectionReference.doc(chairDoc).update({
-                                'isAvailable':'true',
-                                'passengerID':'null',
-                              });
-                              Navigator.pop(context);
-                            },
-                              child:  Text('Delete Trip',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),)
-                            ,),
-                        ),
-                        const SizedBox(height: 10,),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 20.0, right: 20),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(Radius
-                                    .circular(10)),
-                                border: Border.all(color: Colors.grey.shade400,
-                                    width: 1)
-                            ),
-                            child:
-                            TextButton(onPressed: () {
-                              Navigator.pop(context);
-                            }, child:  Text('Cancel',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),)
-                            ,),
-                        ),
-                        const SizedBox(height: 15,),
                       ],
                     ),
                   ),
@@ -125,9 +133,9 @@ class DisplayCartTripsDetails extends StatelessWidget {
                             color: Colors.white,
                             borderRadius: BorderRadius.all(Radius.circular(30))
                         ),
-                        child: const Center(
-                          child: Text('This Trip was Finished',
-                            style: TextStyle(
+                        child:  Center(
+                          child: Text('${getLang(context, 'tripFinished')}',
+                            style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 17
                             ),

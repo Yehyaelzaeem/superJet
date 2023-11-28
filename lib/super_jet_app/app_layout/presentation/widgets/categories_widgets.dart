@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/app_layout/data/models/categories_model.dart';
 
 Widget rowCategories(context, CategoriesModel categoriesModel) =>
@@ -48,10 +49,10 @@ Widget rowCategories(context, CategoriesModel categoriesModel) =>
 
                        ),
                        const SizedBox(height: 5,),
-                       customRowCategoriesDetails('Name Of Category : ', categoriesModel.name,context),
-                       customRowCategoriesDetails('First Type : ',categoriesModel.categoryName,context),
-                       customRowCategoriesDetails('Second Type : ',categoriesModel.categorySecondName,context),
-                       customRowCategoriesDetails('Number Of Trips: ', categoriesModel.numberOfTrips,context),
+                       customRowCategoriesDetails('${getLang(context, 'categoryName')}', categoriesModel.name,context),
+                       customRowCategoriesDetails('${getLang(context, 'categoryFirstType')}',categoriesModel.categoryName,context),
+                       customRowCategoriesDetails('${getLang(context, 'categorySecondType')}',categoriesModel.categorySecondName,context),
+                       customRowCategoriesDetails('${getLang(context, 'categoryTrips')}', categoriesModel.numberOfTrips,context),
                      ],
                    )
              ),

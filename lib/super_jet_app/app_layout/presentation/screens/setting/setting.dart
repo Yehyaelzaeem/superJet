@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/core/utils/enums.dart';
 
@@ -39,62 +40,62 @@ class Setting extends StatelessWidget {
               children: [
                 customTitleSettingScreen(context),
                 SizedBox(height: m.height*0.03,),
-                customWidgetTitleRowSettings(m: m, text: 'Account', iconData: Icons.person_2_outlined, context: context),
+                customWidgetTitleRowSettings(m: m, text: '${getLang(context, 'account')}', iconData: Icons.person_2_outlined, context: context),
                 const Divider(color: Colors.black54,),
-                customWidgetRowDetailsSettings(m: m, text: 'Profile', onTap: (){
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'profile')}', onTap: (){
                   NavigatePages.persistentNavBarNavigator(const Profile(), context);
                 }, context: context, style: Theme.of(context).textTheme.titleSmall),
-                customWidgetRowDetailsSettings(m: m, text: 'Change Email', onTap: (){
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'changeEmail')}', onTap: (){
                   var c =SuperCubit.get(context);
                   customBottomSheetChangeEmail(
-                      title: 'Change Email', text: 'Change email address ',
-                      hintText: 'New Email', iconData: Icons.person,
+                      title: '${getLang(context, 'changeEmail')}', text: '${getLang(context, 'changeEmailAddress')}',
+                      hintText: '${getLang(context, 'email')}', iconData: Icons.person,
                       onTap: (){
                        if(c.controllerName.text.isNotEmpty){
                          c.getType();
                          c.getID();
                          c.changeEmail(c.controllerName.text.trim(),context);
                        }else{
-                         showToast('Please Enter Email', ToastStates.warning, context);
+                         showToast('${getLang(context, 'pleaseEnter')} ${getLang(context, 'email')}', ToastStates.warning, context);
                        }
                       },
                       context: context,
                       iconTitle: Icons.email_outlined);
                 }, context: context, style: Theme.of(context).textTheme.titleSmall),
-                customWidgetRowDetailsSettings(m: m, text: 'Change Password', onTap: (){
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'changePassword')}', onTap: (){
                   var c =SuperCubit.get(context);
                   customBottomSheetChangeEmail(
-                      title: 'Change Password', text: 'Change Password ',
-                      hintText: 'New Password', iconData: Icons.security,
+                      title: '${getLang(context, 'changePassword')}', text: '${getLang(context, 'changePassword')}',
+                      hintText: '${getLang(context, 'passwordHintText')}', iconData: Icons.security,
                       onTap: (){
                            if(c.controllerName.text.isNotEmpty){
                              c.getType();
                              c.getID();
                              c.changePassword(c.controllerName.text.trim(),context);
                            }else{
-                             showToast('Please Enter Password', ToastStates.warning, context);
+                             showToast('${getLang(context, 'pleaseEnter')} ${getLang(context, 'passwordHintText')}', ToastStates.warning, context);
                            }
                       },
                       context: context,
                       iconTitle: Icons.security);
                 }, context: context, style: Theme.of(context).textTheme.titleSmall),
                 SizedBox(height: m.height*0.03,),
-                customWidgetTitleRowSettings(m: m, text: 'Payment', iconData: Icons.payments_outlined, context: context),
+                customWidgetTitleRowSettings(m: m, text: '${getLang(context, 'payment2')}', iconData: Icons.payments_outlined, context: context),
                 const Divider(color: Colors.black54,),
-                customWidgetRowDetailsSettings(m: m, text: 'The Wallet', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
-                customWidgetRowDetailsSettings(m: m, text: 'Visa', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
-                customWidgetRowDetailsSettings(m: m, text: 'Fawry', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'wallet2')}', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'visa')}', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
+                customWidgetRowDetailsSettings(m: m, text: '${getLang(context, 'fawry')}', onTap: (){}, context: context, style: Theme.of(context).textTheme.titleSmall),
                 SizedBox(height: m.height*0.03,),
-                customWidgetTitleRowSettings(m: m, text: 'Mode', iconData: Icons.brightness_4_outlined, context: context),
+                customWidgetTitleRowSettings(m: m, text: '${getLang(context, 'mode')}', iconData: Icons.brightness_4_outlined, context: context),
                 const Divider(color: Colors.black54,),
-                customWidgetRowSwitchModeSettings(m: m, text: 'Dark mode',context: context),
+                customWidgetRowSwitchModeSettings(m: m, text: '${getLang(context, 'typeOfMode')}',context: context),
                 SizedBox(height: m.height*0.03,),
-                customWidgetTitleRowSettings(m: m, text: 'Language', iconData: Icons.language_outlined, context: context),
+                customWidgetTitleRowSettings(m: m, text: '${getLang(context, 'language')}', iconData: Icons.language_outlined, context: context),
                 const Divider(color: Colors.black54,),
-                customWidgetRowSwitchLanguageSettings(m: m, text: 'English', isEn: true, onChanged: (bool value) {
-                  SuperCubit.get(context).changeLanguage(value);
+                customWidgetRowSwitchLanguageSettings(m: m, text: '${getLang(context, 'en')}', isEn: true, onChanged: (bool value) {
+                  SuperCubit.get(context).changeLanguageSwitch(value);
                 }, style: Theme.of(context).textTheme.titleSmall),
-                customWidgetRowSwitchLanguageSettings(m: m, text: 'arabic', isEn: false, onChanged: (bool value) {
+                customWidgetRowSwitchLanguageSettings(m: m, text: '${getLang(context, 'ar')}', isEn: false, onChanged: (bool value) {
                   SuperCubit.get(context).changeLanguageAr(value);
                 }, style:  Theme.of(context).textTheme.titleSmall),
                 SizedBox(height: m.height*0.01,),
@@ -115,7 +116,7 @@ class Setting extends StatelessWidget {
                           children: [
                             const Icon(Icons.logout_outlined,),
                             SizedBox(width: m.width*0.02,),
-                             Text('LOGOUT',
+                             Text('${getLang(context, 'logOut')}',
                             style: TextStyle(
                               color: Theme.of(context).hintColor,
                             )

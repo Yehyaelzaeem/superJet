@@ -16,7 +16,9 @@ Widget customAuthDesignBackGround(Widget designScreen, context,) {
                 borderRadius: const BorderRadius.only(
                   bottomRight: Radius.circular(200),
                 ),
-                color: Theme.of(context).primaryColor,
+                color:
+                // Colors.red
+                Theme.of(context).scaffoldBackgroundColor,
               ),
             ),
           ),
@@ -28,7 +30,8 @@ Widget customAuthDesignBackGround(Widget designScreen, context,) {
                 borderRadius: const BorderRadius.only(
                   bottomRight: Radius.circular(205),
                 ),
-                color:Theme.of(context).scaffoldBackgroundColor,
+                 color:
+                 Theme.of(context).primaryColor,
               ),
             ),
           ),

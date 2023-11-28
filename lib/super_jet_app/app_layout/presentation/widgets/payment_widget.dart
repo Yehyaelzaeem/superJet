@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/image/image.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
@@ -52,172 +53,173 @@ Widget customPaymentDetails(List<TripsModel> listTrips,List chairsList,double to
           ),
           Padding(
             padding: const EdgeInsets.only(left: 30.0,right: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(height: m.height*0.022,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Text('Trips name',
-                        style:  TextStyle(
-                            color: colorTextBase,
-                            fontWeight: FontWeight.w600
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  SizedBox(height: m.height*0.022,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Text('${getLang(context, 'tripsName')}',
+                          style:  TextStyle(
+                              color: colorTextBase,
+                              fontWeight: FontWeight.w600
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const Expanded(
+                      const Expanded(
+                          flex: 1,
+                          child: SizedBox()),
+                      Expanded(
                         flex: 1,
-                        child: SizedBox()),
-                    Expanded(
-                      flex: 1,
 
-                      child: Text('*',
-                        style: TextStyle(
-                            color: colorTextBase,
-                            fontWeight: FontWeight.w600
-                        ),),
-                    ),
-                    const Expanded(
-                        flex: 1,
-                        child: SizedBox()),
-                    Expanded(
-                      flex: 1,
-                      child: Text('Chairs',
-                        style: TextStyle(
-                            color: colorTextBase,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        child: Text('*',
+                          style: TextStyle(
+                              color: colorTextBase,
+                              fontWeight: FontWeight.w600
+                          ),),
                       ),
-                    ),
-                    const Expanded(
+                      const Expanded(
+                          flex: 1,
+                          child: SizedBox()),
+                      Expanded(
                         flex: 1,
-                        child: SizedBox()),
-                    Expanded(
-                      flex: 2,
-                      child: Text('Total',
-                        style:  TextStyle(
-                            color: colorText,
-                            fontWeight: FontWeight.w600
-                        ),),
-                    ),
-                  ],
-                ),
-                SizedBox(height: m.height*0.01,),
-                SizedBox(
-                  height: m.height*0.1,
-                  child: ListView.builder(
-                      itemCount: resList.length,
-                      itemBuilder: (context,index){
-                        return
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3.0,bottom: 3.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 3,
-                                  child: Text(resList[index].name,
-                                    style:  TextStyle(
-                                        color: colorTextBase,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600
+                        child: Text('${getLang(context, 'chairs')}',
+                          style: TextStyle(
+                              color: colorTextBase,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const Expanded(
+                          flex: 1,
+                          child: SizedBox()),
+                      Expanded(
+                        flex: 2,
+                        child: Text('${getLang(context, 'total')}',
+                          style:  TextStyle(
+                              color: colorText,
+                              fontWeight: FontWeight.w600
+                          ),),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: m.height*0.08,
+                    child: ListView.builder(
+                        itemCount: resList.length,
+                        itemBuilder: (context,index){
+                          return
+                            Padding(
+                              padding: const EdgeInsets.only(top: 3.0,bottom: 3.0),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(resList[index].name,
+                                      style:  TextStyle(
+                                          color: colorTextBase,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                                const Expanded(
+                                  const Expanded(
+                                      flex: 1,
+                                      child: SizedBox()),
+                                  Expanded(
                                     flex: 1,
-                                    child: SizedBox()),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text('*',
-                                    style: TextStyle(
-                                        color: colorTextBase,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600
-                                    ),),
-                                ),
-                                const Expanded(
+                                    child: Text('*',
+                                      style: TextStyle(
+                                          color: colorTextBase,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600
+                                      ),),
+                                  ),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: SizedBox()),
+                                  Expanded(
                                     flex: 1,
-                                    child: SizedBox()),
-                                Expanded(
-                                  flex: 1,
-                                  child: Text('${resChairsList[index]}',
-                                    style: TextStyle(
-                                        color: colorTextBase,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600
-                                    ),),
-                                ),
-                                const Expanded(
-                                    flex: 1,
-                                    child: SizedBox()),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text('${(double.parse(resList[index].price)*resChairsList[index])} EGP',
-                                    style:  TextStyle(
-                                        color: colorText,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600
-                                    ),),
-                                ),
-                              ],
-                            ),
-                          );
-                      }),
-                ),
-                const Divider(color: Colors.black12,thickness: 1,),
-                customRowDate('Subtotal',colorTextBase,'$subTotal EGP',colorText),
-                SizedBox(height: m.height*0.012,),
-                customRowDate('Tax & Fees',colorTextBase,'$tax EGP',colorText),
-                SizedBox(height: m.height*0.012,),
-                customRowDate('Discount',colorTextBase,'$discount EGP',colorText),
-                SizedBox(height: m.height*0.012,),
-                Row(
-                  children: [
-                    SizedBox(
-                        width:MediaQuery.of(context).size.width*0.2,
-                        child: const Divider(color: Colors.black12,thickness: 1,),
-                    ),
-                    const Spacer(),
-                    SizedBox(
-                        width:MediaQuery.of(context).size.width*0.2,
-                        child: const Divider(color: Colors.black12,thickness: 1,),
-                    ),
+                                    child: Text('${resChairsList[index]}',
+                                      style: TextStyle(
+                                          color: colorTextBase,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600
+                                      ),),
+                                  ),
+                                  const Expanded(
+                                      flex: 1,
+                                      child: SizedBox()),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text('${(double.parse(resList[index].price)*resChairsList[index])} EGP',
+                                      style:  TextStyle(
+                                          color: colorText,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w600
+                                      ),),
+                                  ),
+                                ],
+                              ),
+                            );
+                        }),
+                  ),
+                  const Divider(color: Colors.black12,thickness: 1,),
+                  customRowDate('${getLang(context, 'subtotal')}',colorTextBase,'$subTotal ${getLang(context, 'EGP')}',colorText),
+                  SizedBox(height: m.height*0.012,),
+                  customRowDate('${getLang(context, 'tax')}',colorTextBase,'$tax ${getLang(context, 'EGP')}',colorText),
+                  SizedBox(height: m.height*0.012,),
+                  customRowDate('${getLang(context, 'discount')}',colorTextBase,'$discount ${getLang(context, 'EGP')}',colorText),
+                  SizedBox(height: m.height*0.012,),
+                  Row(
+                    children: [
+                      SizedBox(
+                          width:MediaQuery.of(context).size.width*0.2,
+                          child: const Divider(color: Colors.black12,thickness: 1,),
+                      ),
+                      const Spacer(),
+                      SizedBox(
+                          width:MediaQuery.of(context).size.width*0.2,
+                          child: const Divider(color: Colors.black12,thickness: 1,),
+                      ),
 
-                  ],
-                ),
-                SizedBox(height: m.height*0.012,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('Total',
-                      style: TextStyle(
-                          color: colorText,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                      ),),
-                    const Spacer(),
-                    Text('$total EGP',
-                      style: TextStyle(
-                          color: colorText,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold
-                      ),),
-                    const SizedBox(width: 10,)
-                  ],
-                ),
-              ],),
+                    ],
+                  ),
+                  SizedBox(height: m.height*0.012,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${getLang(context, 'total')}',
+                        style: TextStyle(
+                            color: colorText,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                        ),),
+                      const Spacer(),
+                      Text('$total ${getLang(context, 'EGP')}',
+                        style: TextStyle(
+                            color: colorText,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold
+                        ),),
+                      const SizedBox(width: 10,)
+                    ],
+                  ),
+                ],),
+            ),
           ),
         ],
       )
@@ -363,7 +365,7 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Price : ${tripsModel.price}',
+                          '${getLang(context, 'price')} : ${tripsModel.price}',
                           style: const TextStyle(
                               fontSize: 10, color: Colors.grey),
                           overflow: TextOverflow.ellipsis,
@@ -373,7 +375,7 @@ Widget customCartTripWidget(TripsState tripsState,context, TripsModel tripsModel
                           width: MediaQuery.of(context).size.width * 0.02,
                         ),
                         Text(
-                          'Chair : $chairId',
+                          '${getLang(context, 'chair')} : $chairId',
                           style: const TextStyle(
                             fontSize: 10,
                             color: Colors.grey,

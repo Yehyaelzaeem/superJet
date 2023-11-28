@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/super_jet_app/auth/presentation/widgets/chick_user.dart';
 import '../../../../core/image/image.dart';
 import '../widgets/login_widget.dart';
@@ -31,9 +32,9 @@ class ChickUsers extends StatelessWidget {
                 ),
               ),
             ),
-            customCheckUserButton('user', context),
+            customCheckUserButton('user','${AppLocale.of(context).getTranslated('client')}', context),
             SizedBox(height:h*0.04,),
-            customCheckUserButton('admin',context),
+            customCheckUserButton('admin','${AppLocale.of(context).getTranslated('admin')}',context),
             SizedBox(height: h*0.08,),
           ],
         ),

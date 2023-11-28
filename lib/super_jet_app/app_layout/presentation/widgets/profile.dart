@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/cubit.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/bloc/trips_bloc.dart';
@@ -36,7 +37,7 @@ Widget customProfileDesign(TripsState state,context){
               style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, fontSize: 10),
             )),
         const SizedBox(height: 10,),
-        customRowDateProfile(state.userModel[0].tripIdList!.length.toString(),state.userModel[0].wallet,'8.5'),
+        customRowDateProfile(state.userModel[0].tripIdList!.length.toString(),state.userModel[0].wallet,'8.5',context),
         const SizedBox(height: 15,),
         customProfileWidgets(state,context),
       ],
@@ -72,7 +73,7 @@ Widget customProfileWidgets(TripsState state,context){
             child: TextButton(
               onPressed: () {},
               child:  Text(
-                ' The Wallet',
+                '${getLang(context, 'wallet2')}',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
             ),
@@ -115,7 +116,7 @@ Widget customProfileWidgets(TripsState state,context){
             NavigatePages.pushReplacePage(RecentTrips(tripIdLis: state.userModel[0].tripIdList!), context);
           },
           child:  Text(
-            'Recent Trips',
+            '${getLang(context, 'recentTrips')}',
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
@@ -149,13 +150,13 @@ Widget customProfileWidgets(TripsState state,context){
                 child:  Padding(
                   padding: const EdgeInsets.only(right: 10.0),
                   child: Text(
-                    'Chats',
+                    '${getLang(context, 'chats')}',
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
                 ),
               ):
               Text(
-                'Chats',
+                '${getLang(context, 'chats')}',
                 style: Theme.of(context).textTheme.labelLarge,
               );
           },
@@ -179,7 +180,7 @@ Widget customProfileWidgets(TripsState state,context){
             // NavigatePages.persistentNavBarNavigator(LoginScreen(type: SuperCubit.get(context).type,),context);
           },
           child:  Text(
-            'Offers %',
+            '${getLang(context, 'offers')}',
             style: Theme.of(context).textTheme.labelLarge,
           ),
         ),
@@ -262,10 +263,10 @@ Future customBottomSheetChangeEmail({required String title,required String text,
                     boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
                     borderRadius: const BorderRadius.all(
                         Radius.circular(30))),
-                child: const Center(
+                child:  Center(
                     child: Text(
-                      'Update',
-                      style: TextStyle(
+                      '${getLang(context, 'update')}',
+                      style: const TextStyle(
                           color: Colors.white,
                           shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
                           fontWeight: FontWeight.bold),
@@ -289,10 +290,10 @@ Future customBottomSheetChangeEmail({required String title,required String text,
                         boxShadow: const [BoxShadow(color: Colors.black54,blurRadius: 5)],
                         borderRadius: const BorderRadius.all(
                             Radius.circular(30))),
-                    child: const Center(
+                    child:  Center(
                         child: Text(
-                          'Cancel',
-                          style: TextStyle(
+                          '${getLang(context, 'cancel')}',
+                          style: const TextStyle(
                               color: Colors.white,
                               shadows:  [BoxShadow(color: Colors.black54,blurRadius: 4)],
                               fontWeight: FontWeight.bold),
@@ -309,13 +310,13 @@ Future customBottomSheetChangeEmail({required String title,required String text,
 }
 
 
-Widget customRowDateProfile(String trips,String wallet ,String r){
+Widget customRowDateProfile(String trips,String wallet ,String r,context){
   return   Row(
     mainAxisAlignment: MainAxisAlignment.spaceAround,
     children: [
-      customColumInRow('Trips',trips,),
-      customColumInRow('The Wallet','$wallet EG',),
-      customColumInRow('Rate',r,),
+      customColumInRow('${getLang(context, 'trips')}',trips,),
+      customColumInRow('${getLang(context, 'wallet2')}','$wallet ${getLang(context, 'EGP')}',),
+      customColumInRow('${getLang(context, 'rate')}',r,),
     ],
   );
 }

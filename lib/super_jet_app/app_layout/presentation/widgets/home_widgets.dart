@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/core/utils/enums.dart';
 import 'package:superjet/super_jet_app/app_layout/presentation/screens/categories/categories_details_screen.dart';
@@ -11,18 +12,10 @@ import '../bloc/cubit.dart';
 import '../bloc/state.dart';
 import '../bloc/trips_bloc.dart';
 
-List listOfCity = [
-  'All',
-  'Cairo',
-  'Alex',
-  'PortSaid',
-  'Aswaan',
-  'Luxer',
-  'Elswees'
-];
 
 //CarouselSlider
-Widget carouselSlider(context) => CarouselSlider(
+Widget carouselSlider(context) =>
+    CarouselSlider(
         items: [
           Image.asset(
             AppImage.onBoarding1,
@@ -69,44 +62,56 @@ Widget carouselSlider(context) => CarouselSlider(
         ));
 
 //List OF City
-Widget listOfCityWidget() => SizedBox(
-      height: 50,
-      child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: listOfCity.length,
-          itemBuilder: (context, i) {
-            return InkWell(
-              onTap: () {
-                SuperCubit.get(context).chickIndex(true);
-                SuperCubit.get(context).changeCategoriesIndex(i);
-                context.read<TripsBloc>().add(GetTripsEvent(listOfCity[i],context));
-                Future.delayed(const Duration(seconds: 1)).then((value) =>{
-                SuperCubit.get(context).chickIndex(false),
-                });
+Widget listOfCityWidget(context) {
+  List listOfCity = [
+    '${getLang(context, 'all')}',
+    '${getLang(context, 'cairo')}',
+    '${getLang(context, 'alex')}',
+    '${getLang(context, 'portSaid')}',
+    '${getLang(context, 'aswaan')}',
+    '${getLang(context, 'luxer')}',
+    '${getLang(context, 'elswees')}',
+  ];
 
-              },
-              child: Padding(
+  return SizedBox(
+    height: 50,
+    child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: listOfCity.length,
+        itemBuilder: (context, i) {
+          return InkWell(
+            onTap: () {
+              SuperCubit.get(context).chickIndex(true);
+              SuperCubit.get(context).changeCategoriesIndex(i);
+              context.read<TripsBloc>().add(GetTripsEvent(listOfCity[i],context));
+              Future.delayed(const Duration(seconds: 1)).then((value) =>{
+                SuperCubit.get(context).chickIndex(false),
+              });
+
+            },
+            child: Padding(
                 padding: const EdgeInsets.all(6.0),
                 child:
-                    BlocConsumer<SuperCubit,AppSuperStates>(
-                        builder: (context,state){
-                          return Container(
-                              decoration: BoxDecoration(
-                                  color:
-                                  SuperCubit.get(context).categoriesIndex==i?Theme.of(context).primaryColor:
-                                  Theme.of(context).dividerColor,
-                                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Center(
-                                child: Text(listOfCity[i], style:Theme.of(context).textTheme.displaySmall
-                                ),
-                              ));
+                BlocConsumer<SuperCubit,AppSuperStates>(
+                    builder: (context,state){
+                      return Container(
+                          decoration: BoxDecoration(
+                              color:
+                              SuperCubit.get(context).categoriesIndex==i?Theme.of(context).primaryColor:
+                              Theme.of(context).dividerColor,
+                              borderRadius: const BorderRadius.all(Radius.circular(10))),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Center(
+                            child: Text(listOfCity[i], style:Theme.of(context).textTheme.displaySmall
+                            ),
+                          ));
 
-                        }, listener: (context,state){})
-              ),
-            );
-          }),
-    );
+                    }, listener: (context,state){})
+            ),
+          );
+        }),
+  );
+}
 
 //Categories ListView Widget
 Widget categoriesWidget(context) =>
@@ -164,7 +169,7 @@ Widget categoryWidget(context, CategoriesModel tripsModel) {
       children: [
         Container(
           width: m.width*0.3,
-          height: m.height*0.153,
+          height: 130,
           decoration: BoxDecoration(
             boxShadow:  [
               BoxShadow(color: Theme.of(context).shadowColor, blurRadius: 2)

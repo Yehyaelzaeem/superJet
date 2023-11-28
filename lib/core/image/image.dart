@@ -5,6 +5,7 @@ class AppImage{
   static const String onBoarding4='${baseOnBoarding}a2.jpg';
   static const String onBoarding3='${baseOnBoarding}a3.jpg';
   static const String paymentImage='${baseOnBoarding}pay2.png';
+  static const String offline='assets/image/offline.png';
   static const String visa='assets/image/visa.png';
   static const String fawry='assets/image/fawry.png';
   static const String wallet='assets/image/wallet.png';

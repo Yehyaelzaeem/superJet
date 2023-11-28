@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:superjet/core/global/localization/appLocale.dart';
 import 'package:superjet/core/services/routeing_page/routing.dart';
 import 'package:superjet/core/shared_preference/shared_preference.dart';
 import 'package:superjet/super_jet_app/auth/data/models/user_model.dart';
@@ -42,7 +43,7 @@ class AuthDataSource implements BaseAuthDataSource{
         });
         NavigatePages.pushReplacePage( const CustomMain(), context);
         CacheHelper.saveDate(key: 'isLog', value: true);
-        showToast('Login successful', ToastStates.success, context);
+        showToast('${getLang(context, 'loginSuccessful')}', ToastStates.success, context);
         AuthCubit.get(context).emailLog.clear();
         AuthCubit.get(context).passwordLog.clear();
 
@@ -58,13 +59,13 @@ class AuthDataSource implements BaseAuthDataSource{
               x.doc(n.id).get().then((value) {
                 CacheHelper.saveDate(key: 'branchCity', value:value.data()!['city']);
               });
-              showToast('Login successful by "$type"', ToastStates.success, context);
+              showToast('${getLang(context, 'loginSuccessful')} by "$type"', ToastStates.success, context);
               AuthCubit.get(context).emailLog.clear();
               AuthCubit.get(context).passwordLog.clear();
               break;
             }
             else{
-              showToast('the password is wrong', ToastStates.error, context);
+              showToast('${getLang(context, 'passwordIsWrong')}', ToastStates.error, context);
             }
 
           }
@@ -78,24 +79,24 @@ class AuthDataSource implements BaseAuthDataSource{
               CacheHelper.saveDate(key: "uId", value: n.id);
               NavigatePages.pushReplacePage( const CustomMain(), context);
               CacheHelper.saveDate(key: 'isLog', value: true);
-              showToast('Login successful by "$type"', ToastStates.success, context);
+              showToast('${getLang(context, 'loginSuccessful')} : "$type"', ToastStates.success, context);
               AuthCubit.get(context).emailLog.clear();
               AuthCubit.get(context).passwordLog.clear();
             }else{
-              showToast('the password is wrong', ToastStates.error, context);
+              showToast('${getLang(context, 'passwordIsWrong')}', ToastStates.error, context);
             }
           }
           else{
-            showToast('Not found this $type ', ToastStates.error, context);
+            showToast('${getLang(context, 'notFound')} : $type ', ToastStates.error, context);
           }
         }
       }
     }
    on FirebaseAuthException catch(e){
      if (e.code == 'user-not-found') {
-       showToast("No user found for that email", ToastStates.error, context);
+       showToast('${getLang(context, 'userNotFound')}', ToastStates.error, context);
      } else if (e.code == 'wrong-password') {
-       showToast("Wrong password provided for that user", ToastStates.error, context);
+       showToast('${getLang(context, 'passwordWrong')}', ToastStates.error, context);
      }
      else{
        showToast(e.code.toString(), ToastStates.error, context);
@@ -136,14 +137,14 @@ class AuthDataSource implements BaseAuthDataSource{
                 token: token,),
               context);
         Navigator.pop(context);
-        showToast('Register successful', ToastStates.success, context);
+        showToast('${getLang(context, 'registerSuccessful')}', ToastStates.success, context);
       });
     }
     on FirebaseAuthException catch(e){
       if (e.code == 'weak-password') {
-        showToast("The password provided is too weak", ToastStates.error, context);
+        showToast('${getLang(context, 'passwordIsWeak')}', ToastStates.error, context);
       } else if (e.code == 'email-already-in-use') {
-        showToast("The account already exists for that email", ToastStates.error, context);
+        showToast('${getLang(context, 'accountExists')}', ToastStates.error, context);
       }
       else{
         showToast(e.code.toString(), ToastStates.error, context);

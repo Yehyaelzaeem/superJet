@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:superjet/super_jet_app/auth/presentation/widgets/widget.dart';
+import '../../../../core/global/localization/appLocale.dart';
 import '../../../../core/image/image.dart';
 import '../../../../core/services/routeing_page/routing.dart';
 import '../../../../core/utils/enums.dart';
@@ -75,8 +76,8 @@ Widget customLoginDesign(var type ,context){
             children: [
               const Expanded(child: Divider(thickness: 2,)),
               SizedBox(width: w*.02,),
-              const Text('Sign In With',
-                style: TextStyle(fontWeight: FontWeight.bold),),
+               Text('${AppLocale.of(context).getTranslated('signInWith')}',
+                style: const TextStyle(fontWeight: FontWeight.bold),),
               SizedBox(width: w*.02,),
               const Expanded(child: Divider(thickness: 2,)),
             ],
@@ -112,7 +113,7 @@ Widget customWidgetsLogin(var type,context){
           mainAxisSize: MainAxisSize.min,
           children: [
             type=='user'? SizedBox(height:m.height*.04,):SizedBox(height:m.height*.07,),
-            customTitleScreen('SIGN IN',Colors.black),
+            customTitleScreen('${AppLocale.of(context).getTranslated('signIn')}',Colors.black),
             SizedBox(height:m.height*.06,),
             Container(
                 decoration: BoxDecoration(
@@ -134,7 +135,7 @@ Widget customWidgetsLogin(var type,context){
                   hintTextColor:  isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                   colorIcon:isDarkMode==Brightness.dark? Colors.black45:Colors.white70,
                   controller: AuthCubit.get(context).emailLog,
-                  hintText: 'User name/Email',
+                  hintText: '${AppLocale.of(context).getTranslated('usernameHintText')}',
                   iconData:  Icons.person,
 
                   obscureText: false,
@@ -162,7 +163,7 @@ Widget customWidgetsLogin(var type,context){
                         return null;
                       },
                       controller: AuthCubit.get(context).passwordLog,
-                      hintText: 'Password',
+                      hintText: '${AppLocale.of(context).getTranslated('passwordHintText')}',
                       iconData: Icons.lock,
                       obscureText: !AuthCubit.get(context).isEye,
                       suffixIcon:
@@ -189,7 +190,7 @@ Widget customWidgetsLogin(var type,context){
                 alignment: Alignment.topRight,
                 child: TextButton(onPressed: (){
                  NavigatePages.pushToPage(const ResetPassword(), context);
-                }, child:  Text("Forget Password?",
+                }, child:  Text('${AppLocale.of(context).getTranslated('forgetPassword')}',
                   style: TextStyle(color: Colors.grey.shade600,fontWeight: FontWeight.w800),
                 ))):const SizedBox(),
             type=='user'?SizedBox(height: m.height*.04,):SizedBox(height: m.height*.09,),
@@ -198,10 +199,10 @@ Widget customWidgetsLogin(var type,context){
                     ConditionalBuilder(
                       condition: AuthCubit.get(context).isNotLoading,
                       builder: (context)=>
-                          customAuthButton(context, 0.38, 'LOGIN', () {
+                          customAuthButton(context, 0.38, '${getLang(context,'login')}', () {
                             var c =AuthCubit.get(context);
                             if(c.emailLog.text.isEmpty||c.passwordLog.text.isEmpty){
-                              showToast('email or password is empty', ToastStates.warning, context);
+                              showToast('${getLang(context, 'emailOrPasswordIsEmpty')}', ToastStates.warning, context);
                             }else{
                               if(AuthCubit.get(context).formKey.currentState!.validate() ){
                                 AuthCubit.get(context).login(AuthCubit.get(context).emailLog.text, AuthCubit.get(context).passwordLog.text,context);}
@@ -216,12 +217,12 @@ Widget customWidgetsLogin(var type,context){
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don't have an account?",
+                  Text( '${getLang(context,'haveAccount?')}',
                     style: TextStyle(fontWeight: FontWeight.bold,color: Colors.grey.shade600),
                   ),
                   TextButton(onPressed: (){
                     NavigatePages.pushToPage(const Register(), context);
-                  }, child:  Text("Sign Up",
+                  }, child:  Text( '${getLang(context,'signUp')}',
                     style: TextStyle(color: Theme.of(context).primaryColor,fontWeight: FontWeight.w800,fontSize: 16),
                   ))
                 ],
